@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     early-init.el
 ;; Created:       2023-07-13
-;; Last modified: Thu Jul 13, 2023 1:23:26
+;; Last modified: Fri Jul 21, 2023 15:27:12
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;; References:    https://github.com/progfolio/.emacs.d
 ;;
@@ -13,15 +13,6 @@
 (setq inhibit-default-init nil)
 
 ;; (setq native-comp-async-report-warnings-errors nil)  ;; only in Emacs 29.0+
-
-;; Debugging: ref: https://github.com/progfolio/.emacs.d#debugging
-;; Running this form will launch the debugger after loading a package. 
-;; This is useful for finding out when a dependency is requiring a package 
-;; (perhaps earlier than you want). Use by tangling this block and 
-;; launching Emacs with emacs --debug-init.
-(unless (string-empty-p file)
-  (eval-after-load file
-    '(debug)))
 
 ;; file-name-handler-alist Ref: https://github.com/progfolio/.emacs.d#file-name-handler-alist
 ;; Skipping a bunch of regular expression searching in the file-name-handler-alist should improve start time.

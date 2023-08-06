@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     init.el
 ;; Created:       2023-07-13
-;; Last modified: Sat Jul 15, 2023 18:11:24
+;; Last modified: Sat Aug 05, 2023 14:28:04
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;;
 
@@ -87,12 +87,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; General settings before loading more.
-(let ((default-directory  "~/.emacs.d/elpa/"))
-  (normal-top-level-add-subdirs-to-load-path))
-(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/") t)
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+;; 07/21/2023: don't need this with Elpaca.
+;; (let ((default-directory  "~/.emacs.d/elpa/"))
+;;   (normal-top-level-add-subdirs-to-load-path))
+;; (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
+;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; (add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/") t)
+;; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+
 ;; Follow symlinks for version controlled files
 (setq vc-follow-symlinks t)
 ;; Add following to prevent "cl is deprecated" messages.
@@ -117,10 +119,12 @@
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
 (if (string-equal system-type "windows-nt")
-    (add-to-list 'load-path "c:/Users/frst6889/.emacs.d/private/local")
-  (add-to-list 'load-path "~/.emacs.d/private/local"))
+    (setq ee-system-type "windows-nt")
+  (setq ee-system-type "linux"))
 
-
+(if (string-equal system-type "windows-nt")
+    (add-to-list 'load-path "c:/Users/frst6889/.emacs.d/elisp")
+  (add-to-list 'load-path "~/.emacs.d/elisp"))
 
 
 ;; general.el provides a more convenient method for binding keys in emacs (for both evil and non-evil users).
@@ -132,54 +136,62 @@
   :config
   (general-override-mode)
   (general-auto-unbind-keys)
-  <<general-config>>)
+)
 ;; Allow Elpaca to process queues up to this point
 (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
-;; The global definer allows me to use a leader key in most states.
-(general-define-key
- :keymaps 'override
- :states '(insert normal hybrid motion visual operator emacs)
- :prefix-map '+prefix-map
- :prefix "SPC"
- :global-prefix "S-SPC")
 
-(general-create-definer global-definer
-  :wk-full-keys nil
-  :keymaps '+prefix-map)
+;; Load the General configuration file.
+(load "ee-general")
 
-(global-definer
-  "!"   'shell-command
-  ":"   'eval-expression
-  "."   'repeat
-  "z"   '((lambda (local) (interactive "p")
-            (unless repeat-mode (repeat-mode))
-            (let ((local current-prefix-arg)
-                  (current-prefix-arg nil))
-              (call-interactively (if local #'text-scale-adjust #'global-text-scale-adjust))))
-          :which-key "zoom"))
-
-;; We define a global-leader definer to access major-mode specific bindings:
-(general-create-definer global-leader
-  :keymaps 'override
-  :states '(insert normal hybrid motion visual operator)
-  :prefix "SPC m"
-  :non-normal-prefix "S-SPC m"
-  "" '( :ignore t
-        :which-key
-        (lambda (arg)
-          (cons (cadr (split-string (car arg) " "))
-                (replace-regexp-in-string "-mode$" "" (symbol-name major-mode))))))
+;; Set the size of the frame
+(when window-system
+  (if (string-equal system-type "windows-nt")
+      (progn
+        (add-to-list 'default-frame-alist '(height . 40))
+        (add-to-list 'default-frame-alist '(width . 160)))
+    (progn
+      (add-to-list 'default-frame-alist '(height . 38))
+      (add-to-list 'default-frame-alist '(width . 140))))
+  (blink-cursor-mode 0))
 
 
-;; main package loader/config file.
-(load "ee-requires")
+;; Set garbage collection hook, Emacs should feel snappier
+(add-hook 'focus-out-hook #'garbage-collect)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Set customization file
 ;; Add any configuration which relies on after-init-hook, emacs-startup-hook, 
 ;; etc to elpaca-after-init-hook so it runs after Elpaca has activated all 
 ;; queued packages. This includes loading of saved customizations. e.g.
 (setq-local custom-file (expand-file-name "customs.el" user-emacs-directory))
 (add-hook 'elpaca-after-init-hook (lambda () (load custom-file 'noerror)))
+
+
+;; Load fonts
+(load "ee-fonts")
+
+;; Load themes
+(load "ee-themes")
+
+
+;; Load defaults
+(load "ee-defaults")
+
+
+;; main package loader/config file.
+(load "ee-packages")
+
+
+;; Load Evil and complementary packages
+(load "ee-evil")
+
+;; Using Prot's modeline, ref: https://git.sr.ht/~protesilaos/dotfiles/tree/master/item/emacs/.emacs.d
+;; (require 'prot-modeline)
+(load "prot-modeline")
+
+;; Load final stuff; key bindings and more (if needed)
+(load "ee-final")
 
 ;;; init.el ends here
