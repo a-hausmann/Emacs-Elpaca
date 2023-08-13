@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     init.el
 ;; Created:       2023-07-13
-;; Last modified: Sat Aug 05, 2023 14:28:04
+;; Last modified: Sat Aug 12, 2023 22:00:07
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;;
 
@@ -130,18 +130,21 @@
 ;; general.el provides a more convenient method for binding keys in emacs (for both evil and non-evil users).
 ;; Ref: https://github.com/noctuid/general.el#about
 ;; Load general before the remaining packages so they can make use of the ~:general~ keyword in their declarations.
-
 (use-package general
+  :elpaca t
   :demand t
   :config
   (general-override-mode)
-  (general-auto-unbind-keys)
-)
+  (general-auto-unbind-keys))
+;; Configure Hydra
+(use-package hydra
+  :elpaca t
+  :demand)
 ;; Allow Elpaca to process queues up to this point
 (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
-;; Load the General configuration file.
+;; Load the General configuration file. This defines the menu structures only.
 (load "ee-general")
 
 ;; Set the size of the frame
@@ -180,12 +183,13 @@
 (load "ee-defaults")
 
 
+;; Load Evil and complementary packages
+(load "ee-evil")
+
+
 ;; main package loader/config file.
 (load "ee-packages")
 
-
-;; Load Evil and complementary packages
-(load "ee-evil")
 
 ;; Using Prot's modeline, ref: https://git.sr.ht/~protesilaos/dotfiles/tree/master/item/emacs/.emacs.d
 ;; (require 'prot-modeline)

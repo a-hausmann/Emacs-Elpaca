@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-general.el
 ;; Created:       2023-08-05
-;; Last modified: Sun Aug 06, 2023 17:29:09
+;; Last modified: Sat Aug 12, 2023 21:45:47
 ;; Purpose:       Configure the basic General bindings for menu structures to 
 ;;                reduce Hydra usage. Hydra should be used for PERSISTANT menus only.
 ;;
@@ -37,15 +37,26 @@
 ;; Modified to use "non-normal-prefix" which matches my original setup.
 (general-def
  :keymaps 'override
- :states '(insert normal hybrid motion visual operator emacs)
+ ;; :states '(insert normal hybrid motion visual operator emacs)
+ :states '(normal hybrid motion visual operator emacs)
  :prefix-map '+prefix-map
- :prefix "SPC"
- :non-normal-prefix "C-;")
+ :prefix "SPC")
+ ;; :non-normal-prefix "C-;")
+(general-def
+ :keymaps 'override
+ ;; :states '(insert normal hybrid motion visual operator emacs)
+ :states 'insert
+ :prefix-map '+iprefix-map
+ :prefix "C-;")
 
 ;; Ref: https://github.com/progfolio/.emacs.d#general-key-bindings
 (general-create-definer ee-definer
   :wk-full-keys nil                     ; which-key, bound keys do NOT correspond to full sequence
   :keymaps '+prefix-map)
+
+(general-create-definer ee-inserter
+  :wk-full-keys nil                     ; which-key, bound keys do NOT correspond to full sequence
+  :keymaps '+iprefix-map)
 
 ;; General stuff I like to keep with just SPC as leader.
 (ee-definer
@@ -53,6 +64,13 @@
  "TAB" '(aeh/switch-to-previous-buffer :wk "prev-buffer")
  )
 
+;; Define menu for insert state
+(ee-inserter
+ "i" '(:ignore t :wk "Insert stuff")
+ "TAB" '(aeh/switch-to-previous-buffer :wk "Prev buffer")
+ "d" '(aeh/hydra-insert-date-menu/body :wk "Insert dates")
+ "i" '(aeh/hydra-insert-stuff-menu/body :wk "Insert Stuff")
+)
 
 ;; Define main menus for normal/non-normal
 ;; Define Buffers Menu.

@@ -1,13 +1,14 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-evil.el
 ;; Created:       2023-07-22
-;; Last modified: Sat Jul 22, 2023 15:19:46
+;; Last modified: Sat Aug 12, 2023 21:21:21
 ;; Purpose:       Configure Evil mode and accompanying packages
 ;;
 
 ;; Originally had issues with evil mode which were solved by loading evil LAST.
 ;; Note that all Evil mode must come last in the configuration as other packages
 ;; need to load first else their config could override that of Evil.
+;; 08/12/2023: Still seems necessary for evil to be loaded last.
 ;; Ref: https://github.com/howardabrams/dot-files/blob/master/emacs-evil.org
 ;; Ref: https://github.com/aaronbieber/dotfiles/blob/master/configs/emacs.d/lisp/init-evil.el
 
@@ -62,7 +63,7 @@
               ;; ("z," . ha/xref-pop-marker-stack)
               ("z." . find-tag)))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure evil-surround
@@ -73,7 +74,7 @@
   :config
   (global-evil-surround-mode))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure evil-commentary
@@ -83,7 +84,7 @@
   :after evil)
 (add-hook 'prog-mode-hook 'evil-commentary-mode)
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure evil-matchit
@@ -94,7 +95,7 @@
   :config
   (global-evil-matchit-mode 1))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure evil-exchange
@@ -104,7 +105,7 @@
   :after evil)
 ;; Allow Elpaca to process queues up to this point
 (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
-(evil-exchange-cx-install)
+;; (evil-exchange-cx-install)
 
 ;; Configure evil-collection, which supersedes evil-magit
 (use-package evil-collection
@@ -114,4 +115,4 @@
   :delight
   :config (evil-collection-init))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword

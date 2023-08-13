@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-auto-complete.el
 ;; Created:       2023-07-22
-;; Last modified: Sat Jul 22, 2023 15:37:06
+;; Last modified: Sat Aug 12, 2023 21:07:51
 ;; Purpose:       Configure Company and companion packages.
 ;;
 
@@ -67,7 +67,7 @@
       (define-key company-active-map (kbd "C-n") #'company-select-next)
       (define-key company-active-map (kbd "C-p") #'company-select-previous)))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 (add-hook 'sql-mode-hook
           #'(lambda ()
@@ -87,7 +87,7 @@
   :delight
   :config (add-hook 'shell-mode-hook 'shell-mode-company-init))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 (use-package company-statistics
@@ -96,7 +96,7 @@
   :delight
   :config (company-statistics-mode))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 (use-package company-web
@@ -104,7 +104,7 @@
   :after company
   :delight)
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 ;; Not sure what I was thinking here and no notes on it.
 ;; (use-package company-try-hard
@@ -125,7 +125,7 @@
   :config
   (company-quickhelp-mode))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 (setq company-backends

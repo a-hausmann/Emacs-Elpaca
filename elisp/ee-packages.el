@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-packages.el
 ;; Created:       2023-07-15
-;; Last modified: Sun Jul 30, 2023 15:00:30
+;; Last modified: Sat Aug 12, 2023 21:14:38
 ;; Purpose:       This is the main package loader/configurator for Emacs-Elpaca
 ;;
 
@@ -9,7 +9,7 @@
 (use-package delight
   :elpaca t)
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 ;; Configure which-key
 (use-package which-key
@@ -20,7 +20,15 @@
   :config
   (setq which-key-idle-delay 0.5))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+
+
+;; Try using frog-jump-buffer; NO DO NOT!!! The posframe still has horrible face and is unreadable.
+  ;; (use-package frog-jump-buffer
+  ;;   :elpaca t
+  ;;   :diminish
+  ;;   :config
+  ;;   (setq frog-jump-buffer-include-current-buffer nil))
 
 
 ;; Elisp mode
@@ -40,7 +48,7 @@
   :delight lisp-mode "Lisp")
 (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; All-the-icons
@@ -48,7 +56,48 @@
   :elpaca t
   :delight)
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+
+
+;; Configure Ace-windows
+  (defun aeh/scroll-other-window()
+    (interactive)
+    (scroll-other-window 1))
+  (defun aeh/scroll-other-window-down ()
+    (interactive)
+    (scroll-other-window-down 1))
+  (use-package ace-window
+    :elpaca t
+    :commands ace-window
+    :delight
+    :config
+    (set-face-attribute
+     'aw-leading-char-face nil
+     :foreground "deep sky blue"
+     :weight 'bold
+     :height 3.0)
+    (set-face-attribute
+     'aw-mode-line-face nil
+     :inherit 'mode-line-buffer-id
+     :foreground "lawn green")
+    (setq aw-dispatch-always nil)
+    (defvar
+          aw-dispatch-alist
+          '((?x aw-delete-window "Delete Window")
+            (?m aw-swap-window "Swap Window")
+            (?M aw-move-window "Move Window")
+            (?c aw-copy-window "Copy Window")
+            (?j aw-switch-buffer-in-window "Select Buffer")
+            (?n aw-flip-window "Flip Window")
+            (?u aw-switch-buffer-other-window "Switch Buffer Other Window")
+            (?v aw-split-window-vert "Split Vert Window")
+            (?b aw-split-window-horz "Split Horz Window")
+            (?o delete-other-windows "Delete Other Windows")
+            )
+          "List of actions for `aw-dispatch-default'.")
+    (ace-window-display-mode t)
+    :bind
+    ([remap other-window] . ace-window))
 
 
 ;; Amx is the newer alternative to smex (aka smart M-x). 
@@ -64,7 +113,7 @@
   (global-set-key (kbd "C-c M-x") 'execute-extended-command))
 ;; (setq-default amx-save-file (no-littering-expand-var-file-name ".amx-items"))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure Avy
@@ -85,7 +134,7 @@
   :config
   (setq avy-timeout-seconds 0.5))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure Aggressive-indent, works well with Emacs-lisp, not that well with other languages (Python?)
@@ -94,7 +143,7 @@
   :delight
   :hook (emacs-lisp-mode . aggressive-indent-mode))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; allow asynchronous processing wherever possible…pretty nice.
@@ -105,7 +154,7 @@
   :config
      (dired-async-mode 1))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure beacon
@@ -116,7 +165,7 @@
   :config
   (beacon-mode 1))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure column-enforce-mode
@@ -126,7 +175,11 @@
   :hook (prog-mode . column-enforce-mode)
   :config (setq column-enforce-comments nil))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+
+
+;; Load the dired configuration file. So much going on there, it deserves its own config file.
+(load "ee-dired")
 
 
 ;; Configure Magit.
@@ -147,7 +200,7 @@
   :delight
   :hook (magit-mode . turn-on-magit-gitflow))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Load scripts to set up completion, both auto-complete and completing read.
@@ -168,7 +221,7 @@
     ;; :delight
     :init (rg-enable-default-bindings)))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure command-log-mode
@@ -177,7 +230,7 @@
   :commands (command-log-mode)
   :bind ("C-c o" . clm/toggle-command-log-buffer))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure editing stuff
@@ -187,6 +240,7 @@
 
 
 ;; Keep this at end.
+(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 (if (string-equal ee-system-type "windows-nt")
     (progn
       (find-file "c:/_work/org/todo.org")

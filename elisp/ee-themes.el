@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-themes.el
 ;; Created:       2023-07-21
-;; Last modified: Fri Jul 21, 2023 17:26:37
+;; Last modified: Sat Aug 12, 2023 21:13:29
 ;; Purpose:       Configure themes for Emacs-Elpaca
 ;;
 

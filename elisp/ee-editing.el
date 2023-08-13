@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-editing.el
 ;; Created:       2023-07-30
-;; Last modified: Sun Jul 30, 2023 15:13:49
+;; Last modified: Sat Aug 12, 2023 21:09:25
 ;; Purpose:       Configure packages used in straight editing (not programming languages)
 ;;
 
@@ -14,7 +14,7 @@
          (sh-mode . ws-butler-mode)
          (emacs-lisp-mode . ws-butler-mode)))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure EditorConfig, ref: https://github.com/editorconfig/editorconfig-emacs#readme
@@ -25,7 +25,7 @@
   (editorconfig-mode 1)
   (setq editorconfig-trim-whitespaces-mode 'ws-butler-mode))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure Expand-region
@@ -34,7 +34,7 @@
   :delight
   :bind ("C-=" . er/expand-region))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure Drag-stuff
@@ -45,7 +45,20 @@
   :config
   (drag-stuff-define-keys))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+
+
+;; Configure Highlight-thing; highlights all occurances of the "thing" under point.
+;; Generally have found only the "word" under point useful, and not ALL the time, so
+;; provide toggle in "C-<f3>" and set to "word" for thing.
+(use-package highlight-thing
+  :delight
+  :bind ("C-<f3>" . highlight-thing-mode)
+  :config
+  (setq highlight-thing-what-thing 'word
+        highlight-thing-case-sensitive-p nil))
+;; Allow Elpaca to process queues up to this point
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure Oragami, folding package plus personal functions.
@@ -76,5 +89,30 @@
             (origami-mode)
             (origami-close-all-nodes (current-buffer))))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
+
+;; Configure rainbow-mode, useful for showing color of codes.
+(use-package rainbow-mode
+  :defer
+  :delight
+  :hook 
+  (prog-mode . rainbow-mode)
+  (org-mode . rainbow-mode))
+;; Allow Elpaca to process queues up to this point
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+
+
+;; Configure Smartparens
+;; Ref: https://ebzzry.com/en/emacs-pairs/
+(use-package smartparens
+  :init 'smartparens-config
+  :config (progn (show-smartparens-global-mode t))
+  (sp-with-modes sp-lisp-modes
+    ;; disable ', it's the quote character!
+    (sp-local-pair "'" nil :actions nil))
+  )
+;; Allow Elpaca to process queues up to this point
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+(add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+(add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)

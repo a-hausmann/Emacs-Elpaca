@@ -1,15 +1,16 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-hydra.el
 ;; Created:       2023-07-30
-;; Last modified: Sun Aug 06, 2023 17:32:02
+;; Last modified: Sat Aug 12, 2023 22:00:02
 ;; Purpose:       Configure Hydra and create hydra menus.
 ;;
 
 ;; Configure Hydra
-(use-package hydra
-  :elpaca t)
+;; (use-package hydra
+;;   :elpaca t
+;;   :demand)
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 ;; aeh/hydra-insert-date-menu
 (defconst aeh/date-simple "%m/%d/%Y" "Simple format: MM/DD/YYYY")

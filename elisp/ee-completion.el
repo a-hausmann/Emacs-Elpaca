@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-completion.el
 ;; Created:       2023-07-22
-;; Last modified: Sat Jul 22, 2023 16:29:39
+;; Last modified: Sat Aug 12, 2023 21:08:28
 ;; Purpose:       Configure all completing-read framework.
 ;;                As of initial writing, this is: Consult, Vertigo, 
 ;;                Orderless, Marginalia, and Embark. Also use
@@ -34,13 +34,13 @@
          ("M-'" . consult-register-load)           ;; dwim register: insert, jump, or restore (window config)
          ("C-M-#" . consult-register)
          ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-         ("C-c r" . consult-recent-file)
-         ("C-c g" . consult-goto-line)             ;; goto specified line
-         ("C-c m" . consult-mark)                  ;; jump to marker in the mark-ring
-         ("M-s f" . consult-find)
-         ("M-s g" . consult-grep)
-         ("M-s G" . consult-git-grep)
-         ("M-s l" . consult-line)                  ;; required by consult-line to detect isearch
+         ("C-x c r" . consult-recent-file)
+         ("C-x c g" . consult-goto-line)           ;; goto specified line
+         ("C-x c m" . consult-mark)                ;; jump to marker in the mark-ring
+         ("C-x c f" . consult-find)
+         ("C-x c g" . consult-grep)
+         ("C-x c G" . consult-git-grep)
+         ("C-x c l" . consult-line)                  ;; required by consult-line to detect isearch
          :map minibuffer-local-map ("C-r" . consult-history))
   :init
   ;; Optionally configure the register formatting. This improves the register
@@ -80,7 +80,7 @@
    :preview-key "M-.")
 )
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Ref: https://github.com/gagbo/consult-lsp
@@ -95,7 +95,7 @@
   :bind ([remap xref-find-apropos] . consult-lsp-symbols)
 )
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Ref: https://github.com/minad/vertico
@@ -128,7 +128,7 @@ folder, otherwise delete a word"
          :map minibuffer-local-map
          ("<C-backspace>" . dw/minibuffer-backward-kill)))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; 2022-08-04: Changes in vertico invalidated the below. Documentation for Projectile
@@ -146,7 +146,7 @@ folder, otherwise delete a word"
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
@@ -194,6 +194,6 @@ folder, otherwise delete a word"
       embark-become-indicator embark-action-indicator)
 )
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 ;; End of ee-completion.el
