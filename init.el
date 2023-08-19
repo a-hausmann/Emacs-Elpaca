@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     init.el
 ;; Created:       2023-07-13
-;; Last modified: Sat Aug 12, 2023 22:00:07
+;; Last modified: Sat Aug 19, 2023 14:12:49
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;;
 
@@ -17,83 +17,13 @@
 (profiler-start 'cpu+mem)
 (add-hook 'elpaca-after-init-hook (lambda () (profiler-stop) (profiler-report)))
 
-;; Elpaca elisp package manager; ref: https://github.com/progfolio/elpaca
-;; Installation of Elpaca, ref: https://github.com/progfolio/elpaca#installer
-(defvar elpaca-installer-version 0.5)
-(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
-(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
-(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                              :ref nil
-                              :files (:defaults (:exclude "extensions"))
-                              :build (:not elpaca--activate-package)))
-(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
-       (build (expand-file-name "elpaca/" elpaca-builds-directory))
-       (order (cdr elpaca-order))
-       (default-directory repo))
-  (add-to-list 'load-path (if (file-exists-p build) build repo))
-  (unless (file-exists-p repo)
-    (make-directory repo t)
-    (when (< emacs-major-version 28) (require 'subr-x))
-    (condition-case-unless-debug err
-        (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                 ((zerop (call-process "git" nil buffer t "clone"
-                                       (plist-get order :repo) repo)))
-                 ((zerop (call-process "git" nil buffer t "checkout"
-                                       (or (plist-get order :ref) "--"))))
-                 (emacs (concat invocation-directory invocation-name))
-                 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                 ((require 'elpaca))
-                 ((elpaca-generate-autoloads "elpaca" repo)))
-            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
-          (error "%s" (with-current-buffer buffer (buffer-string))))
-      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
-  (unless (require 'elpaca-autoloads nil t)
-    (require 'elpaca)
-    (elpaca-generate-autoloads "elpaca" repo)
-    (load "./elpaca-autoloads")))
-(add-hook 'after-init-hook #'elpaca-process-queues)
-(elpaca `(,@elpaca-order))
-
-;; This package gets the correct environment variables so elpaca can use the ssh protocol.
-(elpaca-queue
- (elpaca keychain-environment
-   (keychain-refresh-environment)))
-
-;; use-package
-;; Elpaca macro like use-package
-(defmacro use-feature (name &rest args)
-  "Like `use-package' but accounting for asynchronous installation.
-  NAME and ARGS are in `use-package'."
-  (declare (indent defun))
-  `(use-package ,name
-     :elpaca nil
-     ,@args))
-
-(elpaca elpaca-use-package
-  (elpaca-use-package-mode)
-  (setq elpaca-use-package-by-default t))
-
-;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
-
-(if debug-on-error
-    (setq use-package-verbose t
-          use-package-expand-minimally nil
-          use-package-compute-statistics t)
-  (setq use-package-verbose nil
-        use-package-expand-minimally t))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Set load path for scripts (more constant config) and elisp (changing config)
+(add-to-list 'load-path "~/.emacs.d/scripts")
+(add-to-list 'load-path "~/.emacs.d/elisp")
+(require 'elpaca-config)                ; The Elpaca Package Manager
 
-;; General settings before loading more.
-;; 07/21/2023: don't need this with Elpaca.
-;; (let ((default-directory  "~/.emacs.d/elpa/"))
-;;   (normal-top-level-add-subdirs-to-load-path))
-;; (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
-;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-;; (add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/") t)
-;; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Follow symlinks for version controlled files
 (setq vc-follow-symlinks t)
@@ -173,14 +103,14 @@
 
 
 ;; Load fonts
-(load "ee-fonts")
-
-;; Load themes
-(load "ee-themes")
-
+(require 'ee-fonts)
 
 ;; Load defaults
-(load "ee-defaults")
+(require 'ee-defaults)
+
+
+;; Load themes
+(require 'ee-themes)
 
 
 ;; Load Evil and complementary packages
@@ -192,8 +122,7 @@
 
 
 ;; Using Prot's modeline, ref: https://git.sr.ht/~protesilaos/dotfiles/tree/master/item/emacs/.emacs.d
-;; (require 'prot-modeline)
-(load "prot-modeline")
+(require 'prot-modeline)
 
 ;; Load final stuff; key bindings and more (if needed)
 (load "ee-final")
