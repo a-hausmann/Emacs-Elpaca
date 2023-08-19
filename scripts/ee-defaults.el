@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-defaults.el
 ;; Created:       2023-07-22
-;; Last modified: Sat Aug 19, 2023 15:15:33
+;; Last modified: Sat Aug 19, 2023 15:36:56
 ;; Purpose:       Set default values.
 ;;
 
@@ -92,11 +92,12 @@
 
 
 ;; Set default browsers.
-;; Since cannot get Chrome working in Windows, use EWW instead
+;; Since cannot get Brave working in Windows, use EWW instead
+(setq aeh-default-browser "brave-browser")
 (if (string-equal system-type "windows-nt")
     (setq browse-url-browser-function 'eww-browse-url)
   (setq browse-url-browser-function 'browse-url-generic
-        browse-url-generic-program "opera"))
+        browse-url-generic-program aeh-default-browser))
 
 
 (message "Loaded ee-defaults.el")

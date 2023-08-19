@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-evil.el
 ;; Created:       2023-07-22
-;; Last modified: Sat Aug 12, 2023 21:21:21
+;; Last modified: Sat Aug 19, 2023 17:09:47
 ;; Purpose:       Configure Evil mode and accompanying packages
 ;;
 

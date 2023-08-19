@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     init.el
 ;; Created:       2023-07-13
-;; Last modified: Sat Aug 19, 2023 14:12:49
+;; Last modified: Sat Aug 19, 2023 16:44:38
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;;
 
@@ -98,7 +98,7 @@
 ;; Add any configuration which relies on after-init-hook, emacs-startup-hook, 
 ;; etc to elpaca-after-init-hook so it runs after Elpaca has activated all 
 ;; queued packages. This includes loading of saved customizations. e.g.
-(setq-local custom-file (expand-file-name "customs.el" user-emacs-directory))
+(setq-local custom-file (expand-file-name "custom.el" user-emacs-directory))
 (add-hook 'elpaca-after-init-hook (lambda () (load custom-file 'noerror)))
 
 
@@ -128,3 +128,15 @@
 (load "ee-final")
 
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(safe-local-variable-values '((eval ah--set-origami-fold-style-braces))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

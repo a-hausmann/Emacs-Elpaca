@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-completion.el
 ;; Created:       2023-07-22
-;; Last modified: Sat Aug 12, 2023 21:08:28
+;; Last modified: Sat Aug 19, 2023 15:52:45
 ;; Purpose:       Configure all completing-read framework.
 ;;                As of initial writing, this is: Consult, Vertigo, 
 ;;                Orderless, Marginalia, and Embark. Also use
@@ -195,5 +195,10 @@ folder, otherwise delete a word"
 )
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+
+
+(message "Loaded ee-completion.el")
+
+(provide 'ee-completion)
 
 ;; End of ee-completion.el

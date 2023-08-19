@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-dired.el
 ;; Created:       2023-08-12
-;; Last modified: Sat Aug 12, 2023 21:05:28
+;; Last modified: Sat Aug 19, 2023 15:46:44
 ;; Purpose:       Configure dired and associated packages.
 ;;
 
@@ -172,3 +172,10 @@
   :config (treemacs-icons-dired-mode))
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+
+
+(message "Loaded ee-dired.el")
+
+(provide 'ee-dired)
+
+;;; End of ee-dired.el

@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-editing.el
 ;; Created:       2023-07-30
-;; Last modified: Sat Aug 12, 2023 21:09:25
+;; Last modified: Sat Aug 19, 2023 17:17:53
 ;; Purpose:       Configure packages used in straight editing (not programming languages)
 ;;
 
@@ -116,3 +116,54 @@
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
+
+
+;; Configure Undo-fu
+(use-package undo-fu
+  :after evil
+  :defer 1
+  :bind ((:map evil-normal-state-map ("u" . undo-fu-only-undo))
+         (:map evil-normal-state-map ("C-r" . undo-fu-only-redo)))
+  ;; :config
+  ;; (message "Loaded Undo-fu.")
+  ;; (global-undo-tree-mode -1)
+  )
+(use-package undo-fu-session
+  :after evil
+  :defer 1
+  :config
+  (progn
+    (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
+    (if (file-directory-p "~/.emacs.d/undo-fu-session")
+        (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-fu-session")))
+      (progn
+        (dired-create-directory "~/.emacs.d/undo-fu-session")
+        (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-fu-session")))))
+    (global-undo-fu-session-mode 1)))
+
+
+;; Configure Yasnippet
+(use-package yasnippet
+  :ensure t
+  :diminish 'yas-minor-mode
+  :hook ((prog-mode . yas-minor-mode)
+         (text-mode . yas-minor-mode)
+         )
+  :config
+  (unless (boundp 'warning-suppress-types)
+    (setq warning-suppress-types nil))
+  (push '(yasnippet backquote-change) warning-suppress-types)
+  (setq yas-snippet-dirs '("~/.emacs.d/private/snippets"))
+  (setq yas-indent-line 'fixed)
+  (yas-global-mode 1))
+
+(use-package yasnippet-snippets
+  :ensure t
+  :after yasnippet)
+
+
+(message "Loaded ee-editing.el")
+
+(provide 'ee-editing)
+
+;;; End of ee-editing.el

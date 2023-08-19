@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-packages.el
 ;; Created:       2023-07-15
-;; Last modified: Sat Aug 12, 2023 21:14:38
+;; Last modified: Sat Aug 19, 2023 16:35:19
 ;; Purpose:       This is the main package loader/configurator for Emacs-Elpaca
 ;;
 
@@ -21,6 +21,24 @@
   (setq which-key-idle-delay 0.5))
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+
+
+;; Configure command-log-mode
+(use-package command-log-mode
+  :elpaca t
+  :commands (command-log-mode)
+  :bind ("C-c o" . clm/toggle-command-log-buffer))
+;; Allow Elpaca to process queues up to this point
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+
+
+;; Configure editing stuff
+(require 'ee-editing)
+
+
+;; Load scripts to set up completion, both auto-complete and completing read.
+(require 'ee-auto-complete)
+(require 'ee-completion)
 
 
 ;; Try using frog-jump-buffer; NO DO NOT!!! The posframe still has horrible face and is unreadable.
@@ -179,7 +197,38 @@
 
 
 ;; Load the dired configuration file. So much going on there, it deserves its own config file.
-(load "ee-dired")
+(require 'ee-dired)
+
+
+;; Configure Garbage Collector Magic Hack
+(use-package gcmh
+  :delight
+  :defer 1
+  :config
+  (gcmh-mode 1))
+
+
+;; Configure Helpful help commands
+(use-package helpful
+  :commands (helpful-callable helpful-variable helpful-command helpful-key)
+  :bind
+  ([remap describe-function] . helpful-callable)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . helpful-variable)
+  ([remap describe-key] . helpful-key))
+
+
+;; Configure HTMLize
+(use-package htmlize
+  :defer 2
+  :commands aeh-html-stuff-mode
+  :diminish)
+
+;; 2020-09-07: adding custom package; 2020-09-08: make non-Windows (not work)
+(cond ((not (string-equal system-type "windows-nt"))
+       (load "aeh-html-stuff")
+       ;; (require 'aeh-html-stuff)
+       (add-hook 'html-mode-hook 'aeh-html-stuff-mode)))
 
 
 ;; Configure Magit.
@@ -203,9 +252,10 @@
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
-;; Load scripts to set up completion, both auto-complete and completing read.
-(load "ee-auto-complete")
-(load "ee-completion")
+;; Configure Minions
+(use-package minions
+  :defer 1
+  :config (minions-mode 1))
 
 
 ;; Configure wgrep/Ripgrep. 07/29/2023: Use ripgrep only at home for now.
@@ -222,19 +272,6 @@
     :init (rg-enable-default-bindings)))
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
-
-
-;; Configure command-log-mode
-(use-package command-log-mode
-  :elpaca t
-  :commands (command-log-mode)
-  :bind ("C-c o" . clm/toggle-command-log-buffer))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
-
-
-;; Configure editing stuff
-(load "ee-editing")
 
 
 

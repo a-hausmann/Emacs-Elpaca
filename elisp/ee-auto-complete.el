@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-auto-complete.el
 ;; Created:       2023-07-22
-;; Last modified: Sat Aug 12, 2023 21:07:51
+;; Last modified: Sat Aug 19, 2023 15:51:13
 ;; Purpose:       Configure Company and companion packages.
 ;;
 
@@ -106,18 +106,6 @@
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
-;; Not sure what I was thinking here and no notes on it.
-;; (use-package company-try-hard
-;;     :ensure t
-;;     :after company
-;;     :bind
-;;     ;; Change from C-<tab> to "C-." and "C-M-."
-;;     (("C-." . company-try-hard)
-;;      ("C-M-." . company-try-hard)
-;;      :map company-active-map
-;;      ("C-." . company-try-hard)
-;;      ("C-M-." . company-try-hard)))
-
 (use-package company-quickhelp
   :elpaca t
   :after company
@@ -134,5 +122,8 @@
          company-capf)          ; completion-at-point-functions
         (company-abbrev company-dabbrev)))
 
+(message "Loaded ee-auto-complete.el")
 
-;; End of aeh-auto-complete.el
+(provide 'ee-auto-complete)
+
+;; End of ee-auto-complete.el
