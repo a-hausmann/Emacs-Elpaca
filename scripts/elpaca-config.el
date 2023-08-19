@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     elpaca-config.el
 ;; Created:       2023-08-19
-;; Last modified: Sat Aug 19, 2023 13:43:20
+;; Last modified: Sat Aug 19, 2023 15:17:24
 ;; Purpose:       Configuration for Elpaca.
 ;;
 
@@ -75,6 +75,8 @@
   (setq use-package-verbose nil
         use-package-expand-minimally t))
 
+
+(message "Loaded elpaca-config.el")
 
 (provide 'elpaca-config)
 
