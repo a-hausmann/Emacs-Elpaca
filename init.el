@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     init.el
 ;; Created:       2023-07-13
-;; Last modified: Sat Aug 19, 2023 16:44:38
+;; Last modified: Sun Aug 27, 2023 17:40:41
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;;
 
@@ -47,6 +47,9 @@
 
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+
+;; Make `load' prefer the newest version of a file.
+(setq load-prefer-newer t)
 
 (if (string-equal system-type "windows-nt")
     (setq ee-system-type "windows-nt")
@@ -98,9 +101,18 @@
 ;; Add any configuration which relies on after-init-hook, emacs-startup-hook, 
 ;; etc to elpaca-after-init-hook so it runs after Elpaca has activated all 
 ;; queued packages. This includes loading of saved customizations. e.g.
-(setq-local custom-file (expand-file-name "custom.el" user-emacs-directory))
+(setq-default custom-file (expand-file-name ".custom.el" user-emacs-directory))
 (add-hook 'elpaca-after-init-hook (lambda () (load custom-file 'noerror)))
 
+;; Enable some features
+;; Ref: https://github.com/skangas/dot-emacs/blob/master/init.el
+(put 'narrow-to-region 'disabled nil)
+(put 'set-goal-column 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
+(put 'help-fns-edit-variable 'disabled nil)
+(put 'list-threads 'disabled nil)
+(put 'list-timers 'disabled nil)
 
 ;; Load fonts
 (require 'ee-fonts)

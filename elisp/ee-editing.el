@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-editing.el
 ;; Created:       2023-07-30
-;; Last modified: Sat Aug 19, 2023 17:17:53
+;; Last modified: Sun Aug 27, 2023 17:25:19
 ;; Purpose:       Configure packages used in straight editing (not programming languages)
 ;;
 
@@ -79,9 +79,10 @@
     (goto-char (point-at-eol))             ;; then go to the end of line
     (origami-toggle-node (current-buffer) (point))))                 ;; and try to fold
 ;; Step 3, install Origami.
+;; 08/27/2023: stop deferring to see if the bindings work without resetting the mode.
 (use-package origami
   :elpaca t
-  :defer 1
+  ;; :defer 1
   :delight)
 (add-hook 'prog-mode-hook
           (lambda ()

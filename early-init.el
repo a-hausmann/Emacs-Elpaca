@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     early-init.el
 ;; Created:       2023-07-13
-;; Last modified: Fri Jul 21, 2023 15:27:12
+;; Last modified: Sun Aug 27, 2023 15:16:42
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;; References:    https://github.com/progfolio/.emacs.d
 ;;
@@ -20,7 +20,8 @@
 (setq file-name-handler-alist nil)
 
 ;; Garbage Collection, ref: https://github.com/progfolio/.emacs.d#garbage-collection
-(setq gc-cons-threshold most-positive-fixnum
+(setq bkup-gc-cons-threshold gc-cons-threshold
+      gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 1)
 
 (defun +gc-after-focus-change ()
@@ -35,7 +36,8 @@
    (lambda ()
      (setq file-name-handler-alist default-file-name-handler-alist
            gc-cons-percentage 0.1
-           gc-cons-threshold 100000000)
+           ;; gc-cons-threshold 100000000
+           gc-cons-threshold (+ bkup-gc-cons-threshold 200000)) ; Restore original plus a little bit more
      (message "gc-cons-threshold & file-name-handler-alist restored")
      (when (boundp 'after-focus-change-function)
        (add-function :after after-focus-change-function #'+gc-after-focus-change)))))
@@ -60,6 +62,11 @@
 ;; Silence bells.
 (setq ring-bell-function #'ignore
       inhibit-startup-screen t)
+
+;; In case I ever need elisp code that should never be stored publicly.
+;; Ref: https://github.com/skangas/dot-emacs/blob/master/early-init.el
+(when (file-readable-p "~/.emacs-secret.el")
+  (load-file "~/.emacs-secret.el"))
 
 
 (provide 'early-init)

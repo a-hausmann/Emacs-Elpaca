@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-final.el
 ;; Created:       2023-07-30
-;; Last modified: Sun Jul 30, 2023 17:15:08
+;; Last modified: Sat Aug 19, 2023 21:28:42
 ;; Purpose:       Perform things/functions which need to be done last.
 ;;
 
@@ -50,19 +50,22 @@
 ))
 
 (eval-after-load 'origami
-  '(progn
-     (general-define-key
-      :states 'normal
-      :keymaps '(prog-mode-map origami-mode-map)
-      "TAB" 'aeh/origami-toggle-node)
-     (general-define-key
-      :states 'normal
-      "za" 'origami-forward-toggle-node
-      "zR" 'origami-close-all-nodes
-      "zM" 'origami-open-all-nodes
-      "zr" 'origami-close-node-recursively
-      "zm" 'origami-open-node-recursively
-      "zo" 'origami-show-node
-      "zc" 'origami-close-node
-      "zh" 'origami-forward-fole
-      "zk" 'origami-previous-fold)))
+  (progn
+    (general-define-key
+     :states 'normal
+     :keymaps '(prog-mode-map origami-mode-map)
+     "TAB" 'aeh/origami-toggle-node)
+    (general-define-key
+     :states 'normal
+     "za" 'origami-forward-toggle-node
+     "zR" 'origami-close-all-nodes
+     "zM" 'origami-open-all-nodes
+     "zr" 'origami-close-node-recursively
+     "zm" 'origami-open-node-recursively
+     "zo" 'origami-show-node
+     "zc" 'origami-close-node
+     "zh" 'origami-forward-fole
+     "zk" 'origami-previous-fold)
+    (find-file "~/Documents/org/Premier-League-2024-watched.org")
+    (find-file "~/Documents/AA/zoom-meetings-info.txt")
+    (find-file "~/Documents/Health/BP-tracking.txt")))
