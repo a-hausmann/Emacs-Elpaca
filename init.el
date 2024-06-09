@@ -1,28 +1,16 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     init.el
 ;; Created:       2023-07-13
-;; Last modified: Sun Aug 27, 2023 17:40:41
+;; Last modified: Fri Oct 20, 2023 21:44:30
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;;
-
-;; This function displays how long Emacs took to start.
-(add-hook 'elpaca-after-init-hook
-          (lambda ()
-            (message "Emacs loaded in %s with %d garbage collections."
-                     (format "%.2f seconds"
-                             (float-time
-                              (time-subtract (current-time) before-init-time)))
-                     gcs-done)))
-;; Create a profiler report after init.
-(profiler-start 'cpu+mem)
-(add-hook 'elpaca-after-init-hook (lambda () (profiler-stop) (profiler-report)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Set load path for scripts (more constant config) and elisp (changing config)
 (add-to-list 'load-path "~/.emacs.d/scripts")
 (add-to-list 'load-path "~/.emacs.d/elisp")
 (require 'elpaca-config)                ; The Elpaca Package Manager
-
+(require 'elpaca-after-init)            ; The elpaca-after-init-hooks
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Follow symlinks for version controlled files
@@ -102,7 +90,16 @@
 ;; etc to elpaca-after-init-hook so it runs after Elpaca has activated all 
 ;; queued packages. This includes loading of saved customizations. e.g.
 (setq-default custom-file (expand-file-name ".custom.el" user-emacs-directory))
-(add-hook 'elpaca-after-init-hook (lambda () (load custom-file 'noerror)))
+(message "custom-file value: %s" custom-file)
+(defun aeh/load-custom ()
+  (interactive)
+  (when (file-exists-p custom-file)
+    (load custom-file)
+    (message "custom-file loaded!")))
+;; (add-hook 'elpaca-after-init-hook (lambda () (load custom-file 'noerror)))
+;; (add-hook 'elpaca-after-init-hook 'aeh/load-custom)
+(when (file-exists-p custom-file)
+  (aeh/load-custom))
 
 ;; Enable some features
 ;; Ref: https://github.com/skangas/dot-emacs/blob/master/init.el
@@ -126,7 +123,8 @@
 
 
 ;; Load Evil and complementary packages
-(load "ee-evil")
+;; (load "ee-evil")
+(require 'ee-evil)
 
 
 ;; main package loader/config file.
@@ -134,21 +132,20 @@
 
 
 ;; Using Prot's modeline, ref: https://git.sr.ht/~protesilaos/dotfiles/tree/master/item/emacs/.emacs.d
-(require 'prot-modeline)
+;; (require 'prot-modeline)
+(load "aeh-myownmodeline")
+
+
+;; 10/01/2023: Load hydras
+(load "ee-hydra")
+
+
+;; 10/06/2023: Load abbreviations config.
+(load "ee-abbrevs")
+
 
 ;; Load final stuff; key bindings and more (if needed)
-(load "ee-final")
+(require 'ee-final)
+
 
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(safe-local-variable-values '((eval ah--set-origami-fold-style-braces))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

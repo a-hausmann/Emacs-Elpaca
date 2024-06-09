@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-packages.el
 ;; Created:       2023-07-15
-;; Last modified: Sat Aug 19, 2023 16:35:19
+;; Last modified: Tue Mar 26, 2024 18:37:16
 ;; Purpose:       This is the main package loader/configurator for Emacs-Elpaca
 ;;
 
@@ -26,6 +26,7 @@
 ;; Configure command-log-mode
 (use-package command-log-mode
   :elpaca t
+  :delight
   :commands (command-log-mode)
   :bind ("C-c o" . clm/toggle-command-log-buffer))
 ;; Allow Elpaca to process queues up to this point
@@ -58,6 +59,7 @@
 ;; 2021-02-21: Package ielm is a repl for emacs lisp, so ONLY load when commanded in.
 (use-package ielm
   :elpaca nil
+  :delight
   :commands ielm
   :hook (ielm-mode . (lambda () (setq-local scroll-margin 0))))
 (use-package lisp-mode
@@ -222,7 +224,7 @@
 (use-package htmlize
   :defer 2
   :commands aeh-html-stuff-mode
-  :diminish)
+  :delight)
 
 ;; 2020-09-07: adding custom package; 2020-09-08: make non-Windows (not work)
 (cond ((not (string-equal system-type "windows-nt"))
@@ -255,6 +257,7 @@
 ;; Configure Minions
 (use-package minions
   :defer 1
+  :delight
   :config (minions-mode 1))
 
 
@@ -266,14 +269,23 @@
 
 (when (string-equal ee-system-type "linux")
   (use-package rg
-    :elpaca t
-    :after wgrep
-    ;; :delight
-    :init (rg-enable-default-bindings)))
+      :elpaca t
+      :after wgrep
+      :delight
+      :init (rg-enable-default-bindings)
+      :config  ;; 03/26/2024: added from Prot video.
+      (setq rg-group-result t
+            rg-hide-command t
+            rg-show-columns nil
+            rg-show-header t
+            rg-custom-type-aliases nil
+            rg-default-alias-fallback "all")))
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
+;; Configure org mode
+(load "ee-org.el")
 
 
 ;; Keep this at end.

@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-evil.el
 ;; Created:       2023-07-22
-;; Last modified: Sat Aug 19, 2023 17:09:47
+;; Last modified: Thu Oct 05, 2023 15:19:32
 ;; Purpose:       Configure Evil mode and accompanying packages
 ;;
 
@@ -33,18 +33,12 @@
   (dolist (mode '(org-mode sql-mode lisp-mode text-mode))
     (add-to-list 'evil-normal-state-modes mode))
 
-  ;; Well, this is not working, new text files still open in normal mode, but at least org opens in normal mode.
-  ;; 2019-05-28: Removing as I do NOT want text files opened in Insert mode after all.
-  ;; (dolist (mode '(text-mode))
-  ;;   (add-to-list 'evil-insert-state-modes mode))
-
   (evil-add-hjkl-bindings eww-mode-map 'emacs
     (kbd "/")       'evil-search-forward
     (kbd "n")       'evil-search-next
     (kbd "N")       'evil-search-previous
     (kbd "C-f")     'evil-scroll-down
     (kbd "C-b")     'evil-scroll-up
-    ;; (kbd "C-w C-w") 'other-window
     (kbd "C-w C-w") 'ace-window)
 
   :bind (:map evil-normal-state-map
@@ -104,7 +98,7 @@
   :delight
   :after evil)
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 ;; (evil-exchange-cx-install)
 
 ;; Configure evil-collection, which supersedes evil-magit
@@ -115,4 +109,9 @@
   :delight
   :config (evil-collection-init))
 ;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+
+
+(provide 'ee-evil)
+
+;; End of ee-evil.el

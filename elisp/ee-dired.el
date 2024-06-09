@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-dired.el
 ;; Created:       2023-08-12
-;; Last modified: Sat Aug 19, 2023 15:46:44
+;; Last modified: Sat Feb 10, 2024 12:38:56
 ;; Purpose:       Configure dired and associated packages.
 ;;
 
@@ -20,6 +20,7 @@
 
 (use-package dired
   :elpaca nil
+  :delight
   :after evil
   :config
   (setq dired-listing-switches my/dired-string)
@@ -39,9 +40,6 @@
   :after dired)
 
 (use-package dired-single
-  :after dired)
-
-(use-package dired-git-info
   :after dired)
 
 (use-package dired-narrow

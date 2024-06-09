@@ -1,7 +1,7 @@
-;; -*- lexical-binding: t -*-
+;;; -*- lexical-binding: t -*-
 ;; File name:     ee-useful.el
 ;; Created:       2023-07-30
-;; Last modified: Sat Aug 05, 2023 17:26:47
+;; Last modified: Fri Jun 07, 2024 16:17:25
 ;; Purpose:       Some useful but minor functions.
 ;;
 
@@ -57,6 +57,20 @@
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 
+(general-def
+    "C-c C-;" 'aeh/switch-to-previous-buffer)
+
+;; Kill other buffer and window
+(defun aeh/kill-other-buffer-and-window ()
+  "Kill the `other' buffer and window; useful to kill ibuffer and/or *Occur*
+buffers/windows."
+  (interactive)
+  (ace-window 1)
+  (aeh/kill-current-buffer)
+  (delete-window))
+
+(general-def
+    "C-c C-k" 'aeh/kill-other-buffer-and-window)
 
 ;; Delete current buffer & file.
 (defun aeh/delete-current-buffer-file ()
@@ -155,13 +169,17 @@
   (interactive)
   (kill-buffer (current-buffer)))
 (general-def
+  "C-1" 'aeh/kill-current-buffer
   "C-x k" 'aeh/kill-current-buffer)
 
 ;; Set up preferred JSON indentation with a hook.
 (defun aeh/json-mode-preferred-indent ()
+  (interactive)
   (setq-local js-indent-level 2))
-(add-hook 'json-mode-hook 'aeh/js2-mode-preferred-indent)
-
+(add-hook 'json-mode-hook 'aeh/json-mode-preferred-indent)
+(general-def
+    :maps 'js-json-mode-map
+    "C-c j" 'aeh/json-mode-preferred-indent)
 
 ;; Create a new, untitled buffer.
 (defun aeh/new-untitled-buffer ()
@@ -248,3 +266,156 @@
             (setq remove-count (+ remove-count 1))
             (replace-match "" nil nil))
           (message (format "%d ^M removed from buffer." remove-count)))))))
+
+
+;; Sane tabs or spaces.
+;; Ref: https://dougie.io/emacs/indentation/#using-tabs-or-spaces-in-different-files
+;; Set the defaults, NO tabs
+(setq-default indent-tabs-mode nil)
+
+;; Create a variable for our preferred tab width
+(setq custom-tab-width 2)
+
+;; Two callable functions for enabling/disabling tabs in Emacs
+(defun aeh/disable-tabs ()
+  "Custom function to disable tabs"
+  (interactive)
+  (setq indent-tabs-mode nil))
+(defun aeh/enable-tabs  ()
+  "Custom function to enable tabs"
+  (interactive)
+  (local-set-key (kbd "TAB") 'tab-to-tab-stop)
+  (setq indent-tabs-mode t)
+  (setq tab-width custom-tab-width))
+
+;; Hooks to Disable Tabs
+(add-hook 'lisp-mode-hook 'aeh/disable-tabs)
+(add-hook 'emacs-lisp-mode-hook 'aeh/disable-tabs)
+(add-hook 'sql-mode-hook 'aeh/disable-tabs)
+
+(defun aeh-space-to-underline-dwim ()
+  "The dwim will replace space with underline in either region or full buffer."
+  (interactive)
+  (cond ((region-active-p)
+          (aeh-replace-space-with-underline (region-beginning) (region-end))
+          )
+    (t
+      (aeh-replace-space-with-underline (point-min) (point-max)))))
+
+(general-define-key
+ :keymaps 'text-mode-map
+ "C-c _" 'aeh-space-to-underline-dwim)
+
+(defun aeh-replace-space-with-underline (p-from p-thru)
+  "Replace spaces with underlines"
+  (interactive)
+  (save-match-data
+    (save-excursion
+      (save-restriction
+        (let ((remove-count 0))
+          (goto-char p-from)
+          (while (search-forward " " p-thru t)
+            (replace-match "_" nil nil)))))))
+
+(defun aeh-delete-quotes-dwim ()
+  "The dwim will delete quotes in either region or current line."
+  (interactive)
+  (cond ((region-active-p)
+          (aeh-delete-quotes-line-or-region (region-beginning) (region-end))
+          )
+    (t
+      (aeh-delete-quotes-line-or-region (point-at-bol) (point-at-eol)))))
+
+(general-define-key
+ :keymaps 'text-mode-map
+ "C-c '" 'aeh-delete-quotes-dwim)
+
+(defun aeh-delete-quotes-line-or-region (p-from p-thru)
+  (interactive)
+  (save-match-data
+    (save-excursion
+      (save-restriction
+        (let ((remove-count 0))
+          (goto-char p-from)
+          (while (search-forward-regexp "['\"]" p-thru t)
+            (replace-match "" nil nil)))))))
+
+;; Needs work still, cannot figure out how to configure delimiter to not space.
+(cl-defun aeh-delete-word-at-point (&optional (ARG 1) (CHAR ?\s))
+  "Uses zap-to-char to delete the (big) word at point.
+Words are defined with space as default, and the space will also be
+deleted. Option ARG is the count of words to be deleted, and option CHAR allows
+for a character other than space as delimiter."
+  (interactive "P")
+  (save-excursion
+    (let ((count (or ARG 1))
+          (delimiter CHAR))
+      ;; (message "Count: %d, delimiter: >%s<" count delimiter)
+      (backward-word 1)
+      (zap-to-char count delimiter))))
+
+(general-def
+    "C-c C-w" 'aeh-delete-word-at-point)
+
+;; https://www.masteringemacs.org/article/fixing-mark-commands-transient-mark-mode
+(defun push-mark-no-activate ()
+  "Pushes `point' to `mark-ring' and does not activate the region
+   Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled"
+  (interactive)
+  (push-mark (point) t nil)
+  (message "Pushed mark to ring"))
+
+(defun jump-to-mark ()
+  "Jumps to the local mark, respecting the `mark-ring' order.
+  This is the same as using \\[set-mark-command] with the prefix argument."
+  (interactive)
+  (set-mark-command 1))
+
+(general-def
+  "C-`" 'push-mark-no-activate
+  "C-M-`" 'jump-to-mark)
+
+(defun exchange-point-and-mark-no-activate ()
+  "Identical to \\[exchange-point-and-mark] but will not activate the region."
+  (interactive)
+  (exchange-point-and-mark)
+  (deactivate-mark nil))
+(define-key global-map [remap exchange-point-and-mark] 'exchange-point-and-mark-no-activate)
+
+;; 05/24/2024
+;; https://github.com/minad/org-modern/blob/main/example.org
+;; Taken from the well-structured Emacs config by @oantolin.
+;; Take a look at https://github.com/oantolin/emacs-config!
+(defun aeh/command-of-the-day ()
+  "Show the documentation for a random command."
+  (interactive)
+  (let ((commands))
+    (mapatoms (lambda (s)
+                (when (commandp s) (push s commands))))
+    (describe-function
+     (nth (random (length commands)) commands))))
+(general-def
+    "<f12>" 'aeh/command-of-the-day)
+
+(defun aeh/emacs-flower-box ()
+  (interactive)
+  (insert-char #x3B 80)
+  (newline)
+  (insert ";; \n")
+  (insert-char #x3B 80)
+  (previous-line)
+  (end-of-line))
+
+(defun aeh/insert-file-name-directory ()
+  "Insert the file-name-directory of the current buffer-file-name"
+  (interactive)
+  (insert (file-name-directory (buffer-file-name))))
+
+;; 06/07/2024: adding function to open ibuffer without splitting windows, new buffer name, "q" to quit.
+(defun aeh/open-and-goto-ibuffer ()
+  "Open an ibuffer window and make it the active window."
+  (interactive)
+  (list-buffers nil "*Buffers*" nil nil))
+(defalias 'list-buffers 'aeh/open-and-goto-ibuffer)
+
+;; ee-useful.el ends here.

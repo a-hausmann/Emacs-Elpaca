@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     elpaca-config.el
 ;; Created:       2023-08-19
-;; Last modified: Sat Aug 19, 2023 15:17:24
+;; Last modified: Wed Oct 04, 2023 1:59:48
 ;; Purpose:       Configuration for Elpaca.
 ;;
 
@@ -45,6 +45,7 @@
     (load "./elpaca-autoloads")))
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
+
 
 ;; This package gets the correct environment variables so elpaca can use the ssh protocol.
 (elpaca-queue

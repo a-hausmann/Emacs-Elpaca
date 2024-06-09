@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-hydra.el
 ;; Created:       2023-07-30
-;; Last modified: Sat Aug 12, 2023 22:00:02
+;; Last modified: Wed May 29, 2024 19:55:01
 ;; Purpose:       Configure Hydra and create hydra menus.
 ;;
 
@@ -52,7 +52,6 @@ _E_: Day, Month Day, Year HH:MI:SS PM
   ("f" (insert (file-name-nondirectory (buffer-file-name))) "base filename")
   ("F" (insert (expand-file-name (buffer-file-name))) "full filename")
   ("p" (insert (file-name-directory (buffer-file-name))) "path"))
-
 
 (provide 'ee-hydra)
 

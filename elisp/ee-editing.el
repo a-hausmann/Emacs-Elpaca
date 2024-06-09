@@ -1,9 +1,18 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-editing.el
 ;; Created:       2023-07-30
-;; Last modified: Sun Aug 27, 2023 17:25:19
+;; Last modified: Fri Jun 07, 2024 16:12:12
 ;; Purpose:       Configure packages used in straight editing (not programming languages)
 ;;
+
+;; 05/26/2024: add treesitter.
+;; (elpaca '(treesit-auto :source "MELPA" :recipe (:package "treesit-auto" :fetcher github :repo "renzmann/treesit-auto" :files ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi" "doc/*.texinfo" "lisp/*.el" (:exclude ".dir-locals.el" "test.el" "tests.el" "*-test.el" "*-tests.el" "LICENSE" "README*" "*-pkg.el"))) :description "Automatically use tree-sitter enhanced major modes" :date (14445 17280) :url "https://github.com/renzmann/treesit-auto.git"))
+;; (use-package treesit-auto
+;;     :custom
+;;   (treesit-auto-install 'prompt)
+;;   :config
+;;   (treesit-auto-add-to-auto-mode-alist 'all)
+;;   (global-treesit-auto-mode))
 
 ;; Configure WS-Butler (trims trailing whitespace ONLY on changed lines.)
 (use-package ws-butler
@@ -64,14 +73,29 @@
 ;; Configure Oragami, folding package plus personal functions.
 ;; Step 1, define function to set set folding mode to triple braces.
 (defun ah--set-origami-fold-style-braces ()
-  "Set origami fold-style to triple braces."
+  "Set origami fold-style to triple braces.
+
+Additionally, display line numbers if not already doing so, enable origami,
+and close all nodes.
+
+This is designed to be used in a prog-mode-hook."
   (interactive)
   (if (bound-and-true-p display-line-numbers-mode)
       (message "Already displaying line numbers")
     (display-line-numbers-mode))
   (setq-local origami-fold-style 'triple-braces)
-  (origami-mode)
-  (origami-close-all-nodes (current-buffer)))
+  (origami-mode 1)
+  (origami-close-all-nodes (current-buffer))
+  ;; 10/07/2023: keep this here; for some reason, loading during startup does NOT
+  ;; define TAB key correctly, and even if it might, toggling evil-insert-state
+  ;; fixes the key definition in the buffer.
+  (general-define-key
+   :states 'normal
+   :keymaps 'origami-mode-map
+   "TAB" 'aeh/origami-toggle-node)
+  (evil-insert-state)
+  (evil-normal-state)
+  (message "ah--set-origami-fold-style-braces completed!"))
 ;; Step 2, define a "wrapper" function.
 (defun aeh/origami-toggle-node ()
   (interactive)
@@ -82,7 +106,8 @@
 ;; 08/27/2023: stop deferring to see if the bindings work without resetting the mode.
 (use-package origami
   :elpaca t
-  ;; :defer 1
+  :demand
+  ;; :config
   :delight)
 (add-hook 'prog-mode-hook
           (lambda ()
@@ -103,6 +128,16 @@
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
+
+;; 02/10/2024: Adding keycast-mode
+;; Ref: https://github.com/tarsius/keycast
+(use-package keycast
+    :elpaca t
+    :delight
+    ;; :custom
+    ;; (customize-set-variable keycast-mode-line-remove-tail-elements nil)
+    :config
+    (keycast-header-line-mode))
 
 ;; Configure Smartparens
 ;; Ref: https://ebzzry.com/en/emacs-pairs/
@@ -146,7 +181,8 @@
 ;; Configure Yasnippet
 (use-package yasnippet
   :ensure t
-  :diminish 'yas-minor-mode
+  ;; :diminish 'yas-minor-mode
+  :delight 'yas-minor-mode
   :hook ((prog-mode . yas-minor-mode)
          (text-mode . yas-minor-mode)
          )
@@ -154,12 +190,13 @@
   (unless (boundp 'warning-suppress-types)
     (setq warning-suppress-types nil))
   (push '(yasnippet backquote-change) warning-suppress-types)
-  (setq yas-snippet-dirs '("~/.emacs.d/private/snippets"))
+  (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
   (setq yas-indent-line 'fixed)
   (yas-global-mode 1))
 
 (use-package yasnippet-snippets
   :ensure t
+  :delight
   :after yasnippet)
 
 
