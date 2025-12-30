@@ -1,19 +1,24 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-packages.el
 ;; Created:       2023-07-15
-;; Last modified: Tue Mar 26, 2024 18:37:16
+;; Last modified: Mon Oct 06, 2025 9:18:00
 ;; Purpose:       This is the main package loader/configurator for Emacs-Elpaca
 ;;
 
 ;; Configure delight
-(use-package delight
-  :elpaca t)
+;; (load "/home/arnold/.emacs.d/elpaca/repos/delight/delight.el")
+(add-to-list 'load-path "/home/arnold/.emacs.d/elpaca/builds/delight")
+(add-to-list 'load-path "/home/arnold/.emacs.d/elpaca/builds/rainbow-mode")
+(require 'delight)
+;; (use-package delight
+;;     :ensure nil
+;;     :demand)
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 ;; Configure which-key
 (use-package which-key
-  :elpaca t
+  :ensure t
   :init (which-key-mode)
   ;; :diminish (which-key-mode)
   :delight
@@ -25,12 +30,10 @@
 
 ;; Configure command-log-mode
 (use-package command-log-mode
-  :elpaca t
+  :ensure t
   :delight
   :commands (command-log-mode)
   :bind ("C-c o" . clm/toggle-command-log-buffer))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure editing stuff
@@ -44,7 +47,7 @@
 
 ;; Try using frog-jump-buffer; NO DO NOT!!! The posframe still has horrible face and is unreadable.
   ;; (use-package frog-jump-buffer
-  ;;   :elpaca t
+  ;;   :ensure t
   ;;   :diminish
   ;;   :config
   ;;   (setq frog-jump-buffer-include-current-buffer nil))
@@ -52,18 +55,18 @@
 
 ;; Elisp mode
 (use-package emacs-lisp-mode
-  :elpaca nil
+  :ensure nil
   :commands emacs-lisp-mode
   :delight emacs-lisp-mode "Emacs Lisp"
   :config (delight 'lisp-interaction-mode "Lisp Interaction"))
 ;; 2021-02-21: Package ielm is a repl for emacs lisp, so ONLY load when commanded in.
 (use-package ielm
-  :elpaca nil
+  :ensure nil
   :delight
   :commands ielm
   :hook (ielm-mode . (lambda () (setq-local scroll-margin 0))))
 (use-package lisp-mode
-  :elpaca nil
+  :ensure nil
   :hook (emacs-lisp-mode . lisp-mode)
   :delight lisp-mode "Lisp")
 (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
@@ -73,7 +76,7 @@
 
 ;; All-the-icons
 (use-package all-the-icons
-  :elpaca t
+  :ensure t
   :delight)
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
@@ -87,7 +90,7 @@
     (interactive)
     (scroll-other-window-down 1))
   (use-package ace-window
-    :elpaca t
+    :ensure t
     :commands ace-window
     :delight
     :config
@@ -117,28 +120,28 @@
           "List of actions for `aw-dispatch-default'.")
     (ace-window-display-mode t)
     :bind
+    ("C-M-<tab>" . ace-window)
     ([remap other-window] . ace-window))
 
 
 ;; Amx is the newer alternative to smex (aka smart M-x). 
 (use-package amx
-  :elpaca t
+  :ensure t
   :commands (amx amx-major-mode-commands execute-extended-command)
   :delight
-  :config
+  :init 
   (amx-mode t)   ; always in amx-mode
+  :config
   (global-set-key (kbd "M-x") 'amx)
   (global-set-key (kbd "M-X") 'amx-major-mode-commands)
   ;; This is your old M-x.
   (global-set-key (kbd "C-c M-x") 'execute-extended-command))
 ;; (setq-default amx-save-file (no-littering-expand-var-file-name ".amx-items"))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure Avy
 (use-package avy
-  :elpaca t
+  :ensure t
   :commands avy-goto-char-timer
   :delight
   :bind
@@ -159,7 +162,7 @@
 
 ;; Configure Aggressive-indent, works well with Emacs-lisp, not that well with other languages (Python?)
 (use-package aggressive-indent
-  :elpaca t
+  :ensure t
   :delight
   :hook (emacs-lisp-mode . aggressive-indent-mode))
 ;; Allow Elpaca to process queues up to this point
@@ -168,7 +171,7 @@
 
 ;; allow asynchronous processing wherever possible…pretty nice.
 (use-package async
-  :elpaca t
+  :ensure t
   :demand
   :delight
   :config
@@ -179,7 +182,7 @@
 
 ;; Configure beacon
 (use-package beacon
-  :elpaca t
+  :ensure t
   :demand
   :delight
   :config
@@ -190,7 +193,7 @@
 
 ;; Configure column-enforce-mode
 (use-package column-enforce-mode
-  :elpaca t
+  :ensure t
   :delight
   :hook (prog-mode . column-enforce-mode)
   :config (setq column-enforce-comments nil))
@@ -234,22 +237,22 @@
 
 
 ;; Configure Magit.
-(use-package magit
-    :elpaca t
-    :delight
-    :commands (magit-status)
-    :bind ("C-x g g" . magit-status)
-    ("C-x g b" . magit-blame)
-    ("C-x g c" . magit-branch-checkout)
-    ("C-x g l" . magit-log-buffer-file)
-    )
-(setq magit-push-always-verify nil)
-(setq git-commit-summary-max-length 50)
-(use-package magit-gitflow
-  :elpaca t
-  :after magit
-  :delight
-  :hook (magit-mode . turn-on-magit-gitflow))
+;; (use-package magit
+;;     :ensure t
+;;     :delight
+;;     :commands (magit-status)
+;;     :bind ("C-x g g" . magit-status)
+;;     ("C-x g b" . magit-blame)
+;;     ("C-x g c" . magit-branch-checkout)
+;;     ("C-x g l" . magit-log-buffer-file)
+;;     )
+;; (setq magit-push-always-verify nil)
+;; (setq git-commit-summary-max-length 50)
+;; (use-package magit-gitflow
+;;   :ensure t
+;;   :after magit
+;;   :delight
+;;   :hook (magit-mode . turn-on-magit-gitflow))
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
@@ -263,13 +266,14 @@
 
 ;; Configure wgrep/Ripgrep. 07/29/2023: Use ripgrep only at home for now.
 (use-package wgrep
-  :elpaca nil
+  :ensure nil
   :defer 1
   :delight)
 
+;; /home/arnold/.emacs.d/20250328-elpaca-warnings.txt: change ":elpaca" to ":ensure"
 (when (string-equal ee-system-type "linux")
   (use-package rg
-      :elpaca t
+      :ensure t
       :after wgrep
       :delight
       :init (rg-enable-default-bindings)
@@ -280,8 +284,6 @@
             rg-show-header t
             rg-custom-type-aliases nil
             rg-default-alias-fallback "all")))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure org mode

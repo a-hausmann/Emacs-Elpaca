@@ -1,14 +1,14 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-dired.el
 ;; Created:       2023-08-12
-;; Last modified: Sat Feb 10, 2024 12:38:56
+;; Last modified: Sat Mar 29, 2025 0:07:36
 ;; Purpose:       Configure dired and associated packages.
 ;;
 
 
 ;; Configure dired and more.
 (use-package all-the-icons-dired
-  :elpaca t
+  :ensure t
   :delight)
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
@@ -19,12 +19,13 @@
     (setq my/dired-string "-alG --group-directories-first"))
 
 (use-package dired
-  :elpaca nil
+  :ensure nil
   :delight
   :after evil
   :config
   (setq dired-listing-switches my/dired-string)
   (evil-set-initial-state 'dired-mode 'normal)       ; Note: evil loads first.
+  (setq global-auto-revert-non-file-buffers t)       ; 06/23/2024, revert dired list when files change
   :bind ("C-c d" . dired-jump)
   :hook ((dired-mode . all-the-icons-dired-mode)
          (dired-mode . hl-line-mode))
@@ -96,7 +97,7 @@
     (setq python-string "python")
     (setq python-string "python3"))
 (use-package treemacs
-  :elpaca t
+  :ensure t
   :after evil
   :defer t
   :commands (treemacs)
@@ -157,16 +158,16 @@
 (use-package treemacs-evil
   ;; :after (treemacs evil)
   :after treemacs
-  :elpaca t)
+  :ensure t)
 
 (use-package treemacs-projectile
   :after (treemacs projectile)
-  :elpaca t)
+  :ensure t)
 
 ;; 2019-10-16: added package
 (use-package treemacs-icons-dired
   :after (treemacs dired)
-  :elpaca t
+  :ensure t
   :config (treemacs-icons-dired-mode))
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword

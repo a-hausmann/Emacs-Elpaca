@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-completion.el
 ;; Created:       2023-07-22
-;; Last modified: Sat Aug 19, 2023 15:52:45
+;; Last modified: Mon Dec 29, 2025 17:38:33
 ;; Purpose:       Configure all completing-read framework.
 ;;                As of initial writing, this is: Consult, Vertigo, 
 ;;                Orderless, Marginalia, and Embark. Also use
@@ -19,7 +19,7 @@
 
 ;; Configure Consult
 (use-package consult
-  :elpaca t
+  :ensure t
   :demand t
   :bind (
          ("C-s" . isearch-forward)                 ;; Still useful, consult has no better solution.
@@ -34,13 +34,16 @@
          ("M-'" . consult-register-load)           ;; dwim register: insert, jump, or restore (window config)
          ("C-M-#" . consult-register)
          ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-         ("C-x c r" . consult-recent-file)
-         ("C-x c g" . consult-goto-line)           ;; goto specified line
-         ("C-x c m" . consult-mark)                ;; jump to marker in the mark-ring
+         ("C-x c i" . consult-imenu)                 ;; second binding.
          ("C-x c f" . consult-find)
          ("C-x c g" . consult-grep)
          ("C-x c G" . consult-git-grep)
-         ("C-x c l" . consult-line)                  ;; required by consult-line to detect isearch
+         ("C-x c R" . consult-ripgrep)
+         ("C-x c l" . consult-goto-line)           ;; goto specified line
+         ("C-x c m" . consult-mark)                ;; jump to marker in the mark-ring
+         ("C-x c M" . consult-global-mark)         ;; jump to marker in the global mark-ring
+         ;; ("C-x c l" . consult-line)                  ;; required by consult-line to detect isearch
+         ("C-x c r" . consult-recent-file)
          :map minibuffer-local-map ("C-r" . consult-history))
   :init
   ;; Optionally configure the register formatting. This improves the register
@@ -85,7 +88,7 @@
 
 ;; Ref: https://github.com/gagbo/consult-lsp
 (use-package consult-lsp
-  :elpaca t
+  :ensure t
   :after lsp-mode
   ;; :config
   ;; (define-key lsp-mode-map [remap xref-find-apropos] #'consult-lsp-symbols)
@@ -114,7 +117,7 @@ folder, otherwise delete a word"
 
 ;; Enable vertico
 (use-package vertico
-  :elpaca t
+  :ensure t
   :init
   (vertico-mode)
   :custom
@@ -140,7 +143,7 @@ folder, otherwise delete a word"
 ;; Enable `partial-completion' for files to allow path expansion.
 ;; You may prefer to use `initials' instead of `partial-completion'.
 (use-package orderless
-  :elpaca t
+  :ensure t
   :init
   (setq completion-styles '(orderless)
         completion-category-defaults nil
@@ -152,7 +155,7 @@ folder, otherwise delete a word"
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 ;; Became part of Emacs with version 22, so no external package.
 ;; (use-package savehist
-;;   :elpaca nil
+;;   :ensure nil
 ;;   :init
 ;;   (savehist-mode))
 ;; ;; Allow Elpaca to process queues up to this point
@@ -163,7 +166,7 @@ folder, otherwise delete a word"
 ;; Ref: https://config.daviwil.com/emacs search for Marginalia
 
 (use-package marginalia
-  :elpaca t
+  :ensure t
   :after vertico
   :custom
   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
@@ -175,7 +178,7 @@ folder, otherwise delete a word"
 ;; Ref: https://config.daviwil.com/emacs search for Embark
 
 (use-package embark
-  :elpaca t
+  :ensure t
   :bind (("C-S-a" . embark-act)
          :map minibuffer-local-map
          ("C-d" . embark-act))

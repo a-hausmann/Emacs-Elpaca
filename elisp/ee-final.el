@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-final.el
 ;; Created:       2023-07-30
-;; Last modified: Fri May 24, 2024 11:14:31
+;; Last modified: Mon Sep 01, 2025 18:01:16
 ;; Purpose:       Perform things/functions which need to be done last.
 ;;
 
@@ -23,9 +23,12 @@
  "C-x C-a C-t" 'avy-goto-char-timer)
 
 (general-def
-  "C-c C" 'capitalize-dwim
-  "C-c U" 'upcase-dwim
-  "C-c D" 'downcase-dwim
+  "C-c C" 'capitalize-word
+  "C-c U" 'upcase-word
+  "C-c D" 'downcase-word
+  "M-c" 'capitalize-dwim
+  "M-u" 'upcase-dwim
+  "M-l" 'downcase-dwim
   "C-x M-w" 'clipboard-kill-ring-save
   "C-x M-y" 'clipboard-yank
   "C-x C-y" 'clipboard-yank)
@@ -106,6 +109,7 @@
                         "~/Documents/org/Premier-League-2024-watched.org"
                         "~/Documents/AA/zoom-meetings-info.txt"
                         "~/Documents/Health/BP-tracking.txt"
+                        "~/Documents/Health/UO-tracking.txt"
                         ))
 (mapcar 'find-file aeh-start-files)
 
@@ -117,6 +121,8 @@
     "C-k" 'evil-delete-line) ;; Use evil-delete-line as kill-line is remapped to sp-kill-hybrid-sexp.
 
 (aeh/command-of-the-day)
+
+;; (smartparens-mode 1) ; 07/14/2025: added after noticing playing with SP had turned it off somehow.
 
 (provide 'ee-final)
 

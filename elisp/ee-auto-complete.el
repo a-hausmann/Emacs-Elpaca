@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-auto-complete.el
 ;; Created:       2023-07-22
-;; Last modified: Sat Aug 19, 2023 15:51:13
+;; Last modified: Sat Mar 29, 2025 0:11:01
 ;; Purpose:       Configure Company and companion packages.
 ;;
 
@@ -50,7 +50,7 @@
 ;; Start Company configuration.
 ;; --------------------------------------------------------------------------------
 (use-package company
-    :elpaca t
+    :ensure t
     :commands company-complete-common
     :delight
     :hook ((emacs-lisp-mode . company-mode)
@@ -82,7 +82,7 @@
                                   company-dabbrev-code))))
 
 (use-package company-shell
-  :elpaca t
+  :ensure t
   :after company
   :delight
   :config (add-hook 'shell-mode-hook 'shell-mode-company-init))
@@ -91,7 +91,7 @@
 
 
 (use-package company-statistics
-  :elpaca t
+  :ensure t
   :after company
   :delight
   :config (company-statistics-mode))
@@ -100,14 +100,14 @@
 
 
 (use-package company-web
-  :elpaca t
+  :ensure t
   :after company
   :delight)
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 (use-package company-quickhelp
-  :elpaca t
+  :ensure t
   :after company
   :delight
   :config

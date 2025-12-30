@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t -*-
 ;; File name:     ee-useful.el
 ;; Created:       2023-07-30
-;; Last modified: Fri Jun 07, 2024 16:17:25
+;; Last modified: Mon Jul 21, 2025 16:39:46
 ;; Purpose:       Some useful but minor functions.
 ;;
 
@@ -84,7 +84,8 @@ buffers/windows."
           (delete-file filename)
           (message "Deleted file %s" filename)
           (kill-buffer))))))
-
+(general-def
+    "s-x C-f C-d" 'aeh/delete-current-buffer-file)
 
 ;; Rename current buffer & file.
 (defun aeh/rename-current-buffer-file ()
@@ -145,14 +146,14 @@ buffers/windows."
 
 ;; After you split a window, the focus remains in the original window. 
 ;; Uncle Dave disliked this so much he wrote two functions to fix the problem.
-(defun aeh/split-and-follow-horizontally ()
+(defun aeh/split-and-follow-vertically ()
   "Split window to below and switch to new window."
   (interactive)
   (split-window-below)
   (balance-windows)
   (other-window 1))
 
-(defun aeh/split-and-follow-vertically ()
+(defun aeh/split-and-follow-horizontally ()
   "Split window to the right and switch to new window."
   (interactive)
   (split-window-right)
@@ -380,7 +381,10 @@ for a character other than space as delimiter."
   (interactive)
   (exchange-point-and-mark)
   (deactivate-mark nil))
-(define-key global-map [remap exchange-point-and-mark] 'exchange-point-and-mark-no-activate)
+;; 07/21/2025: Changing mapping from redefining C-x C-x as new function to
+;; mapping new function to new key chord while retaining the old key chord/function.
+;; (define-key global-map [remap exchange-point-and-mark] 'exchange-point-and-mark-no-activate)
+(define-key global-map (kbd "C-x M-x") 'exchange-point-and-mark-no-activate)
 
 ;; 05/24/2024
 ;; https://github.com/minad/org-modern/blob/main/example.org
@@ -417,5 +421,77 @@ for a character other than space as delimiter."
   (interactive)
   (list-buffers nil "*Buffers*" nil nil))
 (defalias 'list-buffers 'aeh/open-and-goto-ibuffer)
+
+;; 03/06/2025: Found some useful code to allow me to copy ("M-w") caledar dates
+;; to kill ring as a specifically formatted string; this allows yank into buffer.
+;; Ref: https://emacs.stackexchange.com/questions/41978/how-to-retrieve-the-date-under-the-cursor-in-emacs-calendar-as-the-format-day-mo/41987
+(defcustom my-calendar-copy-as-kill-format "%Y-%m-%d"
+  "Format string for formatting calendar dates with `format-time-string'."
+  :type 'string
+  :group 'calendar)
+
+(defun my-calendar-copy-as-kill ()
+  "Copy date at point as kill if region is not active.
+Delegate to `kill-ring-save' otherwise."
+  (interactive)
+  (if (use-region-p)
+      (call-interactively #'kill-ring-save)
+    (let ((date (calendar-cursor-to-date)))
+      (when date
+        (setq date (encode-time 0 0 0 (nth 1 date) (nth 0 date) (nth 2 date)))
+        (kill-new (format-time-string my-calendar-copy-as-kill-format date))))))
+
+(defun my-calendar-mode-hook-fun ()
+  "Let \[kill-ring-save] copy the date at point if region is not active."
+  (local-set-key [remap kill-ring-save] #'my-calendar-copy-as-kill))
+
+(add-hook 'calendar-mode-hook #'my-calendar-mode-hook-fun)
+
+;; 04/24/2025: Ref: https://www.emacswiki.org/emacs/misc-cmds.el
+(defun my/region-length ()
+  "Return the length of the region as message."
+  (interactive)
+  (let ((len  (abs (- (mark) (point)))))
+    (message "Length: %s" len)))
+
+(general-def
+    "C-M-=" 'my/region-length)
+
+
+;; 04/24/2025: Ref: https://www.emacswiki.org/emacs/misc-cmds.el
+(defun my/mark-whole-word (&optional arg allow-extend)
+  "Like `mark-word', but selects whole words and skips over whitespace.
+If you use a negative prefix arg then select words backward.
+Otherwise select them forward. Repetition works like expand-region,
+but only in one direction, slurping the next word.
+
+If cursor starts in the middle of word then select that whole word.
+
+If there is whitespace between the initial cursor position and the
+first word (in the selection direction), it is skipped (not selected).
+
+If the command is repeated or the mark is active, select the next NUM
+words, where NUM is the numeric prefix argument.  (Negative NUM
+selects backward.)"
+  (interactive "P\np")
+  (let ((num  (prefix-numeric-value arg)))
+    (unless (eq 'mark-whole-word last-command)
+      (if (natnump num)
+          (skip-syntax-forward "\\s-")
+          (skip-syntax-backward "\\s-")))
+    (unless (or (eq 'mark-whole-word last-command)
+                (if (natnump num) (looking-at "\\b") (looking-back "\\b")))
+      (if (natnump num)
+          (if (fboundp 'left-word)    ; Emacs 24+
+              (left-word)
+              (backward-word 1))
+          (if (fboundp 'right-word)
+              (right-word)
+              (forward-word 1))))
+    (mark-word arg allow-extend)))
+
+(general-def
+    "C-+" 'my/mark-whole-word)
+
 
 ;; ee-useful.el ends here.

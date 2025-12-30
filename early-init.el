@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     early-init.el
 ;; Created:       2023-07-13
-;; Last modified: Sun Aug 27, 2023 15:16:42
+;; Last modified: Sun Apr 27, 2025 14:39:05
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;; References:    https://github.com/progfolio/.emacs.d
 ;;
@@ -12,7 +12,7 @@
 
 (setq inhibit-default-init nil)
 
-;; (setq native-comp-async-report-warnings-errors nil)  ;; only in Emacs 29.0+
+(setq native-comp-async-report-warnings-errors nil)  ;; only in Emacs 29.0+
 
 ;; file-name-handler-alist Ref: https://github.com/progfolio/.emacs.d#file-name-handler-alist
 ;; Skipping a bunch of regular expression searching in the file-name-handler-alist should improve start time.
@@ -42,8 +42,6 @@
      (when (boundp 'after-focus-change-function)
        (add-function :after after-focus-change-function #'+gc-after-focus-change)))))
 
-(with-eval-after-load 'elpaca
-  (add-hook 'elpaca-after-init-hook '+reset-init-values))
 
 ;; UI, ref: https://github.com/progfolio/.emacs.d#ui
 ;; Implicitly resizing the Emacs frame adds to init time. Fonts larger than the 

@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-abbrevs.el
 ;; Created:       2023-10-06
-;; Last modified: Sat Oct 07, 2023 14:21:03
+;; Last modified: Tue Nov 25, 2025 16:48:36
 ;; Purpose:       Contains my abbreviations and configuration.
 ;;
 
@@ -35,10 +35,10 @@
     ("-*-" "-*- mode:  -*-")
 
     ;; common words, phrases
-    ("enc" "Encounter")
-    ("dl" "Data Loader")
-    ("ARV" "Applied Rules Viewer")
-    ("Lo" "Loyola")
+    ("BAO" "Broken Arrow")
+    ("BAOK" "Broken Arrow, OK")
+    ("aehj" "aehjr1@gmail.com")
+    ("FUR" "furosimide")
     ))
 
 (set-default 'abbrev-mode t)

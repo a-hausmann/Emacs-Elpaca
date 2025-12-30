@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-evil.el
 ;; Created:       2023-07-22
-;; Last modified: Thu Oct 05, 2023 15:19:32
+;; Last modified: Thu Nov 20, 2025 16:34:28
 ;; Purpose:       Configure Evil mode and accompanying packages
 ;;
 
@@ -14,7 +14,7 @@
 
 (setq evil-want-keybinding nil)
 (use-package evil
-  :elpaca t
+  :ensure t
   :demand
   :delight
   :config
@@ -23,14 +23,18 @@
   ;; Do NOT have to use evil in every mode, so let's make a list where evil is not used.
   (dolist (mode '(ag-mode
                   flycheck-error-list-mode
+                  ;; lisp-mode
+                  calc-mode
                   paradox-menu-mode
+                  dired-mode
+                  js-json-mode
                   git-rebase-mode))
     (add-to-list 'evil-emacs-state-modes mode))
 
-  ;; Start in insert mode for small buffers
+  ;; Start in normal mode for these modes
   ;; 2018-10-16: This was Howard's idea (I think), and it is *BAD*. Better to start in normal mode for most files
   ;; including org files...and text files (added 2019-05-28).
-  (dolist (mode '(org-mode sql-mode lisp-mode text-mode))
+  (dolist (mode '(org-mode sql-mode text-mode))
     (add-to-list 'evil-normal-state-modes mode))
 
   (evil-add-hjkl-bindings eww-mode-map 'emacs
@@ -62,7 +66,7 @@
 
 ;; Configure evil-surround
 (use-package evil-surround
-  :elpaca t
+  :ensure t
   :delight
   :after evil
   :config
@@ -73,7 +77,7 @@
 
 ;; Configure evil-commentary
 (use-package evil-commentary
-  :elpaca t
+  :ensure t
   :delight
   :after evil)
 (add-hook 'prog-mode-hook 'evil-commentary-mode)
@@ -83,7 +87,7 @@
 
 ;; Configure evil-matchit
 (use-package evil-matchit
-  :elpaca t
+  :ensure t
   :delight
   :after evil
   :config
@@ -94,7 +98,7 @@
 
 ;; Configure evil-exchange
 (use-package evil-exchange
-  :elpaca t
+  :ensure t
   :delight
   :after evil)
 ;; Allow Elpaca to process queues up to this point
@@ -103,7 +107,7 @@
 
 ;; Configure evil-collection, which supersedes evil-magit
 (use-package evil-collection
-  :elpaca t
+  :ensure t
   :after evil
   :demand
   :delight

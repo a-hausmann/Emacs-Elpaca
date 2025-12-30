@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-general.el
 ;; Created:       2023-08-05
-;; Last modified: Wed May 29, 2024 20:00:19
+;; Last modified: Fri Nov 07, 2025 12:58:19
 ;; Purpose:       Configure the basic General bindings for menu structures to 
 ;;                reduce Hydra usage. Hydra should be used for PERSISTANT menus only.
 ;;
@@ -33,10 +33,16 @@
   :keymaps '+iprefix-map)
 
 ;; General stuff I like to keep with just SPC as leader.
-(ee-definer
- ";" '(frog-jump-buffer :wk "Frog Jump Buffer")
- "TAB" '(aeh/switch-to-previous-buffer :wk "Prev Buffer")
- "s" '(aeh-set-politics-directory :wk "Politics"))
+;; 07/21/2025 Frog Jump Buffer doesn't work, and I don't need the "TAB" either, so wipe the whole thing
+;; and just use new def for "Politics".
+;; (ee-definer
+;;  ";" '(frog-jump-buffer :wk "Frog Jump Buffer")
+;;  "TAB" '(aeh/switch-to-previous-buffer :wk "Prev Buffer")
+;;  "p" '(aeh-set-politics-directory :wk "Politics"))
+
+;; 07/21/2025: add key def for "Politics" that doesn't need main menu.
+(general-def
+    "C-c z p" '(aeh-set-politics-directory :wk "Politics"))
 
 ;; Define menu for insert state
 (ee-inserter
@@ -71,23 +77,25 @@
  )
 
 ;; Define Consult Menu.
-(ee-definer
-    "c" '(:ignore t :wk "Consult")
-  "c b" '(consult-bookmark :wk "Bookmarks")
-  "c c" '(consult-mode-command :wk "Mode")
-  "c C" '(consult-minor-mode-menu :wk "Minor Mode")
-  "c i" '(consult-imenu :wk "Imenu")
-  "c I" '(consult-project-imenu :wk "Project Imenu")
-  "c m" '(consult-mark :wk "Marks")
-  "c M" '(consult-global-mark :wk "Global marks")
-  "c r" '(consult-recent-file :wk "Recent Files")
-  "c o" '(consult-outline :wk "Outline")
-  "c t" '(consult-theme :wk "Themes")
-  "c y" '(consult-yank-from-kill-ring :wk "Yank From Kill Ring")
-  "c q" '(keyboard-quit :wk "Quit")
-  )
+;; 09/27/2025: Removing from SPC menu as most commands available from "C-x c" menu.
+;; (ee-definer
+;;     "c" '(:ignore t :wk "Consult")
+;;   "c b" '(consult-bookmark :wk "Bookmarks")
+;;   "c c" '(consult-mode-command :wk "Mode")
+;;   "c C" '(consult-minor-mode-menu :wk "Minor Mode")
+;;   "c i" '(consult-imenu :wk "Imenu")
+;;   ;; "c I" '(consult-project-imenu :wk "Project Imenu")  ; 09/27/2025: invalid function now.
+;;   "c m" '(consult-mark :wk "Marks")
+;;   "c M" '(consult-global-mark :wk "Global marks")
+;;   "c r" '(consult-recent-file :wk "Recent Files")
+;;   "c o" '(consult-outline :wk "Outline")
+;;   "c t" '(consult-theme :wk "Themes")
+;;   "c y" '(consult-yank-from-kill-ring :wk "Yank From Kill Ring")
+;;   "c q" '(keyboard-quit :wk "Quit")
+;;   )
 
 ;; Define Eval Menu.
+;; 07/05/2024: 
 (ee-definer
     "e" '(:ignore t :wk "Evaluate")
   "e A" '(beginning-of-defun :wk "Defun Begin")
@@ -145,7 +153,7 @@
  "t g" '(toggle-debug-on-quit :wk "Debug On Quit")
  "t h" '(highlight-thing-mode :wk "Highlight Thing")
  "t l" '(display-line-numbers-mode :wk "Line Numbers")       ; display type set to "visual" in "Better-defaults"
- "t p" '(smartparens-mode :wk "SmartParens")
+ ;; "t p" '(smartparens-mode :wk "SmartParens")
  "t r" '(read-only-mode :wk "Read Only")
  "t s" '(flycheck-mode :wk "Flycheck")
  "t S" '(flyspell-mode :wk "Flyspell")
@@ -179,3 +187,21 @@
  "y v" '(yas-visit-snippet-file :wk "Visit Snippet")
  "y q" '(keyboard-quit :wk "Quit")
 )
+
+(general-def
+ "C-<tab>" 'aeh/switch-to-previous-buffer)
+
+;; And "M-z" is zap-to-char.
+(general-def
+    "C-M-z" 'zap-up-to-char)
+
+;; 05/08/2025:
+(general-def
+    "C-c z s" '(:ignore t :wk "Shells")
+  "C-c z s e" '(eshell :wk "Eshell")
+  "C-c z s q" '(keyboard-quit :wk "Quit")
+  "C-c z s t" '(term :wk "Term")
+  "C-c z s a" '(ansi-term :wk "Ansi-term"))
+
+;; 11/07/2025: adding describe-char mapping using global function.
+(keymap-global-set "C-x c c" 'describe-char)

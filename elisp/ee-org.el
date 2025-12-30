@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-org.el
 ;; Created:       2023-10-03
-;; Last modified: Fri May 24, 2024 11:48:41
+;; Last modified: Fri Mar 28, 2025 22:56:43
 ;; Purpose:       This is to configure Org mode.
 ;;
 
@@ -9,8 +9,9 @@
 (setq org-startup-folded t)
 (setq inhibit-compacting-font-caches t)
 
+;; /home/arnold/.emacs.d/20250328-elpaca-warnings.txt: change ":elpaca" to ":ensure"
 (use-package org
-    :elpaca nil
+    :ensure nil
     :delight)
 
 ;; 05/24/2024: is org-modern a possible replacement for org-bullets?
@@ -46,8 +47,9 @@
 ;;     (add-hook 'org-mode-hook 'org-modern-mode)
 ;;     )
 
+;; /home/arnold/.emacs.d/20250328-elpaca-warnings.txt: change ":elpaca" to ":ensure"
 (use-package org-bullets
-  :elpaca t
+  :ensure t
   :defer
   :delight
   :config

@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-fonts.el
 ;; Created:       2023-07-22
-;; Last modified: Sat Aug 19, 2023 15:16:26
+;; Last modified: Wed Jun 11, 2025 15:01:53
 ;; Purpose:       Configuration of fonts.
 ;;
 
@@ -105,6 +105,40 @@
 
 ;; End of comments!
 
+;; 06/11/2025: Added new font "Fira Code", a free monospaced font with programming ligatures
+;; The ligatures means we can show complex coding "signs" as a single character, like the
+;; Python "==" becomes a long "=" without the space, a "<=" becomes the single character
+;; "≤" as seen in books or web.
+;; MUST USE the "ligature.el" package to properly display ligatures automatically. The config
+;; below taken from ref: https://github.com/tonsky/FiraCode/wiki/Emacs-instructions
+(use-package ligature
+    :ensure t
+    :demand
+    :delight
+    :config
+    ;; Enable the "www" ligature in every possible major mode
+    (ligature-set-ligatures 't '("www"))
+    ;; Enable traditional ligature support in eww-mode, if the
+    ;; `variable-pitch' face supports it
+    (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+    ;; Enable ligatures in programming modes                                                           
+    (ligature-set-ligatures
+     'prog-mode
+     '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "::"
+       ":::" ":=" "!!" "!=" "!==" "-}" "----" "-->" "->" "->>"
+       "-<" "-<<" "-~" "#{" "#[" "##" "###" "####" "#(" "#?" "#_"
+       "#_(" ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*" "/**"
+       "/=" "/==" "/>" "//" "///" "&&" "||" "||=" "|=" "|>" "^=" "$>"
+       "++" "+++" "+>" "=:=" "==" "===" "==>" "=>" "=>>" "<="
+       "=<<" "=/=" ">-" ">=" ">=>" ">>" ">>-" ">>=" ">>>" "<*"
+       "<*>" "<|" "<|>" "<$" "<$>" "<!--" "<-" "<--" "<->" "<+"
+       "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<"
+       "<~" "<~~" "</" "</>" "~@" "~-" "~>" "~~" "~~>" "%%"))
+    ;; Enables ligature checks globally in all buffers.  You can also do it
+    ;; per mode with `ligature-mode'.
+    (global-ligature-mode t)  ; END OF CONFIG SECTION
+    :hook prog-mode)
+
 ;; Set the font face based on platform
 (pcase system-type
   ((or 'windows-nt 'cygwin)
@@ -114,18 +148,17 @@
                        :height 120))
   ('gnu/linux 
    (set-face-attribute 'default nil 
-                       :font "Fira Mono" 
+                       :font "Fira Code" 
                        :height 140)))
 
 ;; Set the fixed pitch face
 (set-face-attribute 'fixed-pitch nil
-                    :font "JetBrains Mono"
+                    :font "Fira Code"
                     :weight 'light
                     :height 120)
 
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil
-                    ;; :font "Cantarell"
                     :font "Iosevka Aile"
                     :height 120
                     :weight 'light)

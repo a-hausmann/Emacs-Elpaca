@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-themes.el
 ;; Created:       2023-07-21
-;; Last modified: Sat Aug 19, 2023 15:17:02
+;; Last modified: Sat Mar 29, 2025 9:52:46
 ;; Purpose:       Configure themes for Emacs-Elpaca
 ;;
 
@@ -19,8 +19,9 @@
 ;; Set custom theme directory first.
 ;; (setq custom-theme-directory "~/.emacs.d/themes/")
 
-(use-package modus-themes :elpaca t)
+(use-package modus-themes :ensure t)
 ;; Allow Elpaca to process queues up to this point
+;; 03/29/2025: commenting this produced: Warning (emacs): modus-themes loaded before Elpaca activation
 (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 (setq modus-themes-italic-constructs t

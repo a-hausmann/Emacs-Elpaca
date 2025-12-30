@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-editing.el
 ;; Created:       2023-07-30
-;; Last modified: Fri Jun 07, 2024 16:12:12
+;; Last modified: Sun Dec 28, 2025 17:48:16
 ;; Purpose:       Configure packages used in straight editing (not programming languages)
 ;;
 
@@ -16,7 +16,7 @@
 
 ;; Configure WS-Butler (trims trailing whitespace ONLY on changed lines.)
 (use-package ws-butler
-  :elpaca t
+  :ensure t
   :defer 2
   :delight
   :hook ((sql-mode . ws-butler-mode)
@@ -28,7 +28,7 @@
 
 ;; Configure EditorConfig, ref: https://github.com/editorconfig/editorconfig-emacs#readme
 (use-package editorconfig
-  :elpaca t
+  :ensure t
   :delight
   :config
   (editorconfig-mode 1)
@@ -39,7 +39,7 @@
 
 ;; Configure Expand-region
 (use-package expand-region
-  :elpaca t
+  :ensure t
   :delight
   :bind ("C-=" . er/expand-region))
 ;; Allow Elpaca to process queues up to this point
@@ -48,7 +48,7 @@
 
 ;; Configure Drag-stuff
 (use-package drag-stuff
-  :elpaca t
+  :ensure t
   :delight
   :bind ("M-<f3>" . drag-stuff-mode)
   :config
@@ -105,7 +105,7 @@ This is designed to be used in a prog-mode-hook."
 ;; Step 3, install Origami.
 ;; 08/27/2023: stop deferring to see if the bindings work without resetting the mode.
 (use-package origami
-  :elpaca t
+  :ensure t
   :demand
   ;; :config
   :delight)
@@ -117,10 +117,16 @@ This is designed to be used in a prog-mode-hook."
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
+;; 06/29/2025: Add hook to enable hide/show minor mode for prog-mode buffers.
+;; Hide/Show mode prefix key chord is "C-c @"
+;; Hook doesn't seem to be working. Shoot.
+(add-hook 'prog-mode-hook 'hs-minor-mode)
+
 
 ;; Configure rainbow-mode, useful for showing color of codes.
 (use-package rainbow-mode
   :defer
+  :ensure nil
   :delight
   :hook 
   (prog-mode . rainbow-mode)
@@ -132,27 +138,16 @@ This is designed to be used in a prog-mode-hook."
 ;; 02/10/2024: Adding keycast-mode
 ;; Ref: https://github.com/tarsius/keycast
 (use-package keycast
-    :elpaca t
+    :ensure t
     :delight
     ;; :custom
     ;; (customize-set-variable keycast-mode-line-remove-tail-elements nil)
     :config
     (keycast-header-line-mode))
 
-;; Configure Smartparens
-;; Ref: https://ebzzry.com/en/emacs-pairs/
-(use-package smartparens
-  :init 'smartparens-config
-  :config (progn (show-smartparens-global-mode t))
-  (sp-with-modes sp-lisp-modes
-    ;; disable ', it's the quote character!
-    (sp-local-pair "'" nil :actions nil))
-  )
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
-(add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
-(add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
-
+;; Configure Electric Pair mode (just turn it on globally)
+;; Found that electric-pair-mode works just as well if not better. Will need to figure out the
+(electric-pair-mode 1)
 
 ;; Configure Undo-fu
 (use-package undo-fu
@@ -194,10 +189,21 @@ This is designed to be used in a prog-mode-hook."
   (setq yas-indent-line 'fixed)
   (yas-global-mode 1))
 
-(use-package yasnippet-snippets
-  :ensure t
-  :delight
-  :after yasnippet)
+;; 04/21/2025: decided I really don't need the full boat of predefined snippets, just my own.
+;; (use-package yasnippet-snippets
+;;   :ensure t
+;;   :delight
+;;   :after yasnippet)
+
+;; 12/28/2025: Added Linux program "nuspell" (spellchecker) and "jinx", Emacs wrapper for nuspell.
+;; Ref: https://github.com/minad/jinx
+;; Doesn't work, getting compile error on jinx-mod.0 file. Oddly, if I try command twice it works,
+;; but leaves ALL words as misspelled (until I add them to dictionary?) I'm turning this off for now.
+;; (use-package jinx
+;;   :ensure t
+;;   :hook (emacs-startup . global-jinx-mode)
+;;   :bind (("M-$" . jinx-correct)
+;;          ("C-M-$" . jinx-languages)))
 
 
 (message "Loaded ee-editing.el")
@@ -205,3 +211,7 @@ This is designed to be used in a prog-mode-hook."
 (provide 'ee-editing)
 
 ;;; End of ee-editing.el
+
+;; Local Variables:
+;; jinx-local-words: "ensure"
+;; End:
