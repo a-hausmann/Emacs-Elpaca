@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-defaults.el
 ;; Created:       2023-07-22
-;; Last modified: Tue Apr 07, 2026 21:01:45
+;; Last modified: Sun Apr 12, 2026 14:36:53
 ;; Purpose:       Set default values.
 ;;
 
@@ -123,8 +123,8 @@
 (setq aeh-default-browser "brave-browser")
 (if (string-equal system-type "windows-nt")
     (setq browse-url-browser-function 'eww-browse-url)
-  (setq browse-url-browser-function 'browse-url-generic
-        browse-url-generic-program aeh-default-browser))
+    (setq browse-url-browser-function 'browse-url-generic
+          browse-url-generic-program aeh-default-browser))
 
 ;; 12/28/2025: added customizable options.
 ;; Ref: https://codeberg.org/ashton314/emacs-bedrock/src/branch/main/init.el
@@ -140,23 +140,27 @@
 (keymap-global-set "C-s-<up>" 'windmove-swap-states-up)
 (keymap-global-set "C-s-<down>" 'windmove-swap-states-down)
 
-;; (keymap-global-set "C-c <left>" 'winner-undo)  ; not a command?
-;; (keymap-global-set "C-c <right>" 'winner-redo) ; not a command?
 (setopt windmove-wrap-around t)
-;; (setq windmove-default-keybindings #'(meta shift))
-;; (setq windmove-swap-states-default-keybindings #'(control meta))
+
+
+;;; winner-mode settings.
+(winner-mode)
+(keymap-global-set "C-c <left>" 'winner-undo)  ; not a command?
+(keymap-global-set "C-c <right>" 'winner-redo) ; not a command?
 
 
 ;; minibuffer completion settings
-(setopt enable-recursive-minibuffers t)                ; Use the minibuffer when in the minibuffer
+(setopt completion-auto-help 'always)                  ; always show *Completions* buffer after TAB
+(setopt completion-auto-select t)                      ; First TAB opens *Completions* window and selects it
 (setopt completion-cycle-threshold 1)                  ; TAB cycles candidates
 (setopt completions-detailed t)                        ; Show annotations
-(setopt tab-always-indent 'complete)                   ; When I hit TAB, try to complete, otherwise, indent
-(setopt completion-auto-help 'always)
 (setopt completions-max-height 20)
 (setopt completions-format 'one-column)                ; Show completions in single column
 (setopt completions-group t)                           ; Group completions (if possible)
-(setopt completion-auto-select t)                      ; First TAB opens *Completions* window and selects it
+(setopt enable-recursive-minibuffers t)                ; Use the minibuffer when in the minibuffer
+(setopt tab-always-indent 'complete)                   ; When I hit TAB, try to complete, otherwise, indent
+(keymap-set minibuffer-mode-map "M-h" #'minibuffer-complete-history)
+
 
 ;; Interface enhancements
 (setopt switch-to-buffer-obey-display-actions t)       ; Make switching buffers more consistent

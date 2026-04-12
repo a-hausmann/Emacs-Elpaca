@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-final.el
 ;; Created:       2023-07-30
-;; Last modified: Wed Apr 08, 2026 16:20:03
+;; Last modified: Sat Apr 11, 2026 23:29:06
 ;; Purpose:       Perform things/functions which need to be done last.
 ;;
 
@@ -26,9 +26,11 @@
 ;; FIXME: Redo these with latest function, "keymap-global-set"
 (keymap-global-set "C-y" #'yank)   ; need to do this here else `yank' not available in query-replace.
 (keymap-global-set "C-c c" #'calendar)
-(keymap-global-set "C-c l" #'bookmark-bmenu-list)
-(keymap-global-set "C-c r" #'consult-recent-file)
 (keymap-global-set "C-M-+" #'text-scale-adjust)
+
+;; 04/11/2026: `bookmark-bmenu-list' is already in "C-x r" map.
+;; (keymap-global-set "C-c l" #'bookmark-bmenu-list)
+
 
 ;; FIXME: Redo these with latest function, "keymap-global-set"
 (general-def
@@ -38,11 +40,8 @@
   "M-c" 'capitalize-dwim
   "M-u" 'upcase-dwim
   "M-l" 'downcase-dwim
-  ;; "C-x M-w" 'clipboard-kill-ring-save
   "C-x C-y" 'clipboard-yank)
 
-;; 03/09/2026: As I can't use "s-w" anymore, use "M-S-w"/"M-W" instead.
-(keymap-global-set "M-W" 'clipboard-kill-ring-save)
 
 ;; 03/09/2026: Unset "C-j" ("electric-newline-and-maybe-indent") which I don't use; reuse as prefix key.
 ;; (keymap-global-unset "C-j")

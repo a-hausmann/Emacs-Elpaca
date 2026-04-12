@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-completion.el
 ;; Created:       2023-07-22
-;; Last modified: Sat Apr 11, 2026 13:12:53
+;; Last modified: Sun Apr 12, 2026 17:59:06
 ;; Purpose:       Configure all completing-read framework.
 ;;                As of initial writing, this is: Consult, Vertigo, 
 ;;                Orderless, Marginalia, and Embark. Also use
@@ -18,6 +18,7 @@
 ;;   (when (fboundp 'projectile-project-root)
 ;;     (projectile-project-root)))
 
+
 ;; Configure Consult
 (use-package consult
   :ensure t
@@ -26,27 +27,28 @@
          ("C-s" . isearch-forward)                 ; Still useful, consult has no better solution.
          ("C-c C-r" . isearch-backward)            ; Still useful, consult has no better solution.
          ("C-c C-s" . consult-isearch-forward)     ; works in mini-buffer ONLY!
-         ("C-S-s" . consult-line)
-         ("M-s l" . consult-line)
-         ("C-M-l" . consult-imenu)
+         ("C-c r" . consult-recent-file)           ; my original binding, doesn't work in mhtml-mode.
+         ("M-s r" . consult-recent-file)           ; new, better binding, looks to work everywhere.
+         ("C-S-s" . consult-line)                  ; my original binding, a little hard to type.
+         ("M-s l" . consult-line)                  ; new, better binding, looks to work everywhere.
          ("M-s i" . consult-imenu)
+         ("C-x c i" . consult-imenu)               ; second binding.
          ("C-x b" . consult-buffer)                ; orig. switch-to-buffer
          ("C-x 4 b" . consult-buffer-other-window) ; orig. switch-to-buffer-other-window
          ("C-x 5 b" . consult-buffer-other-frame)  ; orig. switch-to-buffer-other-frame
          ("C-M-'" . consult-register-store)        ; dwim register: store, append, prepend, delete (prefix arg)
          ("M-'" . consult-register-load)           ; dwim register: insert, jump, or restore (window config)
-         ("C-M-#" . consult-register)
+         ("M-s g" . consult-register)              ; preview & narrow register list.
          ("M-y" . consult-yank-pop)                ; orig. yank-pop
-         ("C-x c i" . consult-imenu)               ; second binding.
          ("C-x c F" . consult-focus-lines)         ; focus (narrow) text
+         ("M-s f" . consult-focus-lines)           ; focus (narrow) text
          ("C-x c f" . consult-find)
          ("C-x c g" . consult-grep)
          ("C-x c G" . consult-git-grep)
          ("C-x c R" . consult-ripgrep)
-         ("C-x c l" . consult-goto-line)           ; goto specified line
-         ("C-x c m" . consult-mark)                ; jump to marker in the mark-ring
-         ("C-x c M" . consult-global-mark)         ; jump to marker in the global mark-ring
-         ("C-x c r" . consult-recent-file)
+         ("M-g M-g" . consult-goto-line)           ; with preview, replacing ONE old binding for `goto-line'
+         ("M-g m" . consult-mark)                  ; jump to marker in the mark-ring
+         ("M-g M" . consult-global-mark)           ; jump to marker in the global mark-ring
          ("M-s x" . consult-xref)                  ; added 04/11/2026
          :map minibuffer-local-map ("C-r" . consult-history))
   :init
@@ -119,7 +121,9 @@ folder, otherwise delete a word"
          ("C-p" . vertico-previous)
          ("C-g" . vertico-exit)
          :map minibuffer-local-map
-         ("<C-backspace>" . dw/minibuffer-backward-kill)))
+         ("<C-backspace>" . dw/minibuffer-backward-kill)
+         ;; "C-g" STILL doesn't work here, only "s-g" for same command defined globally works.
+         ("C-g" . minibuffer-keyboard-quit)))
 
 
 ;; 2022-08-04: Changes in vertico invalidated the below. Documentation for Projectile
@@ -144,7 +148,8 @@ folder, otherwise delete a word"
   ;; but was described in reference as something to give "fuzzy" results.
   ;; (setq completion-styles '(orderless)
   ;; (setq completion-styles '(flex basic orderless partial-completion emacs22)
-  (setq completion-styles '(orderless partial-completion emacs22)   ; 02/06/2026: removed "basic"
+  ;; 02/06/2026: removed "basic", "emacs22", "flex"
+  (setq completion-styles '(orderless partial-completion)
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 
