@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-defaults.el
 ;; Created:       2023-07-22
-;; Last modified: Tue Dec 30, 2025 15:10:10
+;; Last modified: Tue Apr 07, 2026 21:01:45
 ;; Purpose:       Set default values.
 ;;
 
@@ -62,7 +62,6 @@
 (mouse-avoidance-mode 'animate)                   ; Avoid collision of mouse with point KEEP ON ANIMATE
 (put 'downcase-region 'disabled nil)              ; Enable downcase-region
 (put 'upcase-region 'disabled nil)                ; Enable upcase-region
-(set-default-coding-systems 'utf-8)               ; Default to utf-8 encoding
 (setq dired-dwim-target t)                        ; Allow direct to dwim target of move, copy commands (in NEW)
 (setq make-backup-files nil)                      ; Disable backup files (in NEW)
 (setq auto-save-default nil)                      ; Disable auto-save funtionality (in NEW)
@@ -82,8 +81,16 @@
 (setq save-interprogram-paste-before-kill 4096)      ; Save up to 4K of clipboard to kill-ring
 (setq select-enable-clipboard nil )                  ; Keep kill-ring and system clipboard separate
 (setq x-select-enable-clipboard-manager t)           ; Emacs will transfer clipboard contents to system clipboard
-(general-define-key "s-w" 'clipboard-kill-ring-save) ; Copy region to kill-ring and clipboard
-(general-define-key "s-y" 'clipboard-yank)           ; New mapping for yanking from clipboard
+;; 03/06/2026: Updated OS and it has taken over the Super key.
+;; 03/18/2026: GOT IT BACK. Open System Settings -> Shortcuts, change bindings under KWin.
+(keymap-global-set "s-w" 'clipboard-kill-ring-save)
+(keymap-global-set "s-y" 'clipboard-yank)
+
+;; For SOME reason, using the "keymap-global-X" commands don't work well in the Evil environment.
+;; Going back to the OLD WAY of doing things, which unfortunately means using General.
+;; (keymap-global-unset (kbd "C-y"))      ; Unset the Evil keybinding from evil-scroll-line-up
+;; (keymap-global-unset "C-y")            ; Unset the Evil keybinding from evil-scroll-line-up
+;; (keymap-global-set "C-y" 'yank)        ; Redefine to standard Emacs yank.
 (global-unset-key (kbd "C-y"))                       ; Unset the Evil keybinding from evil-scroll-line-up
 (general-define-key                                  ; Redefine to standard Emacs yank.
  :states '(insert normal)
@@ -99,9 +106,11 @@
 
 ;; Will now use C-1…10 and M-1…10 however I see fit, they can now be reassigned.
 ;; Ref: http://pragmaticemacs.com/emacs/use-your-digits-and-a-personal-key-map-for-super-shortcuts/
-(dotimes (n 10)
-  (global-unset-key (kbd (format "C-%d" n)))
-  (global-unset-key (kbd (format "M-%d" n))))
+;; 02/13/2026: Have decided to NOT do this anymore. I don't have these mapped to anything anyway,
+;; and I can use these keys as numeric arguments later.
+;; (dotimes (n 10)
+;;   (global-unset-key (kbd (format "C-%d" n)))
+;;   (global-unset-key (kbd (format "M-%d" n))))
 
 
 ;; Hooks
@@ -119,8 +128,24 @@
 
 ;; 12/28/2025: added customizable options.
 ;; Ref: https://codeberg.org/ashton314/emacs-bedrock/src/branch/main/init.el
-;; Move thru windows with SHIFT-arrow keys
-(windmove-default-keybindings 'control)
+;; Move thru windows with SHIFT-arrow keys. Changed to `control', both conflict
+;; with Org, so use M-S arrow keys instead.
+;; 03/18/2026: since updating KWin bindings, can use Super key here.
+(keymap-global-set "s-<left>" 'windmove-left)
+(keymap-global-set "s-<right>" 'windmove-right)
+(keymap-global-set "s-<up>" 'windmove-up)
+(keymap-global-set "s-<down>" 'windmove-down)
+(keymap-global-set "C-s-<left>" 'windmove-swap-states-left)
+(keymap-global-set "C-s-<right>" 'windmove-swap-states-right)
+(keymap-global-set "C-s-<up>" 'windmove-swap-states-up)
+(keymap-global-set "C-s-<down>" 'windmove-swap-states-down)
+
+;; (keymap-global-set "C-c <left>" 'winner-undo)  ; not a command?
+;; (keymap-global-set "C-c <right>" 'winner-redo) ; not a command?
+(setopt windmove-wrap-around t)
+;; (setq windmove-default-keybindings #'(meta shift))
+;; (setq windmove-swap-states-default-keybindings #'(control meta))
+
 
 ;; minibuffer completion settings
 (setopt enable-recursive-minibuffers t)                ; Use the minibuffer when in the minibuffer
@@ -136,11 +161,89 @@
 ;; Interface enhancements
 (setopt switch-to-buffer-obey-display-actions t)       ; Make switching buffers more consistent
 
-;; Prose-friendly behavior
+;; Prose-friendly behavior. This also makes my HTML align.
 (when (>= emacs-major-version 30)       ; compat test
   (add-hook 'text-mode-hook 'visual-wrap-prefix-mode))
 
+;; 01/13/2026: add code to use hippie-expand over dabbrev "M-/" command
+;; NOTE: the format for "remap" is different between global-key-set
+;; and keymap-global-set commands.
+;; (global-set-key [remap dabbrev-expand] 'hippie-expand)  ; original
+(keymap-global-set "<remap> <dabbrev-expand>" 'hippie-expand)
+
+;; 02/13/2026: Isearch improvements. Show current/total matches, and more.
+(setq isearch-lazy-count t)
+(setq isearch-allow-motion t)
+(setq lazy-count-prefix-format "(%s/%s) ")
+(setq lazy-count-suffix-format nil)
+
+;; Make regular Isearch interpret a space like Consult, IOW
+;; a non-greedy regular expression.
+(setq search-whitespace-regexp ".*?")
+;; (setq search-whitespace-regexp "[ 	]+")  ;; original value.
+
+;; Ref: https://www.youtube.com/watch?v=1-UIzYPn38s
+;; Ref: https://protesilaos.com/emacs/dotemacs#h:50f8b1e4-b14e-453f-a37e-1c0e495ab80f
+;; Add more entries as I come across them.
+(setq display-buffer-alist
+      '(
+        ;; Anatomy of an entry
+        ;; (BUFFER-NAME-REGEX
+        ;;  LIST-OF-DISPLAY-FUNCTIONS
+        ;;  &optional PARAMETERS)
+        ("\\*Occur\\*"  ; regex
+         ;; list of display functions
+         (display-buffer-reuse-mode-window
+          display-buffer-below-selected)
+         ;; parameter(s)
+         (window-height . fit-window-to-buffer) ; size window to output
+         (dedicated . t)                        ; dedicate window to output
+         (body-function . select-window))       ; make active window
+        ))
+
+
+;; 03/28/2026: Ediff settings, ref: https://www.youtube.com/watch?v=pSvsAutseO0
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
 ;; 12/28/2025: END customizable options.
+
+
+;; 04/06/2026: Use repeat-mode and more. Ref: https://www.youtube.com/watch?v=AG_OB3CiPnI
+(repeat-mode 1)
+(use-package text-mode
+    :ensure nil
+    :hook (text-mode . display-fill-column-indicator-mode))
+
+(use-package emacs-lisp-mode
+    :ensure nil
+    :hook (emacs-lisp-mode . flycheck-mode))
+
+;; 04/07/2026: Some keybinding changes, `keyboard-quit' issues and `suspend-frame';
+(keymap-global-unset "C-z") ; getting rid of the `suspend-frame' (when evil-mode disabled)
+;; Had 2 versions of this function to replace `keyboard-quit' but neither worked well.
+;; Leave in but commented as another solution presented itself.
+;; (defun smart-keyboard-quit ()
+;;   "Smarter version of the built-in `keyboard-quit'."
+;;   (interactive)
+;;   (if (active-minibuffer-window)
+;;       (minibuffer-keyboard-quit)
+;;       (keyboard-quit)))
+
+;; (defun smart-keyboard-quit ()
+;;   "Smarter version of the built-in `keyboard-quit'."
+;;   (interactive)
+;;   (if (active-minibuffer-window)
+;;       (if (minibufferp)
+;;           (minibuffer-keyboard-quit)
+;;           (abort-recursive-edit))
+;;       (keyboard-quit)))
+
+;; And the better solution to quitting when the minibuffer is active
+(keymap-global-set "s-g" #'minibuffer-keyboard-quit)
+
+
+
 
 
 (message "Loaded ee-defaults.el")

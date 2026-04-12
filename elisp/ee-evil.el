@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-evil.el
 ;; Created:       2023-07-22
-;; Last modified: Thu Nov 20, 2025 16:34:28
+;; Last modified: Thu Apr 09, 2026 16:59:09
 ;; Purpose:       Configure Evil mode and accompanying packages
 ;;
 
@@ -24,6 +24,7 @@
   (dolist (mode '(ag-mode
                   flycheck-error-list-mode
                   ;; lisp-mode
+                  ;; emacs-lisp-mode
                   calc-mode
                   paradox-menu-mode
                   dired-mode

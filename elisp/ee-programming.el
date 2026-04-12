@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-programming.el
 ;; Created:       2025-05-30
-;; Last modified: Mon Sep 01, 2025 17:57:14
+;; Last modified: Sun Apr 05, 2026 10:52:01
 ;; Purpose:       Configure packages used in programming languages.
 ;;
 ;; ################################################################################################
@@ -11,6 +11,7 @@
 ;; basically EVERYTHING that ParEdit can do, and I'm already using it.  I can merely expand the
 ;; keybindings for SmartParens and get the slurping/barfing that I wanted to begin with. Looks like
 ;; I really don't have to learn something new.
+;; 04/05/2026: OTOH, I've given up using SmartParens, so back to Paredit?
 ;; ################################################################################################
 
 
@@ -23,15 +24,9 @@
 ;; Paredit: ref: https://gitlab.com/buildfunthings/emacs-config/blob/master/loader.org
 (use-package paredit
     :ensure t
-    ;; :diminish paredit-mode
     :delight
+    :bind (:map paredit-mode-map ("s-s r" . #'rg))
     :config
-    (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
-    (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
-    (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
-    (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
-    (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
-    (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
     ;; Add hooks to turn off smartparens-global-mode
     ;; 09/01/2025: stopped using smartparens in favor of native electricpairs
     ;; (add-hook 'emacs-lisp-mode-hook       #'smartparens-global-mode)
@@ -40,13 +35,17 @@
     ;; (add-hook 'lisp-mode-hook             #'smartparens-global-mode)
     ;; (add-hook 'lisp-interaction-mode-hook #'smartparens-global-mode)
     ;; (add-hook 'scheme-mode-hook           #'smartparens-global-mode)
-    ;; :bind (("C-c d" . paredit-forward-down)) ; don't need this binding which was developed for Mac.
-    )
+    (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+    (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+    (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+    (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+    (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+    (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode))
+
 
 ;; Ensure paredit is used EVERYWHERE!
 (use-package paredit-everywhere
   :ensure t
-  ;; :diminish paredit-everywhere-mode
   :delight
   :config
   (add-hook 'lisp-mode-hook #'paredit-everywhere-mode))
@@ -57,7 +56,7 @@
   :ensure t
   :delight
   :config
-  (add-hook 'lisp-mode-hook #'geiser-mode))
+  (add-hook 'scheme-mode-hook #'geiser-mode))
 
 
 (message "Loaded ee-programming.el")

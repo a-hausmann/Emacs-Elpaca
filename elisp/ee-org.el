@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-org.el
 ;; Created:       2023-10-03
-;; Last modified: Fri Mar 28, 2025 22:56:43
+;; Last modified: Mon Feb 16, 2026 21:25:06
 ;; Purpose:       This is to configure Org mode.
 ;;
 
@@ -68,6 +68,7 @@
 
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("elt" . "src emacs-lisp :tangle"))
 
 ;; 2019-06-08: After loading ONE of MANY themes, the "fontify-natively" non-nil started
 ;; throwing code between source markers into horrid light colors regardless of theme used.

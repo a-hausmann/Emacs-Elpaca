@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     init.el
 ;; Created:       2023-07-13
-;; Last modified: Mon Dec 22, 2025 11:47:05
+;; Last modified: Thu Apr 09, 2026 16:54:33
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;;
 
@@ -90,8 +90,7 @@
 ;; Add following to prevent "cl is deprecated" messages.
 ;; Ref: https://github.com/kiwanami/emacs-epc/issues/35
 (setq byte-compile-warnings '(cl-functions))
-(put 'narrow-to-region 'disabled nil)
-(put 'dired-find-alternate-file 'disabled nil)
+
 ;; 2021-02-21: add setup for showing backtrace on errors.
 (setq debug-on-error t)
 
@@ -138,7 +137,9 @@
 
 
 ;; Load the General configuration file. This defines the menu structures only.
-(load "ee-general")
+;; 04/09/2026: This module creates the SPC/C-; menus, which I don't really use anymore.
+;; There are a couple key definitions, so add them to the "ee-bindings.el" module.
+;; (load "ee-general")
 
 ;; Set the size of the frame
 (when window-system
@@ -226,9 +227,26 @@
 ;; ################################################################################################
 ;; (require 'ee-programming)
 
+;; 04/05/2026: trying out `puni' instead. Ref: https://github.com/AmaiKinono/puni
+;; Use puni-mode only for certain major modes.
+(use-package puni
+  :ensure t
+  :defer t
+  :bind (:map puni-mode-map
+              ("C-c C-<right>" . puni-slurp-forward)
+              ("C-c C-<left>" . puni-slurp-backward)
+              ("C-c C-M-<right>" . puni-barf-forward)
+              ("C-c C-M-<left>" . puni-barf-backward))
+  :hook ((emacs-lisp-mode lisp-mode). puni-mode))
+
+
+;; 03/29/2026? Load new module for NEW key bindings & keymaps.
+(load "ee-bindings")
 
 ;; Load final stuff; key bindings and more (if needed)
 (require 'ee-final)
 
+;; 02/01/2026: Completed "insert-date-time.el" with transient.el. Using that instead of Hydra.
+(require 'insert-date-time)
 
 ;;; init.el ends here

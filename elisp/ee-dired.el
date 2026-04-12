@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-dired.el
 ;; Created:       2023-08-12
-;; Last modified: Sat Mar 29, 2025 0:07:36
+;; Last modified: Mon Apr 06, 2026 22:29:57
 ;; Purpose:       Configure dired and associated packages.
 ;;
 
@@ -26,6 +26,7 @@
   (setq dired-listing-switches my/dired-string)
   (evil-set-initial-state 'dired-mode 'normal)       ; Note: evil loads first.
   (setq global-auto-revert-non-file-buffers t)       ; 06/23/2024, revert dired list when files change
+  (setq dired-kill-when-opening-new-dired-buffer t)
   :bind ("C-c d" . dired-jump)
   :hook ((dired-mode . all-the-icons-dired-mode)
          (dired-mode . hl-line-mode))

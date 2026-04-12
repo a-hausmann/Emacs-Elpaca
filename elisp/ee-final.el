@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-final.el
 ;; Created:       2023-07-30
-;; Last modified: Mon Sep 01, 2025 18:01:16
+;; Last modified: Wed Apr 08, 2026 16:20:03
 ;; Purpose:       Perform things/functions which need to be done last.
 ;;
 
@@ -14,14 +14,23 @@
 
 ;; Global mappings
 ;; 10/20/2023: Found I CAN use "opt/start" as Super key in Emacs.  This is GREAT!
+;; 03/06/2026: After an OS upgrade, the "opt/start" (aka Super) is TAKEN OVER by KDE Plasma.
 ;; 01/17/2024: Sure, but it doesn't work all the time, find another.
-(general-define-key
- "C-y" 'yank   ;; 05/09/2024: do not know why I had to do this, but without it, yank not available in query-replace.
- "C-c c" 'calendar
- "C-c l" 'bookmark-bmenu-list
- "C-c r" 'consult-recent-file
- "C-x C-a C-t" 'avy-goto-char-timer)
 
+;; Need to unset global "C-y" from an evil binding so I can reuse it.
+;; (keymap-global-unset "C-y")       ; Unset the Evil keybinding from evil-scroll-line-up
+;; For SOME reason, the "keymap-global-unset" will NOT work so using the old form.
+;; (global-unset-key (kbd "C-y"))
+;; (keymap-global-set "C-y" 'yank)
+
+;; FIXME: Redo these with latest function, "keymap-global-set"
+(keymap-global-set "C-y" #'yank)   ; need to do this here else `yank' not available in query-replace.
+(keymap-global-set "C-c c" #'calendar)
+(keymap-global-set "C-c l" #'bookmark-bmenu-list)
+(keymap-global-set "C-c r" #'consult-recent-file)
+(keymap-global-set "C-M-+" #'text-scale-adjust)
+
+;; FIXME: Redo these with latest function, "keymap-global-set"
 (general-def
   "C-c C" 'capitalize-word
   "C-c U" 'upcase-word
@@ -29,9 +38,19 @@
   "M-c" 'capitalize-dwim
   "M-u" 'upcase-dwim
   "M-l" 'downcase-dwim
-  "C-x M-w" 'clipboard-kill-ring-save
-  "C-x M-y" 'clipboard-yank
+  ;; "C-x M-w" 'clipboard-kill-ring-save
   "C-x C-y" 'clipboard-yank)
+
+;; 03/09/2026: As I can't use "s-w" anymore, use "M-S-w"/"M-W" instead.
+(keymap-global-set "M-W" 'clipboard-kill-ring-save)
+
+;; 03/09/2026: Unset "C-j" ("electric-newline-and-maybe-indent") which I don't use; reuse as prefix key.
+;; (keymap-global-unset "C-j")
+(keymap-global-set "M-o" 'other-window)
+;; `eval-print-last-sexp' is too valuable to lose and `electric-pairs' steals the default binding.
+(keymap-set lisp-mode-map "M-j" 'eval-print-last-sexp)
+(keymap-global-set "s-j d" 'duplicate-dwim)
+
 
 ;; Dired mappings, set after evil
 (eval-after-load 'evil
@@ -107,9 +126,11 @@
 ;; "(ah--set-origami-fold-style-braces)", which is the file-local-variable.
 (setq aeh-start-files '(
                         "~/Documents/org/Premier-League-2024-watched.org"
+                        "~/Documents/Health/Weight-tracker.org"
                         "~/Documents/AA/zoom-meetings-info.txt"
                         "~/Documents/Health/BP-tracking.txt"
                         "~/Documents/Health/UO-tracking.txt"
+                        ;; "~/git/Emacs-Elpaca/elisp/my-modeline.el"
                         ))
 (mapcar 'find-file aeh-start-files)
 

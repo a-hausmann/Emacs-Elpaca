@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-completion.el
 ;; Created:       2023-07-22
-;; Last modified: Mon Dec 29, 2025 17:38:33
+;; Last modified: Sat Apr 11, 2026 13:12:53
 ;; Purpose:       Configure all completing-read framework.
 ;;                As of initial writing, this is: Consult, Vertigo, 
 ;;                Orderless, Marginalia, and Embark. Also use
@@ -13,37 +13,41 @@
 ;; Ref: https://github.com/minad/consult
 ;; Also: https://config.daviwil.com/emacs and search for "Consult Commands"
 ;; Copy of David's code for projectile functions.
-(defun aeh/get-project-root ()
-  (when (fboundp 'projectile-project-root)
-    (projectile-project-root)))
+;; 04/11/2026: David's site doesn't exist anymore, and I don't think I need this code as I don't use projectile.
+;; (defun aeh/get-project-root ()
+;;   (when (fboundp 'projectile-project-root)
+;;     (projectile-project-root)))
 
 ;; Configure Consult
 (use-package consult
   :ensure t
   :demand t
   :bind (
-         ("C-s" . isearch-forward)                 ;; Still useful, consult has no better solution.
-         ("C-c C-r" . isearch-backward)            ;; Still useful, consult has no better solution.
-         ("C-c C-s" . consult-isearch-forward)     ;; works in mini-buffer ONLY!
+         ("C-s" . isearch-forward)                 ; Still useful, consult has no better solution.
+         ("C-c C-r" . isearch-backward)            ; Still useful, consult has no better solution.
+         ("C-c C-s" . consult-isearch-forward)     ; works in mini-buffer ONLY!
          ("C-S-s" . consult-line)
+         ("M-s l" . consult-line)
          ("C-M-l" . consult-imenu)
-         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-         ("C-M-'" . consult-register-store)        ;; dwim register: store, append, prepend, optionally delete (prefix arg)
-         ("M-'" . consult-register-load)           ;; dwim register: insert, jump, or restore (window config)
+         ("M-s i" . consult-imenu)
+         ("C-x b" . consult-buffer)                ; orig. switch-to-buffer
+         ("C-x 4 b" . consult-buffer-other-window) ; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)  ; orig. switch-to-buffer-other-frame
+         ("C-M-'" . consult-register-store)        ; dwim register: store, append, prepend, delete (prefix arg)
+         ("M-'" . consult-register-load)           ; dwim register: insert, jump, or restore (window config)
          ("C-M-#" . consult-register)
-         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-         ("C-x c i" . consult-imenu)                 ;; second binding.
+         ("M-y" . consult-yank-pop)                ; orig. yank-pop
+         ("C-x c i" . consult-imenu)               ; second binding.
+         ("C-x c F" . consult-focus-lines)         ; focus (narrow) text
          ("C-x c f" . consult-find)
          ("C-x c g" . consult-grep)
          ("C-x c G" . consult-git-grep)
          ("C-x c R" . consult-ripgrep)
-         ("C-x c l" . consult-goto-line)           ;; goto specified line
-         ("C-x c m" . consult-mark)                ;; jump to marker in the mark-ring
-         ("C-x c M" . consult-global-mark)         ;; jump to marker in the global mark-ring
-         ;; ("C-x c l" . consult-line)                  ;; required by consult-line to detect isearch
+         ("C-x c l" . consult-goto-line)           ; goto specified line
+         ("C-x c m" . consult-mark)                ; jump to marker in the mark-ring
+         ("C-x c M" . consult-global-mark)         ; jump to marker in the global mark-ring
          ("C-x c r" . consult-recent-file)
+         ("M-s x" . consult-xref)                  ; added 04/11/2026
          :map minibuffer-local-map ("C-r" . consult-history))
   :init
   ;; Optionally configure the register formatting. This improves the register
@@ -57,33 +61,19 @@
   ;; Use Consult to select xref locations with preview
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
-  ;; Enable automatic preview at point in the *Completions* buffer.
-  ;; This is relevant when you use the default completion UI,
-  ;; and not necessary for Selectrum, Vertico etc.
-  ;; :hook (completion-list-mode . consult-preview-at-point-mode)  
   :custom
-  (consult-project-root-function #'aeh/get-project-root)
+  ;; (consult-project-root-function #'aeh/get-project-root)  ; I don't think I need this anymore.
   (completion-in-region-function #'consult-completion-in-region)
   :config
   ;; (consult-preview-mode)
   (setq consult-preview-key 'any)
-  ;; (setq consult-preview-key (kbd "M-."))
-  ;; Optionally configure the narrowing key.
-  ;; Both < and C-+ work reasonably well.
-  ;; 07/22/2023: a recent upgrade to Consult resulted in several commands breaking.
-  ;; Now, think the below commented line is the culprit, as latest documentation on
-  ;; Consult site shows no need to use kbd()--and the error was about key definition.
-  ;; using the below setup allows this Emacs-Elpaca to work correctly (so far).
-  (setq consult-narrow-key "<") ;; (kbd "C-+")
+  (setq consult-narrow-key "<")
   (consult-customize
    consult-git-grep consult-grep
    consult-bookmark consult-recent-file consult-xref
    consult--source-recent-file consult--source-project-recent-file consult--source-bookmark
-   ;; :preview-key (kbd "M-."))
    :preview-key "M-.")
 )
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Ref: https://github.com/gagbo/consult-lsp
@@ -130,8 +120,6 @@ folder, otherwise delete a word"
          ("C-g" . vertico-exit)
          :map minibuffer-local-map
          ("<C-backspace>" . dw/minibuffer-backward-kill)))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; 2022-08-04: Changes in vertico invalidated the below. Documentation for Projectile
@@ -142,46 +130,69 @@ folder, otherwise delete a word"
 ;; Use the `orderless' completion style.
 ;; Enable `partial-completion' for files to allow path expansion.
 ;; You may prefer to use `initials' instead of `partial-completion'.
+;; 02/05/2026: `completion-styles' can have multiple values, so taking a clue
+;; from https://robbmann.io/posts/006_emacs_2_python/, but including orderless
+;; as well as `flex' which will give fuzzy matching, plus the original values.
 (use-package orderless
   :ensure t
   :init
-  (setq completion-styles '(orderless)
+  ;; 02/05/2026: Original was only orderless; worked fine. Added all from reference
+  ;; which gave me ODD results. Removing "flex" initially to see if that helps. AND,
+  ;; that seems to have helped. Searched for "Schlafly" file but didn't find after
+  ;; typing "schla", which should have been enough. Got it finally with "schlaf".
+  ;; I think it best to leave out the "flex", which I didn't see in documentation
+  ;; but was described in reference as something to give "fuzzy" results.
+  ;; (setq completion-styles '(orderless)
+  ;; (setq completion-styles '(flex basic orderless partial-completion emacs22)
+  (setq completion-styles '(orderless partial-completion emacs22)   ; 02/06/2026: removed "basic"
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 ;; Became part of Emacs with version 22, so no external package.
-;; (use-package savehist
-;;   :ensure nil
-;;   :init
-;;   (savehist-mode))
-;; ;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
-(savehist-mode 1)
+(savehist-mode 1)                          ; ALWAYS turn on.
+(setq history-length 300)                  ; also see `amx-history-length' 
+(setq savehist-save-minibuffer-history t)  ; Default
+(setq savehist-additional-variables
+      '(kill-ring                          ; clipboard
+        register-alist                     ; macros
+        mark-ring global-mark-ring         ; marks
+        search-ring regexp-search-ring))   ; searches
+
 
 ;; Marginalia provides similar functionality as ivy-rich--which we LOVE!
 ;; Ref: https://config.daviwil.com/emacs search for Marginalia
-
+;; Do NOT use the =:custom= setting for =marginalia-annotators= as it messes up everything.
 (use-package marginalia
-  :ensure t
-  :after vertico
-  :custom
-  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-  :init
-  (marginalia-mode))
+    :ensure t
+    ;; :after vertico
+    ;; :custom
+    ;; (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+    :bind (:map minibuffer-local-map
+                ("M-a" . marginalia-cycle))
+    :init
+    (marginalia-mode))
 
 
 ;; Embark is hard to describe, but provides ways to ACT upon completion items.
 ;; Ref: https://config.daviwil.com/emacs search for Embark
 
+;; Ref: https://github.com/oantolin/embark?tab=readme-ov-file#quick-start
+;; Recommended binding "C-." is already used by "evil-repeat-pop" in state: "evil-normal-state-map"
+;; I don't EVER use that, so TRYING to use "evil-define-key" to redefine to nil and then
+;; reuse binding for embark.  SHIT, that didn't work.
+
+;; (evil-define-key 'normal global (kbd "C-.") nil)
+
 (use-package embark
   :ensure t
-  :bind (("C-S-a" . embark-act)
+  :bind (("s-." . embark-act)
+         ("s-," . embark-dwim)
+         ("C-h B" . embark-bindings)
          :map minibuffer-local-map
-         ("C-d" . embark-act))
+         ("s-." . embark-act))
+  :init (setq prefix-help-command #'embark-prefix-help-command)
   :config
   ;; Show Embark actions via which-key, this from David 
   ;; (setq embark-action-indicator
@@ -195,9 +206,14 @@ folder, otherwise delete a word"
         (which-key--show-keymap "Embark" map nil nil 'no-paging)
         #'which-key--hide-popup-ignore-command)
       embark-become-indicator embark-action-indicator)
-)
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+  )
+
+
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :ensure t) ; only need to install it, embark loads it after consult if found
+
 
 
 (message "Loaded ee-completion.el")

@@ -1,11 +1,11 @@
-;; -*- lexical-binding: t -*-
+;;; Setups for editing -*- lexical-binding: t -*-
 ;; File name:     ee-editing.el
 ;; Created:       2023-07-30
-;; Last modified: Sun Dec 28, 2025 17:48:16
+;; Last modified: Wed Apr 08, 2026 9:42:47
 ;; Purpose:       Configure packages used in straight editing (not programming languages)
 ;;
 
-;; 05/26/2024: add treesitter.
+;;; 05/26/2024: add treesitter.
 ;; (elpaca '(treesit-auto :source "MELPA" :recipe (:package "treesit-auto" :fetcher github :repo "renzmann/treesit-auto" :files ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi" "doc/*.texinfo" "lisp/*.el" (:exclude ".dir-locals.el" "test.el" "tests.el" "*-test.el" "*-tests.el" "LICENSE" "README*" "*-pkg.el"))) :description "Automatically use tree-sitter enhanced major modes" :date (14445 17280) :url "https://github.com/renzmann/treesit-auto.git"))
 ;; (use-package treesit-auto
 ;;     :custom
@@ -14,7 +14,7 @@
 ;;   (treesit-auto-add-to-auto-mode-alist 'all)
 ;;   (global-treesit-auto-mode))
 
-;; Configure WS-Butler (trims trailing whitespace ONLY on changed lines.)
+;;; Configure WS-Butler (trims trailing whitespace ONLY on changed lines.)
 (use-package ws-butler
   :ensure t
   :defer 2
@@ -22,42 +22,34 @@
   :hook ((sql-mode . ws-butler-mode)
          (sh-mode . ws-butler-mode)
          (emacs-lisp-mode . ws-butler-mode)))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
-;; Configure EditorConfig, ref: https://github.com/editorconfig/editorconfig-emacs#readme
+;;; Configure EditorConfig, ref: https://github.com/editorconfig/editorconfig-emacs#readme
 (use-package editorconfig
   :ensure t
   :delight
   :config
   (editorconfig-mode 1)
   (setq editorconfig-trim-whitespaces-mode 'ws-butler-mode))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
-;; Configure Expand-region
+;;; Configure Expand-region
 (use-package expand-region
   :ensure t
   :delight
   :bind ("C-=" . er/expand-region))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
-;; Configure Drag-stuff
+;;; Configure Drag-stuff
 (use-package drag-stuff
   :ensure t
   :delight
   :bind ("M-<f3>" . drag-stuff-mode)
   :config
   (drag-stuff-define-keys))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
-;; Configure Highlight-thing; highlights all occurances of the "thing" under point.
+;;; Configure Highlight-thing; highlights all occurances of the "thing" under point.
 ;; Generally have found only the "word" under point useful, and not ALL the time, so
 ;; provide toggle in "C-<f3>" and set to "word" for thing.
 (use-package highlight-thing
@@ -66,11 +58,9 @@
   :config
   (setq highlight-thing-what-thing 'word
         highlight-thing-case-sensitive-p nil))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
-;; Configure Oragami, folding package plus personal functions.
+;;; Configure Oragami, folding package plus personal functions.
 ;; Step 1, define function to set set folding mode to triple braces.
 (defun ah--set-origami-fold-style-braces ()
   "Set origami fold-style to triple braces.
@@ -114,16 +104,14 @@ This is designed to be used in a prog-mode-hook."
             (setq-local origami-fold-style 'triple-braces)
             (origami-mode)
             (origami-close-all-nodes (current-buffer))))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
-;; 06/29/2025: Add hook to enable hide/show minor mode for prog-mode buffers.
+;;; 06/29/2025: Add hook to enable hide/show minor mode for prog-mode buffers.
 ;; Hide/Show mode prefix key chord is "C-c @"
 ;; Hook doesn't seem to be working. Shoot.
 (add-hook 'prog-mode-hook 'hs-minor-mode)
 
 
-;; Configure rainbow-mode, useful for showing color of codes.
+;;; Configure rainbow-mode, useful for showing color of codes.
 (use-package rainbow-mode
   :defer
   :ensure nil
@@ -131,11 +119,9 @@ This is designed to be used in a prog-mode-hook."
   :hook 
   (prog-mode . rainbow-mode)
   (org-mode . rainbow-mode))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
-;; 02/10/2024: Adding keycast-mode
+;;; 02/10/2024: Adding keycast-mode
 ;; Ref: https://github.com/tarsius/keycast
 (use-package keycast
     :ensure t
@@ -145,11 +131,11 @@ This is designed to be used in a prog-mode-hook."
     :config
     (keycast-header-line-mode))
 
-;; Configure Electric Pair mode (just turn it on globally)
+;;; Configure Electric Pair mode (just turn it on globally)
 ;; Found that electric-pair-mode works just as well if not better. Will need to figure out the
 (electric-pair-mode 1)
 
-;; Configure Undo-fu
+;;; Configure Undo-fu
 (use-package undo-fu
   :after evil
   :defer 1
@@ -159,6 +145,7 @@ This is designed to be used in a prog-mode-hook."
   ;; (message "Loaded Undo-fu.")
   ;; (global-undo-tree-mode -1)
   )
+
 (use-package undo-fu-session
   :after evil
   :defer 1
@@ -173,7 +160,7 @@ This is designed to be used in a prog-mode-hook."
     (global-undo-fu-session-mode 1)))
 
 
-;; Configure Yasnippet
+;;; Configure Yasnippet
 (use-package yasnippet
   :ensure t
   ;; :diminish 'yas-minor-mode
@@ -189,11 +176,17 @@ This is designed to be used in a prog-mode-hook."
   (setq yas-indent-line 'fixed)
   (yas-global-mode 1))
 
-;; 04/21/2025: decided I really don't need the full boat of predefined snippets, just my own.
-;; (use-package yasnippet-snippets
-;;   :ensure t
-;;   :delight
-;;   :after yasnippet)
+
+;;; 04/08/2026: Adding Embrace (like surround)
+;; As I'm moving away from Evil, will lose evil-surround and need replacement
+;; NOTE: this package relies on expand-region.
+(use-package embrace
+    :ensure t
+    :bind
+    ("C-{" . embrace-commander)
+    :init
+    (add-hook 'org-mode-hook 'embrace-org-mode-hook))
+
 
 ;; 12/28/2025: Added Linux program "nuspell" (spellchecker) and "jinx", Emacs wrapper for nuspell.
 ;; Ref: https://github.com/minad/jinx
@@ -212,6 +205,3 @@ This is designed to be used in a prog-mode-hook."
 
 ;;; End of ee-editing.el
 
-;; Local Variables:
-;; jinx-local-words: "ensure"
-;; End:

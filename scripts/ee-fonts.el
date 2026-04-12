@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-fonts.el
 ;; Created:       2023-07-22
-;; Last modified: Wed Jun 11, 2025 15:01:53
+;; Last modified: Thu Mar 26, 2026 21:38:24
 ;; Purpose:       Configuration of fonts.
 ;;
 
@@ -111,6 +111,8 @@
 ;; "≤" as seen in books or web.
 ;; MUST USE the "ligature.el" package to properly display ligatures automatically. The config
 ;; below taken from ref: https://github.com/tonsky/FiraCode/wiki/Emacs-instructions
+
+;; ";;" Removing the double semi-colons from the list should remove the ugly Lisp comments.
 (use-package ligature
     :ensure t
     :demand
@@ -127,7 +129,7 @@
      '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "::"
        ":::" ":=" "!!" "!=" "!==" "-}" "----" "-->" "->" "->>"
        "-<" "-<<" "-~" "#{" "#[" "##" "###" "####" "#(" "#?" "#_"
-       "#_(" ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*" "/**"
+       "#_(" ".-" ".=" ".." "..<" "..." "?=" "??" "/*" "/**"
        "/=" "/==" "/>" "//" "///" "&&" "||" "||=" "|=" "|>" "^=" "$>"
        "++" "+++" "+>" "=:=" "==" "===" "==>" "=>" "=>>" "<="
        "=<<" "=/=" ">-" ">=" ">=>" ">>" ">>-" ">>=" ">>>" "<*"

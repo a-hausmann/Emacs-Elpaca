@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8; lexical-binding: t -*-
 ;; File name:     new-defaults.el
 ;; Created:       2025-12-04
-;; Last modified: Tue Dec 09, 2025 22:57:47
+;; Last modified: Mon Mar 30, 2026 19:32:00
 ;; Purpose:       New version of my defaults, heavy influence from
 ;;                https://github.com/jamescherti/minimal-emacs.d in the init.el file.
 ;;                I like easier-to-read grouping of settings with clear explanation.
@@ -205,6 +205,7 @@
 ;;; savehist
 ;; `savehist-mode' is an Emacs feature that preserves the minibuffer history
 ;; between sessions.
+(savehist-mode 1)                          ; ALWAYS turn on.
 (setq history-length 300)                  ; also see `amx-history-length' 
 (setq savehist-save-minibuffer-history t)  ; Default
 (setq savehist-additional-variables
@@ -493,6 +494,25 @@
 ;; regardless of the change.
 (setq abbrev-file-name (expand-file-name "abbrev_defs" user-emacs-directory))
 (setq save-abbrevs 'silently)
+
+;; 01/13/2026: add code to use hippie-expand over dabbrev "M-/" command
+;; NOTE: the format for "remap" is different between global-key-set
+;; and keymap-global-set commands.
+;; (global-set-key [remap dabbrev-expand] 'hippie-expand)  ; original
+(keymap-global-set "<remap> <dabbrev-expand>" 'hippie-expand)
+
+;;; Ediff settings:
+;; 03/28/2026: Ediff settings, ref: https://www.youtube.com/watch?v=pSvsAutseO0
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+;;; Isearch settings:
+(setq isearch-lazy-count t)
+(setq isearch-allow-motion t)
+(setq lazy-count-prefix-format "(%s/%s) ")
+(setq lazy-count-suffix-format nil)
+
+
 
 
 ;; START LINE 532, "dabbrev"

@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-packages.el
 ;; Created:       2023-07-15
-;; Last modified: Mon Oct 06, 2025 9:18:00
+;; Last modified: Tue Apr 07, 2026 15:09:05
 ;; Purpose:       This is the main package loader/configurator for Emacs-Elpaca
 ;;
 
@@ -41,7 +41,9 @@
 
 
 ;; Load scripts to set up completion, both auto-complete and completing read.
-(require 'ee-auto-complete)
+;; 02/14/2026: trying Corfu instead of Company. Cannot get Elpaca to load it correctly. Shoot!
+(require 'ee-auto-complete)    ; aka Company
+;; (require 'config-corfu)
 (require 'ee-completion)
 
 
@@ -51,6 +53,11 @@
   ;;   :diminish
   ;;   :config
   ;;   (setq frog-jump-buffer-include-current-buffer nil))
+
+(use-package flycheck
+    :ensure t
+    :config
+    (add-hook 'after-init-hook #'global-flycheck-mode))
 
 
 ;; Elisp mode
@@ -83,45 +90,47 @@
 
 
 ;; Configure Ace-windows
-  (defun aeh/scroll-other-window()
-    (interactive)
-    (scroll-other-window 1))
-  (defun aeh/scroll-other-window-down ()
-    (interactive)
-    (scroll-other-window-down 1))
-  (use-package ace-window
-    :ensure t
-    :commands ace-window
-    :delight
-    :config
-    (set-face-attribute
-     'aw-leading-char-face nil
-     :foreground "deep sky blue"
-     :weight 'bold
-     :height 3.0)
-    (set-face-attribute
-     'aw-mode-line-face nil
-     :inherit 'mode-line-buffer-id
-     :foreground "lawn green")
-    (setq aw-dispatch-always nil)
-    (defvar
-          aw-dispatch-alist
-          '((?x aw-delete-window "Delete Window")
-            (?m aw-swap-window "Swap Window")
-            (?M aw-move-window "Move Window")
-            (?c aw-copy-window "Copy Window")
-            (?j aw-switch-buffer-in-window "Select Buffer")
-            (?n aw-flip-window "Flip Window")
-            (?u aw-switch-buffer-other-window "Switch Buffer Other Window")
-            (?v aw-split-window-vert "Split Vert Window")
-            (?b aw-split-window-horz "Split Horz Window")
-            (?o delete-other-windows "Delete Other Windows")
-            )
-          "List of actions for `aw-dispatch-default'.")
-    (ace-window-display-mode t)
-    :bind
-    ("C-M-<tab>" . ace-window)
-    ([remap other-window] . ace-window))
+;; 02/06/2026: I don't REALLY use this anymore, especially the rarer functions, but use
+;; windmove instead. Am commenting this out for now and looking to remove it later.
+  ;; (defun aeh/scroll-other-window()
+  ;;   (interactive)
+  ;;   (scroll-other-window 1))
+  ;; (defun aeh/scroll-other-window-down ()
+  ;;   (interactive)
+  ;;   (scroll-other-window-down 1))
+  ;; (use-package ace-window
+  ;;   :ensure t
+  ;;   :commands ace-window
+  ;;   :delight
+  ;;   :config
+  ;;   (set-face-attribute
+  ;;    'aw-leading-char-face nil
+  ;;    :foreground "deep sky blue"
+  ;;    :weight 'bold
+  ;;    :height 3.0)
+  ;;   (set-face-attribute
+  ;;    'aw-mode-line-face nil
+  ;;    :inherit 'mode-line-buffer-id
+  ;;    :foreground "lawn green")
+  ;;   (setq aw-dispatch-always nil)
+  ;;   (defvar
+  ;;         aw-dispatch-alist
+  ;;         '((?x aw-delete-window "Delete Window")
+  ;;           (?m aw-swap-window "Swap Window")
+  ;;           (?M aw-move-window "Move Window")
+  ;;           (?c aw-copy-window "Copy Window")
+  ;;           (?j aw-switch-buffer-in-window "Select Buffer")
+  ;;           (?n aw-flip-window "Flip Window")
+  ;;           (?u aw-switch-buffer-other-window "Switch Buffer Other Window")
+  ;;           (?v aw-split-window-vert "Split Vert Window")
+  ;;           (?b aw-split-window-horz "Split Horz Window")
+  ;;           (?o delete-other-windows "Delete Other Windows")
+  ;;           )
+  ;;         "List of actions for `aw-dispatch-default'.")
+  ;;   (ace-window-display-mode t)
+  ;;   :bind
+  ;;   ("C-M-<tab>" . ace-window)
+  ;;   ([remap other-window] . ace-window))
 
 
 ;; Amx is the newer alternative to smex (aka smart M-x). 
@@ -156,8 +165,6 @@
   ("C-x C-t" . avy-goto-char-timer)
   :config
   (setq avy-timeout-seconds 0.5))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure Aggressive-indent, works well with Emacs-lisp, not that well with other languages (Python?)
@@ -165,8 +172,6 @@
   :ensure t
   :delight
   :hook (emacs-lisp-mode . aggressive-indent-mode))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; allow asynchronous processing wherever possible…pretty nice.
@@ -275,7 +280,8 @@
   (use-package rg
       :ensure t
       :after wgrep
-      :delight
+      :bind (:map aeh-html-stuff-mode-map
+                  ("C-c C-c s" . rg-men))
       :init (rg-enable-default-bindings)
       :config  ;; 03/26/2024: added from Prot video.
       (setq rg-group-result t
@@ -283,7 +289,8 @@
             rg-show-columns nil
             rg-show-header t
             rg-custom-type-aliases nil
-            rg-default-alias-fallback "all")))
+            rg-default-alias-fallback "all"
+            rg-show-columns t)))
 
 
 ;; Configure org mode
