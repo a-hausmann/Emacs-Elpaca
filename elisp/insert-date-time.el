@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8; lexical-binding: t -*-
 ;; File name:     insert-date-time.el
 ;; Created:       2026-01-08
-;; Last modified: Tue Jun 02, 2026 21:23:45
+;; Last modified: Thu Jun 11, 2026 22:20:42
 ;; Purpose:       Package to insert the current date/time in various formats.
 
 ;; Got tons of helpful ideas from this Github: https://github.com/xenodium/time-zones
@@ -137,7 +137,7 @@
 Because this needs to be used in any buffer, there are several keybindings.
 The main binding is `C-; d' and alternates are `C-c M-i' and `s-c i'."
   ;; The date and date/time to be in columns, left and right respectively
-  [["Insert date:"   ; left side
+  [["Insert date:" :pad-keys t  ; left side
   ("s" "MM/DD/YYYY"
        (lambda () (interactive)
          (insert (format-time-string insert-date-time-usa))))
@@ -162,7 +162,7 @@ The main binding is `C-; d' and alternates are `C-c M-i' and `s-c i'."
   ("M" "Month, Year"
        (lambda () (interactive)
          (insert (format-time-string insert-date-time-month-year))))]
-  ["Insert date & time"  ; right side
+  ["Insert date & time" :pad-keys t  ; right side
   ("t" "YYYY-MM-DD HH24:MI:SS"
        (lambda () (interactive)
          (insert (format-time-string insert-date-time-iso-time))))
@@ -174,11 +174,22 @@ The main binding is `C-; d' and alternates are `C-c M-i' and `s-c i'."
          (insert (format-time-string insert-date-time-string-time))))]]
   ;; Other things will be in a group at the bottom.
   ;; TODO: add functions from "ee-hydras.el" to the below; may need to go right.
-  ["Insert other things"
+  [["Insert other things" :pad-keys t   ; left side
   ("%" "Full Name" (lambda () (interactive) (insert user-full-name)))
   ("@" "Email" (lambda () (interactive) (insert user-mail-address)))
   ("^" "Login Name" (lambda () (interactive) (insert user-login-name)))
   ("p" "Paired characters" insert-paired-characters)]
+  ["Insert path/filename" :pad-keys t   ; right side
+  ("N b" "Base filename"
+       (lambda () (interactive)
+         (insert (file-name-nondirectory (buffer-file-name)))))
+  ("N f" "Full filename (and path)"
+       (lambda () (interactive)
+         (insert (expand-file-name (buffer-file-name)))))
+  ("N p" "Path only"
+       (lambda () (interactive)
+         (insert (file-name-directory (buffer-file-name)))))
+  ]]
   )
 
 
