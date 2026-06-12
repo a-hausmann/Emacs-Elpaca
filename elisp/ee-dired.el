@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-dired.el
 ;; Created:       2023-08-12
-;; Last modified: Mon Apr 06, 2026 22:29:57
+;; Last modified: Tue Jun 02, 2026 16:23:18
 ;; Purpose:       Configure dired and associated packages.
 ;;
 
@@ -19,78 +19,80 @@
     (setq my/dired-string "-alG --group-directories-first"))
 
 (use-package dired
-  :ensure nil
-  :delight
-  :after evil
-  :config
-  (setq dired-listing-switches my/dired-string)
-  (evil-set-initial-state 'dired-mode 'normal)       ; Note: evil loads first.
-  (setq global-auto-revert-non-file-buffers t)       ; 06/23/2024, revert dired list when files change
-  (setq dired-kill-when-opening-new-dired-buffer t)
-  :bind ("C-c d" . dired-jump)
-  :hook ((dired-mode . all-the-icons-dired-mode)
-         (dired-mode . hl-line-mode))
-)
+    :ensure nil
+    :delight
+    :after evil
+    :config
+    (setq dired-listing-switches my/dired-string)
+    (evil-set-initial-state 'dired-mode 'normal)       ; Note: evil loads first.
+    (setq global-auto-revert-non-file-buffers t)       ; 06/23/2024, revert dired list when files change
+    (setq dired-kill-when-opening-new-dired-buffer t)
+    (keymap-set dired-mode-map "(" #'dired-hide-details-mode)
+    (keymap-set dired-mode-map ")" #'dired-git-info-mode)
+    (keymap-set dired-mode-map "j" #'dired-next-line)
+    (keymap-set dired-mode-map "k" #'dired-previous-line)
+    (keymap-set dired-mode-map "h" #'dired-up-directory)
+    (keymap-set dired-mode-map "H" #'dired-hide-dotfiles-mode)
+    (keymap-set dired-mode-map "l" #'dired-find-alternate-file)
+    (keymap-set dired-mode-map "o" #'dired-find-file-other-window)
+    (keymap-set dired-mode-map "s" #'dired-sort-toggle-or-edit)
+    (keymap-set dired-mode-map "v" #'dired-toggle-marks)
+    (keymap-set dired-mode-map "m" #'dired-mark)
+    (keymap-set dired-mode-map "u" #'dired-unmark)
+    (keymap-set dired-mode-map "U" #'dired-unmark-all-marks)
+    (keymap-set dired-mode-map "c" #'dired-create-directory)
+    (keymap-set dired-mode-map "q" #'kill-this-buffer)
+    (keymap-set dired-mode-map "g" #'revert-buffer)
+    (keymap-set dired-mode-map "W" #'evil-forward-WORD-begin)
+    (keymap-set dired-mode-map "B" #'evil-backward-WORD-begin)
+    (keymap-set dired-mode-map "E" #'evil-forward-WORD-end)
+    (keymap-set dired-mode-map "G" #'dired-git-info-mode)
+    (keymap-set dired-mode-map "n" #'dired-next-line)
+    (keymap-set dired-mode-map "p" #'dired-previous-line)
+    (keymap-set dired-mode-map "P" #'peep-dired)
+    (keymap-set dired-mode-map "C-c C-n" #'dired-narrow)
+    (keymap-set dired-mode-map "C-c f r" #'dired-narrow-fuzzy)
+    (keymap-set dired-mode-map "C-c f r" #'dired-narrow-regexp)
+    (keymap-set dired-mode-map "<tab>" #'dired-subtree-toggle)
+    (keymap-set dired-mode-map "<backtab>" #'dired-subtree-cycle)
+    (keymap-set dired-mode-map "SPC" nil)
+    :bind ("C-c d" . dired-jump)
+    :hook ((dired-mode . all-the-icons-dired-mode)
+           (dired-mode . hl-line-mode))
+    )
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 (use-package dired-collapse
+  :ensure t
   :after dired
   :hook (dired-mode . dired-collapse-mode))
 
 (use-package dired-git-info
+  :ensure t
   :after dired)
 
-(use-package dired-single
-  :after dired)
+;; (use-package dired-single
+;;   :ensure t
+;;   :after dired)
 
 (use-package dired-narrow
+  :ensure t
   :after dired)
 
 (use-package dired-subtree
-  :after dired
-)
+  :ensure t
+  :after dired)
 
 (use-package dired-hide-dotfiles
+  :ensure t
   :after dired)
 
 (use-package peep-dired
+  :ensure t
   :after dired)
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
-
-(general-def
- :states 'normal
- :keymaps 'dired-mode-map
- "(" 'dired-hide-details-mode
- ")" 'dired-git-info-mode
- "j" 'dired-next-line
- "k" 'dired-previous-line
- "h" 'dired-up-directory
- "H" 'dired-hide-dotfiles-mode
- "l" 'dired-find-alternate-file
- "o" 'dired-find-file-other-window
- "s" 'dired-sort-toggle-or-edit
- "v" 'dired-toggle-marks
- "m" 'dired-mark
- "u" 'dired-unmark
- "U" 'dired-unmark-all-marks
- "c" 'dired-create-directory
- "q" 'kill-this-buffer
- "gg" 'revert-buffer
- "W" 'evil-forward-WORD-begin
- "B" 'evil-backward-WORD-begin
- "E" 'evil-forward-WORD-end
- "" 'dired-git-info-mode
- "n" 'dired-next-line
- "p" 'dired-previous-line
- "P" 'peep-dired
- "C-c C-n" 'dired-narrow
- "C-c f r" 'dired-narrow-fuzzy
- "C-c f r" 'dired-narrow-regexp
- "<tab>" 'dired-subtree-toggle
- "<backtab>" 'dired-subtree-cycle
- "SPC" nil)
 
 
 ;; Configure treemacs and more

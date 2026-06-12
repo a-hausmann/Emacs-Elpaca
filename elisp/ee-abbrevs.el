@@ -6,7 +6,7 @@
 ;;
 
 (setq save-abbrevs nil)      ;; Do NOT save abbrevs when quiting emacs
-(delight 'abbrev-mode)
+;; (delight 'abbrev-mode)    ;; WHY does this fail?
 
 (clear-abbrev-table global-abbrev-table)
 

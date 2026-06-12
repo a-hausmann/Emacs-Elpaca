@@ -6,6 +6,9 @@
 ;; References:    https://github.com/progfolio/.emacs.d
 ;;
 
+;; Follow symlinks for version controlled files
+(setq vc-follow-symlinks t)
+
 ;; Installation of Elpaca, ref: https://github.com/progfolio/elpaca#installer
 ;; Disable package.el in the early-init file.
 (setq package-enable-at-startup nil)
@@ -49,13 +52,13 @@
 (setq frame-inhibit-implied-resize t)
 
 ;; Set default and backup fonts
-(push '(font . "Source Code Pro") default-frame-alist)
-(set-face-font 'default "Source Code Pro")
-(set-face-font 'variable-pitch "DejaVu Sans")
-(copy-face 'default 'fixed-pitch)
+;; (push '(font . "Source Code Pro") default-frame-alist)
+;; (set-face-font 'default "Source Code Pro")
+;; (set-face-font 'variable-pitch "DejaVu Sans")
+;; (copy-face 'default 'fixed-pitch)
 
 ;; Ignore X resources.
-(advice-add #'x-apply-session-resources :override #'ignore)
+;; (advice-add #'x-apply-session-resources :override #'ignore)
 
 ;; Silence bells.
 (setq ring-bell-function #'ignore
@@ -67,5 +70,5 @@
   (load-file "~/.emacs-secret.el"))
 
 
-(provide 'early-init)
+;; (provide 'early-init)
 ;;; early-init.el ends here

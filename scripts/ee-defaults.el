@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-defaults.el
 ;; Created:       2023-07-22
-;; Last modified: Sun Apr 12, 2026 14:36:53
+;; Last modified: Mon May 18, 2026 18:11:07
 ;; Purpose:       Set default values.
 ;;
 
@@ -82,8 +82,6 @@
 (setq select-enable-clipboard nil )                  ; Keep kill-ring and system clipboard separate
 (setq x-select-enable-clipboard-manager t)           ; Emacs will transfer clipboard contents to system clipboard
 ;; 03/06/2026: Updated OS and it has taken over the Super key.
-;; 03/18/2026: GOT IT BACK. Open System Settings -> Shortcuts, change bindings under KWin.
-(keymap-global-set "s-w" 'clipboard-kill-ring-save)
 (keymap-global-set "s-y" 'clipboard-yank)
 
 ;; For SOME reason, using the "keymap-global-X" commands don't work well in the Evil environment.
@@ -92,16 +90,16 @@
 ;; (keymap-global-unset "C-y")            ; Unset the Evil keybinding from evil-scroll-line-up
 ;; (keymap-global-set "C-y" 'yank)        ; Redefine to standard Emacs yank.
 (global-unset-key (kbd "C-y"))                       ; Unset the Evil keybinding from evil-scroll-line-up
-(general-define-key                                  ; Redefine to standard Emacs yank.
- :states '(insert normal)
- "C-y" 'yank)
+;;(general-define-key                                  ; Redefine to standard Emacs yank.
+;; :states '(insert normal)
+;; "C-y" 'yank)
 
 ;; Set UTF-8 encoding
-(setq locale-coding-system 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
+;; (setq locale-coding-system 'utf-8)
+;; (set-terminal-coding-system 'utf-8)
+;; (set-keyboard-coding-system 'utf-8)
 (set-selection-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
+;; (prefer-coding-system 'utf-8)
 
 
 ;; Will now use C-1…10 and M-1…10 however I see fit, they can now be reassigned.
@@ -113,7 +111,7 @@
 ;;   (global-unset-key (kbd (format "M-%d" n))))
 
 
-;; Hooks
+;;; Hooks
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (when window-system (add-hook 'prog-mode-hook 'hl-line-mode))
 
@@ -188,6 +186,11 @@
 
 ;; Ref: https://www.youtube.com/watch?v=1-UIzYPn38s
 ;; Ref: https://protesilaos.com/emacs/dotemacs#h:50f8b1e4-b14e-453f-a37e-1c0e495ab80f
+;; Ref: https://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Buffer-Display-Action-Functions
+;; Ref: https://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Buffer-Display-Action-Alists
+;; Ref: https://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Choosing-Window-Options
+;; Ref: https://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Precedence-of-Action-Functions
+;; Ref: https://www.gnu.org/software/emacs/manual/html_mono/elisp.html#The-Zen-of-Buffer-Display
 ;; Add more entries as I come across them.
 (setq display-buffer-alist
       '(
@@ -206,10 +209,6 @@
         ))
 
 
-;; 03/28/2026: Ediff settings, ref: https://www.youtube.com/watch?v=pSvsAutseO0
-(setq ediff-split-window-function 'split-window-horizontally)
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
-
 ;; 12/28/2025: END customizable options.
 
 
@@ -219,9 +218,11 @@
     :ensure nil
     :hook (text-mode . display-fill-column-indicator-mode))
 
-(use-package emacs-lisp-mode
-    :ensure nil
-    :hook (emacs-lisp-mode . flycheck-mode))
+;; (use-package emacs-lisp-mode
+;;     :ensure nil
+;;     :hook (emacs-lisp-mode . flycheck-mode))
+
+
 
 ;; 04/07/2026: Some keybinding changes, `keyboard-quit' issues and `suspend-frame';
 (keymap-global-unset "C-z") ; getting rid of the `suspend-frame' (when evil-mode disabled)

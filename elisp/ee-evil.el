@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-evil.el
 ;; Created:       2023-07-22
-;; Last modified: Thu Apr 09, 2026 16:59:09
+;; Last modified: Mon Jun 01, 2026 22:01:12
 ;; Purpose:       Configure Evil mode and accompanying packages
 ;;
 
@@ -114,7 +114,7 @@
   :delight
   :config (evil-collection-init))
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 (provide 'ee-evil)

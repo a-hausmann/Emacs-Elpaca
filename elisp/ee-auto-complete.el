@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-auto-complete.el
 ;; Created:       2023-07-22
-;; Last modified: Sat Mar 29, 2025 0:11:01
+;; Last modified: Mon Jun 01, 2026 23:04:21
 ;; Purpose:       Configure Company and companion packages.
 ;;
 
@@ -18,33 +18,34 @@
 ;; --------------------------------------------------------------------------------
 ;; Basic setting
 (with-eval-after-load 'company
-  (setq company-show-numbers t)
-  ;; Oleh's function:
-  (defun ora-company-number ()
-    "Forward to `company-complete-number'.
+  '(progn
+    (setq company-show-numbers t)
+    ;; Oleh's function:
+    (defun ora-company-number ()
+      "Forward to `company-complete-number'.
 
   Unless the number is potentially part of the candidate.
   In that case, insert the number."
-    (interactive)
-    (let* ((k (this-command-keys))
-           (re (concat "^" company-prefix k)))
-      (if (cl-find-if (lambda (s) (string-match re s))
-                      company-candidates)
-          (self-insert-command 1)
-          (company-complete-number (string-to-number k)))))
+      (interactive)
+      (let* ((k (this-command-keys))
+             (re (concat "^" company-prefix k)))
+        (if (cl-find-if (lambda (s) (string-match re s))
+                        company-candidates)
+            (self-insert-command 1)
+            (company-complete-number (string-to-number k)))))
 
-  ;; Add some bindings
-  (let ((map company-active-map))
-    (mapc
-     (lambda (x)
-       (define-key map (format "%d" x) 'ora-company-number))
-     (number-sequence 0 9))
-    (define-key map " " (lambda ()
-                          (interactive)
-                          (company-abort)
-                          (self-insert-command 1)))
-    ;; This line UNBINDS RET key from closing the popup
-    (define-key map (kbd "<return>") nil)))
+    ;; Add some bindings
+    (let ((map company-active-map))
+      (mapc
+       (lambda (x)
+         (define-key map (format "%d" x) 'ora-company-number))
+       (number-sequence 0 9))
+      (define-key map " " (lambda ()
+                            (interactive)
+                            (company-abort)
+                            (self-insert-command 1)))
+      ;; This line UNBINDS RET key from closing the popup
+      (define-key map (kbd "<return>") nil))))
 
 ;; --------------------------------------------------------------------------------
 ;; Start Company configuration.

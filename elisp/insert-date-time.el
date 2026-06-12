@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8; lexical-binding: t -*-
 ;; File name:     insert-date-time.el
 ;; Created:       2026-01-08
-;; Last modified: Thu Apr 09, 2026 23:17:30
+;; Last modified: Tue Jun 02, 2026 21:23:45
 ;; Purpose:       Package to insert the current date/time in various formats.
 
 ;; Got tons of helpful ideas from this Github: https://github.com/xenodium/time-zones
@@ -59,7 +59,7 @@
   :type 'string)
 
 (defcustom insert-date-time-iso-time
-  "%Y-%m-%d %-H:%M:%S"
+  "%Y-%m-%d %H:%M:%S"
   "YYYY-MM-DD HH24:MI:SS"
   :group 'insert-date-time
   :tag "YYYY-MM-DD HH24:MI:SS"
@@ -73,7 +73,7 @@
   :type 'string)
 
 (defcustom insert-date-time-abb-string-time
-  "%a %b %d, %Y %-H:%M:%S"
+  "%a %b %d, %Y %H:%M:%S"
   "Day Mon Date, Year HH24:MI:SS"
   :group 'insert-date-time
   :tag "Day Mon Date, Year HH24:MI:SS"
@@ -87,7 +87,7 @@
   :type 'string)
 
 (defcustom insert-date-time-string-time
-  "%A, %B %d, %Y %-H:%M:%S %p"
+  "%A, %B %d, %Y %I:%M:%S %p"
   "Day, Month Date, Year HH:MI:SS PM"
   :group 'insert-date-time
   :tag "Day, Month Date, Year HH:MI:SS PM"
@@ -100,13 +100,44 @@
   :tag "Month, Year"
   :type 'string)
  
+
+
+;; Insert paired characters into buffer.
+(defconst insert-paired-char-alist
+  '(("' Single quote" . (39 39))           ; ' '
+    ("\" Double quotes" . (34 34))         ; " "
+    ("` Elisp quote" . (96 39))            ; ` '
+    ("‘ Single apostrophe" . (8216 8217))  ; ‘ ’
+    ("“ Double apostrophes" . (8220 8221)) ; “ ”
+    ("( Parentheses" . (40 41))            ; ( )
+    ("{ Curly brackets" . (123 125))       ; { }
+    ("[ Square brackets" . (91 93))        ; [ ]
+    ("< Angled brackets" . (60 62))        ; < >
+    )
+  "Alist of pairs for use with `insert-paired-characters'.")
+
+(defun insert-paired-characters (&optional arg)
+  "Insert pair from `insert-paired-char-alist'."
+  (interactive "P")
+  (let* ((data insert-paired-char-alist)
+         (chars (mapcar #'car data))
+         (choice (completing-read "Select pairs: " chars nil t))
+         (left (cadr (assoc choice data)))
+         (right (caddr (assoc choice data))))
+    (insert-pair arg left right)))
+
+
+
+
+
 ;; Use transient.el to define base menu for selecting format to use.
 
 (transient-define-prefix insert-date-time ()
   "Insert `now' as formatted string. Options are shown via a transient menu.
 Because this needs to be used in any buffer, there are several keybindings.
 The main binding is `C-; d' and alternates are `C-c M-i' and `s-c i'."
-  ["Insert date:"
+  ;; The date and date/time to be in columns, left and right respectively
+  [["Insert date:"   ; left side
   ("s" "MM/DD/YYYY"
        (lambda () (interactive)
          (insert (format-time-string insert-date-time-usa))))
@@ -122,24 +153,33 @@ The main binding is `C-; d' and alternates are `C-c M-i' and `s-c i'."
   ("J" "YYYYJJJ"
        (lambda () (interactive)
          (insert (format-time-string insert-date-time-year-julian))))
-  ("t" "YYYY-MM-DD HH24:MI:SS"
-       (lambda () (interactive)
-         (insert (format-time-string insert-date-time-iso-time))))
-  ("a" "Day Mon Date, Year"
+  ("a" "Dy Mon Date, Year"
        (lambda () (interactive)
          (insert (format-time-string insert-date-time-abb-string))))
-  ("A" "Day Mon Date, Year HH24:MI:SS"
-       (lambda () (interactive)
-         (insert (format-time-string insert-date-time-abb-string-time))))
   ("f" "Day Month Date, Year"
        (lambda () (interactive)
          (insert (format-time-string insert-date-time-string))))
-  ("F" "Day Month Date, Year HH24:MI:SS"
-       (lambda () (interactive)
-         (insert (format-time-string insert-date-time-string-time))))
   ("M" "Month, Year"
        (lambda () (interactive)
-         (insert (format-time-string insert-date-time-month-year))))])
+         (insert (format-time-string insert-date-time-month-year))))]
+  ["Insert date & time"  ; right side
+  ("t" "YYYY-MM-DD HH24:MI:SS"
+       (lambda () (interactive)
+         (insert (format-time-string insert-date-time-iso-time))))
+  ("A" "Dy Mon Date, Year HH24:MI:SS"
+       (lambda () (interactive)
+         (insert (format-time-string insert-date-time-abb-string-time))))
+  ("F" "Day Month Date, Year HH24:MI:SS"
+       (lambda () (interactive)
+         (insert (format-time-string insert-date-time-string-time))))]]
+  ;; Other things will be in a group at the bottom.
+  ;; TODO: add functions from "ee-hydras.el" to the below; may need to go right.
+  ["Insert other things"
+  ("%" "Full Name" (lambda () (interactive) (insert user-full-name)))
+  ("@" "Email" (lambda () (interactive) (insert user-mail-address)))
+  ("^" "Login Name" (lambda () (interactive) (insert user-login-name)))
+  ("p" "Paired characters" insert-paired-characters)]
+  )
 
 
 

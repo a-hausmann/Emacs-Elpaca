@@ -1,11 +1,15 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     init.el
 ;; Created:       2023-07-13
-;; Last modified: Thu Apr 09, 2026 16:54:33
+;; Last modified: Mon May 18, 2026 13:25:35
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Follow symlinks for version controlled files
+(setq vc-follow-symlinks t)
+
+
 ;; Set load path for scripts (more constant config) and elisp (changing config)
 (add-to-list 'load-path "~/.emacs.d/scripts")
 (add-to-list 'load-path "~/.emacs.d/elisp")
@@ -33,8 +37,15 @@
 ;; *****************************************************************************
 ;; New code starts here
 ;; *****************************************************************************
-;; (defvar elpaca-installer-version 0.10)
-(defvar elpaca-installer-version 0.11)
+;; (defvar elpaca-installer-version 0.12)
+
+;; 05/18/2026: Create Elpaca lock file, now need to set customized variable `elpaca-lock-file'.
+;; Ref: https://github.com/progfolio/elpaca/blob/master/doc/manual.md#lock-files
+;; Variable `elpaca-menu-functions' lists `elpaca-menu-lock-file' FIRST so lock file will
+;; be used for packages specified in the file.
+(setopt elpaca-lock-file (expand-file-name "elisp/elpaca-lock-file-list.el" user-emacs-directory))
+
+(defvar elpaca-installer-version 0.12)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
@@ -76,9 +87,8 @@
 ;; New code ends here
 ;; *****************************************************************************
 
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
-(require 'elpaca-config)                ; The Elpaca Package Manager
-;; (require 'elpaca-after-init)            ; The elpaca-after-init-hooks
+;; 05/23/2026: On reinstalled POP!_OS and new version of Elpaca, `elpaca-config' seems to be gone.
+;; (require 'elpaca-config)                ; The Elpaca Package Manager
 (with-eval-after-load 'elpaca
   (add-hook 'elpaca-after-init-hook '+reset-init-values))
 
@@ -114,9 +124,9 @@
     (setq ee-system-type "windows-nt")
   (setq ee-system-type "linux"))
 
-(if (string-equal system-type "windows-nt")
-    (add-to-list 'load-path "c:/Users/frst6889/.emacs.d/elisp")
-  (add-to-list 'load-path "~/.emacs.d/elisp"))
+;; (if (string-equal system-type "windows-nt")
+;;     (add-to-list 'load-path "c:/Users/frst6889/.emacs.d/elisp")
+;;   (add-to-list 'load-path "~/.emacs.d/elisp"))
 
 
 ;; general.el provides a more convenient method for binding keys in emacs (for both evil and non-evil users).
@@ -133,7 +143,7 @@
   :ensure t
   :demand)
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Load the General configuration file. This defines the menu structures only.
@@ -167,10 +177,13 @@
 (defun aeh/load-custom ()
   (interactive)
   (when (file-exists-p custom-file)
-    (load custom-file)
+    (load custom-file 'noerror)
     (message "custom-file loaded!")))
-(when (file-exists-p custom-file)
-  (aeh/load-custom))
+;; (when (file-exists-p custom-file)
+;;   (aeh/load-custom))
+
+;; (elpaca-process-queues)
+(add-hook 'elpaca-after-init-hook (lambda () (load custom-file 'noerror)))
 
 ;; Enable some features
 ;; Ref: https://github.com/skangas/dot-emacs/blob/master/init.el

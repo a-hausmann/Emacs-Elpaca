@@ -1,20 +1,15 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-packages.el
 ;; Created:       2023-07-15
-;; Last modified: Tue Apr 07, 2026 15:09:05
+;; Last modified: Tue Jun 09, 2026 22:38:52
 ;; Purpose:       This is the main package loader/configurator for Emacs-Elpaca
 ;;
 
 ;; Configure delight
-;; (load "/home/arnold/.emacs.d/elpaca/repos/delight/delight.el")
-(add-to-list 'load-path "/home/arnold/.emacs.d/elpaca/builds/delight")
-(add-to-list 'load-path "/home/arnold/.emacs.d/elpaca/builds/rainbow-mode")
-(require 'delight)
-;; (use-package delight
-;;     :ensure nil
-;;     :demand)
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+(use-package delight
+    :ensure t
+    :demand)
+
 
 ;; Configure which-key
 (use-package which-key
@@ -24,8 +19,6 @@
   :delight
   :config
   (setq which-key-idle-delay 0.5))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; Configure command-log-mode
@@ -42,17 +35,15 @@
 
 ;; Load scripts to set up completion, both auto-complete and completing read.
 ;; 02/14/2026: trying Corfu instead of Company. Cannot get Elpaca to load it correctly. Shoot!
-(require 'ee-auto-complete)    ; aka Company
-;; (require 'config-corfu)
+(require 'config-corfu)
+
+;; 06/01/2026: Lisp error (void-function company-mode), so killed the require of Company.
+;; The only other thing referencing "company-mode" is in ee-general.el, which is not called.
+;; Weird!
+;; (require 'ee-auto-complete)    ; aka Company
+
 (require 'ee-completion)
 
-
-;; Try using frog-jump-buffer; NO DO NOT!!! The posframe still has horrible face and is unreadable.
-  ;; (use-package frog-jump-buffer
-  ;;   :ensure t
-  ;;   :diminish
-  ;;   :config
-  ;;   (setq frog-jump-buffer-include-current-buffer nil))
 
 (use-package flycheck
     :ensure t
@@ -77,60 +68,12 @@
   :hook (emacs-lisp-mode . lisp-mode)
   :delight lisp-mode "Lisp")
 (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 
 ;; All-the-icons
 (use-package all-the-icons
   :ensure t
   :delight)
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
-
-
-;; Configure Ace-windows
-;; 02/06/2026: I don't REALLY use this anymore, especially the rarer functions, but use
-;; windmove instead. Am commenting this out for now and looking to remove it later.
-  ;; (defun aeh/scroll-other-window()
-  ;;   (interactive)
-  ;;   (scroll-other-window 1))
-  ;; (defun aeh/scroll-other-window-down ()
-  ;;   (interactive)
-  ;;   (scroll-other-window-down 1))
-  ;; (use-package ace-window
-  ;;   :ensure t
-  ;;   :commands ace-window
-  ;;   :delight
-  ;;   :config
-  ;;   (set-face-attribute
-  ;;    'aw-leading-char-face nil
-  ;;    :foreground "deep sky blue"
-  ;;    :weight 'bold
-  ;;    :height 3.0)
-  ;;   (set-face-attribute
-  ;;    'aw-mode-line-face nil
-  ;;    :inherit 'mode-line-buffer-id
-  ;;    :foreground "lawn green")
-  ;;   (setq aw-dispatch-always nil)
-  ;;   (defvar
-  ;;         aw-dispatch-alist
-  ;;         '((?x aw-delete-window "Delete Window")
-  ;;           (?m aw-swap-window "Swap Window")
-  ;;           (?M aw-move-window "Move Window")
-  ;;           (?c aw-copy-window "Copy Window")
-  ;;           (?j aw-switch-buffer-in-window "Select Buffer")
-  ;;           (?n aw-flip-window "Flip Window")
-  ;;           (?u aw-switch-buffer-other-window "Switch Buffer Other Window")
-  ;;           (?v aw-split-window-vert "Split Vert Window")
-  ;;           (?b aw-split-window-horz "Split Horz Window")
-  ;;           (?o delete-other-windows "Delete Other Windows")
-  ;;           )
-  ;;         "List of actions for `aw-dispatch-default'.")
-  ;;   (ace-window-display-mode t)
-  ;;   :bind
-  ;;   ("C-M-<tab>" . ace-window)
-  ;;   ([remap other-window] . ace-window))
 
 
 ;; Amx is the newer alternative to smex (aka smart M-x). 
@@ -168,10 +111,10 @@
 
 
 ;; Configure Aggressive-indent, works well with Emacs-lisp, not that well with other languages (Python?)
-(use-package aggressive-indent
-  :ensure t
-  :delight
-  :hook (emacs-lisp-mode . aggressive-indent-mode))
+;; (use-package aggressive-indent
+;;   :ensure t
+;;   :delight
+;;   :hook (emacs-lisp-mode . aggressive-indent-mode))
 
 
 ;; allow asynchronous processing wherever possible…pretty nice.
@@ -219,6 +162,8 @@
 
 
 ;; Configure Helpful help commands
+;; 05/23/2026: helpful is NOT loading, comment for now.
+;; 06/01/2026: it is now!
 (use-package helpful
   :commands (helpful-callable helpful-variable helpful-command helpful-key)
   :bind
@@ -241,27 +186,6 @@
        (add-hook 'html-mode-hook 'aeh-html-stuff-mode)))
 
 
-;; Configure Magit.
-;; (use-package magit
-;;     :ensure t
-;;     :delight
-;;     :commands (magit-status)
-;;     :bind ("C-x g g" . magit-status)
-;;     ("C-x g b" . magit-blame)
-;;     ("C-x g c" . magit-branch-checkout)
-;;     ("C-x g l" . magit-log-buffer-file)
-;;     )
-;; (setq magit-push-always-verify nil)
-;; (setq git-commit-summary-max-length 50)
-;; (use-package magit-gitflow
-;;   :ensure t
-;;   :after magit
-;;   :delight
-;;   :hook (magit-mode . turn-on-magit-gitflow))
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
-
-
 ;; Configure Minions
 (use-package minions
   :defer 1
@@ -269,51 +193,106 @@
   :config (minions-mode 1))
 
 
-;; Configure wgrep/Ripgrep. 07/29/2023: Use ripgrep only at home for now.
+;; Configure wgrep/Ripgrep.
 (use-package wgrep
   :ensure nil
   :defer 1
   :delight)
 
-;; /home/arnold/.emacs.d/20250328-elpaca-warnings.txt: change ":elpaca" to ":ensure"
-(when (string-equal ee-system-type "linux")
-  (use-package rg
-      :ensure t
-      :after wgrep
-      :bind (:map aeh-html-stuff-mode-map
-                  ("C-c C-c s" . rg-men))
-      :init (rg-enable-default-bindings)
-      :config  ;; 03/26/2024: added from Prot video.
-      (setq rg-group-result t
-            rg-hide-command t
-            rg-show-columns nil
-            rg-show-header t
-            rg-custom-type-aliases nil
-            rg-default-alias-fallback "all"
-            rg-show-columns t)))
+;; Configure Ripgrep Emacs interface.
+(use-package rg
+    :ensure t
+    :config
+    (rg-enable-menu)   ; THIS enables the transient menu; forget the other options.
+    ;; 03/26/2024: added from Prot video.
+    (setq rg-group-result t
+          rg-hide-command t
+          rg-show-columns nil
+          rg-show-header t
+          rg-custom-type-aliases nil
+          rg-default-alias-fallback "all"
+          rg-show-columns t)
+
+    :bind (("M-s R" . rg)               ; global binding for getting right to rg
+           ("C-c s" . rg-menu)
+           :map aeh-html-stuff-mode-map
+           ("C-c C-c s" . rg-menu)))    ; "C-c s" was already used, so redefine for this map.
+
+
+;; 04/26/2026: add `key-chord' package, ref: https://github.com/emacsorphanage/key-chord
+;; Allow definition of non-modifier-key based chords, like ";;" or "hj".
+;; Keys must be typed quickly
+;; Command `key-chord-describe' lists currently defined key chords
+;; 
+(use-package key-chord
+    :ensure t
+    :demand
+    :init (key-chord-mode 1)
+    :custom
+    (customize-set-variable key-chord-two-keys-delay 0.1)
+    (customize-set-variable key-chord-one-key-delay 0.1)
+    (customize-set-variable key-chord-one-key-min-delay 0.0)
+    :config
+    ;; Define global key chords
+    ;; (key-chord-define-global "''" "`'\C-b")
+    ;; Define key chords to specific keymaps
+    (key-chord-define prog-mode-map ";," 'indent-for-comment)
+    (key-chord-define prog-mode-map ";;" 'comment-line)
+    (key-chord-define prog-mode-map "JJ" 'reindent-then-newline-and-indent)
+    (key-chord-define emacs-lisp-mode-map "``" "`;\C-b")  ; Emacs Lisp `quote'
+    )
+
+;; 04/27/2026: Configure `hideshow' mode, native to Emacs.
+;; This will perform some rudimentary code folding without markers.
+(use-package hideshow
+    :ensure nil
+    :config
+  (defun hs-cycle (&optional level)
+    (interactive "p")
+    (let (message-log-max
+          (inhibit-message t))
+      (if (= level 1)
+          (pcase last-command
+            ('hs-cycle
+             (hs-hide-level 1)
+             (setq this-command 'hs-cycle-children))
+            ('hs-cycle-children
+             ;; TODO: Fix this case. `hs-show-block' needs to be
+             ;; called twice to open all folds of the parent
+             ;; block.
+             (save-excursion (hs-show-block))
+             (hs-show-block)
+             (setq this-command 'hs-cycle-subtree))
+            ('hs-cycle-subtree
+             (hs-hide-block))
+            (_
+             (if (not (hs-already-hidden-p))
+                 (hs-hide-block)
+                 (hs-hide-level 1)
+                 (setq this-command 'hs-cycle-children))))
+          (hs-hide-level level)
+          (setq this-command 'hs-hide-level))))
+
+  (defun hs-global-cycle ()
+    (interactive)
+    (pcase last-command
+      ('hs-global-cycle
+       (save-excursion (hs-show-all))
+       (setq this-command 'hs-global-show))
+      (_ (hs-hide-all))))
+
+  (defun hs-cycle-key-bindings ()
+    (keymap-set hs-minor-mode-map "C-c C-<tab>" 'hs-cycle)
+    (keymap-set hs-minor-mode-map "C-c C-M-<tab>" 'hs-global-cycle))
+
+  (add-hook 'hs-minor-mode-hook 'hs-cycle-key-bindings))
 
 
 ;; Configure org mode
 (load "ee-org.el")
 
 
-;; Keep this at end.
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
-(if (string-equal ee-system-type "windows-nt")
-    (progn
-      (find-file "c:/_work/org/todo.org")
-      ;; 2020-04-27: Created acts.org, load with todo.org
-      (find-file "c:/_work/org/acts.org")
-      ;; 2020-09-09: Add back in jira.org file.
-      (find-file "c:/_work/org/jira.org")
-      ;; 2020-02-28: add x12-mode autoload plus file extensions
-      (progn
-        (autoload 'x12-mode "x12-mode" "" t)
-        ;; Add more file extensions as required
-        (add-to-list 'auto-mode-alist '("\\.x12\\'" . x12-mode))))
-  (progn
-    (find-file "~/Documents/AA/zoom-meetings-info.txt")
-    (find-file "~/Documents/Health/BP-tracking.txt")))
+;; Load my "useful" functions.
 (load "ee-useful")
 
 ;; End ee-packages.el

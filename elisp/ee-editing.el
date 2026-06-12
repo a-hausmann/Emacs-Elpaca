@@ -1,7 +1,7 @@
 ;;; Setups for editing -*- lexical-binding: t -*-
 ;; File name:     ee-editing.el
 ;; Created:       2023-07-30
-;; Last modified: Wed Apr 08, 2026 9:42:47
+;; Last modified: Wed Jun 03, 2026 9:54:23
 ;; Purpose:       Configure packages used in straight editing (not programming languages)
 ;;
 
@@ -13,6 +13,13 @@
 ;;   :config
 ;;   (treesit-auto-add-to-auto-mode-alist 'all)
 ;;   (global-treesit-auto-mode))
+
+
+;;; Basic: delete-selection-mode
+(use-package delsel
+  :ensure nil
+  :hook (after-init . delete-selection-mode))
+
 
 ;;; Configure WS-Butler (trims trailing whitespace ONLY on changed lines.)
 (use-package ws-butler
@@ -111,14 +118,62 @@ This is designed to be used in a prog-mode-hook."
 (add-hook 'prog-mode-hook 'hs-minor-mode)
 
 
+;; 05/18/2026: Installing `kirigami' as an eventual replacement for `origami'.
+;; Ref: https://github.com/jamescherti/kirigami.el
+
+(use-package kirigami
+    :ensure t
+    :bind
+    ("C-c z o" . #'kirigami-open-fold)         ; Open fold at point
+    ("C-c z O" . #'kirigami-open-fold-rec)     ; Open fold recursive
+    ("C-c z r" . #'kirigami-open-folds)        ; Open ALL folds
+    ("C-c z c" . #'kirigami-close-fold)        ; Close fold at point
+    ("C-c z C" . #'kirigami-close-folds)       ; Close ALL fold
+    ("C-c z t" . #'kirigami-toggle-fold)       ; Toggle fold at point
+    :hook
+    ;; Normally used frequently
+    (emacs-lisp-mode . outline-minor-mode)
+    (lisp-interaction-mode . hs-minor-mode)    ; *Scratch* buffer
+    (lisp-mode . outline-minor-mode)
+    (markdown-mode . outline-minor-mode)
+    (diff-mode . outline-minor-mode)
+    ;; Web & frontend
+    (js-mode . hs-minor-mode)
+    (typescript-mode . hs-minor-mode)
+    (css-mode . hs-minor-mode)
+    ;; Scripting & data
+    (sh-mode . hs-minor-mode)
+    (json-mode . hs-minor-mode)
+    (html-mode . hs-minor-mode))
+
+;; The outline-indent package provides a minor mode that enables code
+;; folding based on indentation levels.
+;; In addition to code folding, outline-indent allows:
+;; - Moving indented blocks up and down
+;; - Indenting/unindenting to adjust indentation levels
+;; - Inserting a new line with the same indentation level as the current line
+;; - Move backward/forward to the indentation level of the current line
+;; - and other features.
+;; URL: https://github.com/jamescherti/outline-indent.el
+(use-package outline-indent
+    :ensure t
+    :commands outline-indent-minor-mode
+    :custom
+    (outline-indent-ellipsis " ▼")
+    :hook
+    (python-mode . outline-indent-minor-mode)
+    (python-ts-mode . outline-indent-minor-mode))
+
+
+
 ;;; Configure rainbow-mode, useful for showing color of codes.
-(use-package rainbow-mode
-  :defer
-  :ensure nil
-  :delight
-  :hook 
-  (prog-mode . rainbow-mode)
-  (org-mode . rainbow-mode))
+;; (use-package rainbow-mode
+;;   :defer
+;;   :ensure nil
+;;   :delight
+;;   :hook 
+;;   (prog-mode . rainbow-mode)
+;;   (org-mode . rainbow-mode))
 
 
 ;;; 02/10/2024: Adding keycast-mode
@@ -184,6 +239,7 @@ This is designed to be used in a prog-mode-hook."
     :ensure t
     :bind
     ("C-{" . embrace-commander)
+    ("s-e" . embrace-commander)
     :init
     (add-hook 'org-mode-hook 'embrace-org-mode-hook))
 
@@ -197,6 +253,16 @@ This is designed to be used in a prog-mode-hook."
 ;;   :hook (emacs-startup . global-jinx-mode)
 ;;   :bind (("M-$" . jinx-correct)
 ;;          ("C-M-$" . jinx-languages)))
+
+
+;; 05/15/2026: Added this to both work and home config. I LOVE this package. It requires `avy'
+;; which I already love, and can zap in any direction. Will get rid of my other bindings to the
+;; original Emacs functions.
+(use-package zzz-to-char
+    :ensure t
+    :bind
+    ("M-z" . zzz-to-char)
+    ("C-M-z" . zzz-to-char-up-to-char))
 
 
 (message "Loaded ee-editing.el")

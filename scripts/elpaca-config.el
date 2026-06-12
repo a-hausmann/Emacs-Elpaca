@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     elpaca-config.el
 ;; Created:       2023-08-19
-;; Last modified: Sat Mar 29, 2025 9:57:57
+;; Last modified: Mon Jun 01, 2026 21:59:51
 ;; Purpose:       Configuration for Elpaca.
 ;;
 
@@ -68,7 +68,7 @@
   (setq elpaca-use-package-by-default t))
 
 ;; Allow Elpaca to process queues up to this point
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
+;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 (if debug-on-error
     (setq use-package-verbose t

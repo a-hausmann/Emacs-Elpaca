@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-org.el
 ;; Created:       2023-10-03
-;; Last modified: Mon Feb 16, 2026 21:25:06
+;; Last modified: Mon Jun 01, 2026 23:24:55
 ;; Purpose:       This is to configure Org mode.
 ;;
 
@@ -9,66 +9,72 @@
 (setq org-startup-folded t)
 (setq inhibit-compacting-font-caches t)
 
-;; /home/arnold/.emacs.d/20250328-elpaca-warnings.txt: change ":elpaca" to ":ensure"
 (use-package org
     :ensure nil
-    :delight)
+    :delight
+    :bind (:map org-mode-map
+          ("C-c C-x l" . org-toggle-link-display))
+    :config
+    (custom-set-faces
+     '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
+     '(org-level-2 ((t (:inherit outline-2 :height 1.2))))
+     '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
+     '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
+     '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
+    ;; Other settings here:
+    (setq org-auto-align-tags t
+          org-tags-column -77
+          org-fold-catch-invisible-edits 'smart
+          org-special-ctrl-a/e nil
+          org-insert-heading-respect-content nil
+          org-hide-emphasis-markers t
+          org-pretty-entities t
+          org-agenda-tags-column 0)
+    ;; Use "C-x 8 RET", enter string "arrow down left" to get set of symbols
+    ;; (setq org-ellipsis "▼▼▼") 
+    ;; (setq org-ellipsis " ⏎")  ; "RETURN SYMBOL"
+    ;; (setq org-ellipsis " ↵")  ; "DOWNWARDS ARROW WITH CORNER LEFTWARDS" 
+    (setq org-ellipsis " ⮨")      ; "BLACK CURVED DOWNWARDS AND LEFTWARDS ARROW"
+    ;; (setq org-ellipsis " ⧨")  ; "DOWN-POINTING TRIANGLE WITH LEFT HALF BLACK"
+    )
 
-;; 05/24/2024: is org-modern a possible replacement for org-bullets?
-;; Ref: https://github.com/minad/org-modern
-;; Getting an error when attempting to toggle org-modern-mode, tried a lot, couldn't get to work.
-;; Debugger entered--Lisp error: (void-function internal--without-restriction)
-;;   internal--without-restriction(#f(compiled-function () #<bytecode 0x17c4b12d9671>))
-;;   org-modern-mode(toggle)
-;;   funcall-interactively(org-modern-mode toggle)
-;;   call-interactively(org-modern-mode record nil)
-;;   command-execute(org-modern-mode record)
-;;   execute-extended-command(nil "org-modern-mode" "org modern")
-;;   funcall-interactively(execute-extended-command nil "org-modern-mode" "org modern")
-;;   call-interactively(execute-extended-command nil nil)
-;;   command-execute(execute-extended-command)
-;; Debugger entered--Lisp error: (void-function internal--without-restriction)
-;;   internal--without-restriction(#f(compiled-function () #<bytecode 0x15758da0dc11>))
-;;   org-modern-mode()
-;;   org-modern--on()
-;;   global-org-modern-mode(toggle)
-;;   funcall-interactively(global-org-modern-mode toggle)
-;;   call-interactively(global-org-modern-mode record nil)
-;;   command-execute(global-org-modern-mode record)
-;;   execute-extended-command(nil "global-org-modern-mode" "globa org")
-;;   funcall-interactively(execute-extended-command nil "global-org-modern-mode" "globa org")
-;;   call-interactively(execute-extended-command nil nil)
-;;   command-execute(execute-extended-command)
-;; (use-package org-modern
-;;     :elpaca t
-;;     :defer
-;;     :delight
-;;     :config
-;;     (add-hook 'org-mode-hook 'org-modern-mode)
-;;     )
 
-;; /home/arnold/.emacs.d/20250328-elpaca-warnings.txt: change ":elpaca" to ":ensure"
-(use-package org-bullets
-  :ensure t
-  :defer
-  :delight
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-  ;; make available "org-bullet-face" such that I can control the font size individually
-  (setq org-bullets-face-name (quote org-bullet-face))
-  (setq org-bullets-bullet-list '("✙" "♱" "♰" "☥" "✞" "✟" "✝" "†" "✠" "✚" "✜" "✛" "✢" "✣" "✤" "✥"))
-  (setq org-ellipsis "▼▼▼")
-  (custom-set-faces
-   '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
-   '(org-level-2 ((t (:inherit outline-2 :height 1.2))))
-   '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
-   '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
-   '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
-  )
+;; 04/28/2026: adding `org-modern', ref: https://github.com/minad/org-modern
+;; I like this MUCH better than org-bullets.
+;; 05/11/2026: Tweaked after getting error on original hook, needed `:after' to work correctly.
+;; New code all in `:hook' and `:custom' settings.
+(use-package org-modern
+    :ensure t
+    :after org
+    :hook
+    ;; Enable org-modern in org-mode buffers
+    (org-mode . org-modern-mode)
+    ;; optionally enable in org-agenda
+    (org-agenda-finalize . org-modern-agenda)
+    :custom
+    ;; general visual tweaks
+    (org-modern-star '("◉" "○" "✸" "✿"))       ;; heading bullets (level 1..4)
+    ;; (org-modern-list '((?* . "•") (?- . "—"))) ;; list bullets (original)
+    (org-modern-list '((?* . "✱") (?- . "—"))) ;; list bullets (don't think this changes anything)
+    (org-modern-hide-stars t)                  ;; hide leading stars
+    (org-modern-table-vertical 1) ;; table border style
+    (org-modern-keyword nil)      ;; keywords styling (nil = default)
+    (org-modern-block-name nil)   ;; block name style
+    (org-modern-label nil)        ;; label style
+    )
+
+
+;; 04/22/2026: Customize `org-latex-hyperref-template' to add "colorlinks" & "urlcolor"
+(customize-set-value
+ 'org-latex-hyperref-template
+ "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c}, \n pdflang={%L}, \n colorlinks=true, \n urlcolor=blue}\n")
+
 
 (require 'org-tempo)
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("elt" . "src emacs-lisp :tangle"))
+(add-to-list 'org-structure-template-alist '("sl" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("slt" . "src emacs-lisp :tangle"))
+(add-to-list 'org-structure-template-alist '("sltf" . "src emacs-lisp :tangle FILE"))
+
 
 ;; 2019-06-08: After loading ONE of MANY themes, the "fontify-natively" non-nil started
 ;; throwing code between source markers into horrid light colors regardless of theme used.
@@ -78,17 +84,12 @@
 (setq org-confirm-babel-evaluate nil)
 (setq org-export-with-smart-quotes t)
 (setq org-src-window-setup 'current-window)                   ; Allows for "C-c '" to narrow to code being edited.
-;; 2019-01-07: Updated to Org 9.2, this method now invalid, using yas-snippet instead.
+
 (add-hook 'org-mode-hook
             #'(lambda ()
                (visual-line-mode 1)
                (org-indent-mode 1)))
-;; (global-set-key (kbd "C-c '") 'org-edit-src-code)
-(general-def org-mode-map
-  "C-c '" 'org-edit-src-code)
-;; 2021-02-24: Adding SECOND org-ellipsis set after requiring org-tempo to see if this has effect.
-(setq org-ellipsis "▼▼▼")
-
+(keymap-set org-mode-map "C-c '" 'org-edit-src-code)
 
 ;; Ref: http://doc.norang.ca/org-mode.html#TasksAndStates
 (setq org-todo-keywords

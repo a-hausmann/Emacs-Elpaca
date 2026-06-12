@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-fonts.el
 ;; Created:       2023-07-22
-;; Last modified: Thu Mar 26, 2026 21:38:24
+;; Last modified: Wed Jun 03, 2026 9:48:52
 ;; Purpose:       Configuration of fonts.
 ;;
 
@@ -141,7 +141,7 @@
     (global-ligature-mode t)  ; END OF CONFIG SECTION
     :hook prog-mode)
 
-;; Set the font face based on platform
+;; Set the default font face based on platform
 (pcase system-type
   ((or 'windows-nt 'cygwin)
    (set-face-attribute 'default nil
@@ -150,20 +150,36 @@
                        :height 120))
   ('gnu/linux 
    (set-face-attribute 'default nil 
-                       :font "Fira Code" 
-                       :height 140)))
+                       :height 130)))
 
 ;; Set the fixed pitch face
 (set-face-attribute 'fixed-pitch nil
                     :font "Fira Code"
                     :weight 'light
-                    :height 120)
+                    :height 130)
 
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil
                     :font "Iosevka Aile"
-                    :height 120
+                    :height 130
                     :weight 'light)
+
+
+(use-package nerd-icons
+  :ensure t)
+
+
+(use-package nerd-icons-completion
+  :ensure t
+  :after marginalia
+  :config
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+
+
+(use-package nerd-icons-dired
+  :ensure t
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
 
 
 (message "Loaded ee-fonts.el")

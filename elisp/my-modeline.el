@@ -197,7 +197,7 @@ Specific to the current window's mode line.")
                 " "
                 mode-line-modes                     ; shows: all modes, good with `Minions'
                 (vc-mode vc-mode)                   ; shows: version control method & branch/hash
-                mode-line-format-right-align        : Emacs 30+
+                mode-line-format-right-align        ; Emacs 30+
                 mode-line-misc-info
                 mode-line-end-spaces
                 ))
@@ -235,6 +235,8 @@ Specific to the current window's mode line.")
               (list 'defining-kbd-macro
                     'beacon-mode
                     'flymake-mode))
+
+(message "Loaded my-modeline.el")
 
 ;; End of my-modeline.el
 

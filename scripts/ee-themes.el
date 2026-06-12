@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-themes.el
 ;; Created:       2023-07-21
-;; Last modified: Sat Mar 29, 2025 9:52:46
+;; Last modified: Tue Jun 02, 2026 20:56:25
 ;; Purpose:       Configure themes for Emacs-Elpaca
 ;;
 
@@ -10,19 +10,6 @@
 ;; The Modus themes are INCLUDED in Emacs 28.1 and above.
 ;; For versions below, will NEED to ensure latest Modus versions installed.
 ;; Will NOT CHECK for Emacs version.
-
-;; For the themes that are built into Emacs you cannot require the package.
-;; Use the following instead.
-;; 2022-08-15: after much experimenting, leave modus-themes-region as nil
-;; see documentation: C-h v modus-themes-region <ENT>
-
-;; Set custom theme directory first.
-;; (setq custom-theme-directory "~/.emacs.d/themes/")
-
-(use-package modus-themes :ensure t)
-;; Allow Elpaca to process queues up to this point
-;; 03/29/2025: commenting this produced: Warning (emacs): modus-themes loaded before Elpaca activation
-(elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 
 (setq modus-themes-italic-constructs t
       modus-themes-bold-constructs t
@@ -33,6 +20,7 @@
       modus-themes-tabs-accented t
       modus-themes-paren-match '(bold intense)
       modus-themes-prompts '(bold intense)
+      modus-themes-disable-other-themes t
       ;; modus-themes-completions 'opinionated
       modus-themes-completions '((matches . (extrabold))
                                  (selection . (semibold accented))
@@ -46,9 +34,9 @@
 ;; Important!
 (setq modus-themes-scale-headings t)
 (setq modus-themes-org-blocks 'gray-background)
-(general-def
-  "<f6>" #'modus-themes-select
-  "<f7>" #'modus-themes-toggle)
+
+(keymap-global-set "<f6>" #'modus-themes-select)
+(keymap-global-set "<f7>" #'modus-themes-toggle)
 
 ;; Load the theme of your choice:
 (load-theme 'modus-vivendi t nil) ;; OR (load-theme 'modus-vivendi)

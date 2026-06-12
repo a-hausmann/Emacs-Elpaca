@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-general.el
 ;; Created:       2023-08-05
-;; Last modified: Sun Mar 29, 2026 12:25:31
+;; Last modified: Fri May 15, 2026 19:44:24
 ;; Purpose:       Configure the basic General bindings for menu structures to 
 ;;                reduce Hydra usage. Hydra should be used for PERSISTANT menus only.
 ;;
@@ -192,9 +192,6 @@
 (general-def
  "C-<tab>" 'aeh/switch-to-previous-buffer)
 
-;; And "M-z" is zap-to-char.
-(general-def
-    "C-M-z" 'zap-up-to-char)
 
 ;; 05/08/2025:
 ;; (general-def

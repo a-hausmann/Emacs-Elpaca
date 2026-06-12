@@ -2,7 +2,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-useful.el
 ;; Created:       2023-07-30
-;; Last modified: Mon Mar 30, 2026 19:39:59
+;; Last modified: Tue Jun 02, 2026 16:50:17
 ;; Purpose:       Some useful but minor functions.
 ;;
 
@@ -61,7 +61,6 @@
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 
-;; (general-def "C-c C-;" 'aeh/switch-to-previous-buffer)
 (keymap-global-set "C-c C-;" 'aeh/switch-to-previous-buffer)
 (keymap-global-set "C-<tab>" 'aeh/switch-to-previous-buffer)
 
@@ -75,7 +74,6 @@ buffers/windows."
   (aeh/kill-current-buffer)
   (delete-window))
 
-;; (general-def "C-c C-k" 'aeh/kill-other-buffer-and-window)
 (keymap-global-set "C-c C-k" '("Kill other buffer/window" . aeh/kill-other-buffer-and-window))
 
 ;;; Delete current buffer & file.
@@ -91,7 +89,6 @@ buffers/windows."
           (delete-file filename)
           (message "Deleted file %s" filename)
           (kill-buffer))))))
-;; (general-def "s-x C-f C-d" 'aeh/delete-current-buffer-file)
 (keymap-global-set "s-x k" '("Kill current file/buffer" . aeh/delete-current-buffer-file))
 
 ;;; Rename current buffer & file.
@@ -188,25 +185,37 @@ buffers/windows."
 (defun aeh/json-mode-preferred-indent ()
   (interactive)
   (setq-local js-indent-level 2))
-(add-hook 'json-mode-hook 'aeh/json-mode-preferred-indent)
-(general-def
-    :maps 'js-json-mode-map
-    "C-c j" '("Set JSON indent 2" . aeh/json-mode-preferred-indent))
-;; (keymap-set js-json-mode-map "C-c j" 'aeh/json-mode-preferred-indent)
+(add-hook 'js-json-mode-hook 'aeh/json-mode-preferred-indent)
 
-;;; Create a new, untitled buffer.
 
+;;; Create new (scratch) buffers.
+
+;; Create `*Untitled*' buffer.
 (defun aeh/new-untitled-buffer ()
   "Create new buffer named `*Untitled*'"
   (interactive)
   (switch-to-buffer (generate-new-buffer "*Untitled*"))
   (text-mode))
-;; (global-set-key (kbd "C-c n") 'aeh/new-untitled-buffer)
-;; 03/26/2026: Not sure why I EVER changed this to normal-state only, but making it global again.
-;; (general-def
-;;   :states 'normal
-;;   "C-c n" '("Create *Untitled*" . aeh/new-untitled-buffer))
 (keymap-global-set "C-c n" '("Create *Untitled*" . aeh/new-untitled-buffer))
+(keymap-set aeh-html-stuff-mode-map "C-c M-n" '("Create *Untitled*" . aeh/new-untitled-buffer))
+(keymap-set aeh-html-stuff-mode-map "C-c C-x n" '("Create *Untitled*" . aeh/new-untitled-buffer))
+
+
+;; Create `*Scratch: <mode>*' buffer
+(defun mec/new-scratch-buffer-for-current-mode ()
+  "Create new scratch buffer with the major mode of the current buffer,
+and switch to the new buffer.
+
+The new buffer is named `*Scratch: <mode>*', where `<mode>' is the major
+mode of the current buffer from which the new scratch buffer was generated.
+As usual, if that buffer name already exists, the new buffer will get a
+suffix of <2>, <3>, etc."
+  (interactive)
+  (let ((name (format "*Scratch: %s-mode*" major-mode ))
+        (mode major-mode))
+    (switch-to-buffer (generate-new-buffer name))
+    (funcall mode)))
+
 
 
 ;;; Toggle narrowing, use this ALL the time.
@@ -226,10 +235,7 @@ buffers/windows."
     (t
       (message "Do not know what to narrow to.")
       (call-interactively #'narrow-to-defun))))
-;; (global-set-key (kbd "C-x n w") 'aeh/narrow-dwim)
-(general-def
-  :states 'normal
-  "C-x n w" 'aeh/narrow-dwim)
+(global-set-key (kbd "C-x n w") 'aeh/narrow-dwim)
 
 
 ;;; Some oddball stuff.
@@ -553,7 +559,7 @@ Intended for use by `prot/window-monocle'.")
 
   (define-minor-mode prot/window-single-toggle
     "Toggle between multiple windows and single window.
-This is the equivalent of maximising a window.  Tiling window
+This is the equivalent of maximizing a window. Tiling window
 managers such as DWM, BSPWM refer to this state as 'monocle'."
     :lighter " [M]"
     :global nil
@@ -600,7 +606,7 @@ managers such as DWM, BSPWM refer to this state as 'monocle'."
 
   :bind (("s-m" . prot/window-single-toggle)
          ("s-k" . prot/kill-buffer-current)
-         ("s-i C-p" . prot/insert-pair-completion))
+         ("s-i" . prot/insert-pair-completion))
   )  ; End, use-package emacs
 
 

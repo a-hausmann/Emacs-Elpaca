@@ -2,7 +2,7 @@
 
 ;; File name:     ee-bindings.el
 ;; Created:       2026-01-13
-;; Last modified: Sat Apr 11, 2026 16:33:51
+;; Last modified: Tue Jun 09, 2026 20:28:27
 ;; Purpose:       Replacing general.el, all non-use-package bindings to go here
 ;;
 ;; I find that which-key is still displaying incorrect text in some cases, and
@@ -31,21 +31,21 @@
 
 ;;;; keymaps for `C-c z' prefix
 
-(defvar-keymap my-c-z-s-prefix-map
-  :doc "Prefix map for `C-c z' s"
+(defvar-keymap my-s-z-s-prefix-map
+  :doc "Prefix map for `s-z' s"
   "a" '("Ansi-term" . ansi-term)
   "e" '("Eshell" . eshell)
   "t" '("Term" . term))
 
-(defvar-keymap my-c-z-prefix-map
-  :doc "Prefix map for `C-c z'"
+(defvar-keymap my-s-z-prefix-map
+  :doc "Prefix map for `s-z'"
   "n" '("New buffer". aeh/new-untitled-buffer)
   "p" '("Politics" . aeh-set-politics-directory)
-  "s" `("Shells" . ,my-c-z-s-prefix-map)
+  "s" `("Shells" . ,my-s-z-s-prefix-map)
   "t" '("Resize text" . text-scale-adjust)
   )
 
-(keymap-global-set "C-c z" `("Menu" . ,my-c-z-prefix-map))
+(keymap-global-set "s-z" `("Menu" . ,my-s-z-prefix-map))
 
 
 ;;;; keymaps for `C-;' prefix
@@ -61,6 +61,7 @@
 
 (keymap-global-set "C-c M-i" 'insert-date-time)
 (keymap-global-set "s-c i" 'insert-date-time)
+(keymap-global-set "s-i" 'insert-date-time)
 
 
 
@@ -69,15 +70,33 @@
 (keymap-global-set "C-c C-x F" '("Copy full name to kill ring" . aeh/copy-full-file-name-to-kill-ring))
 (keymap-global-set "C-c C-x f" '("Copy fname to kill ring" . aeh/copy-fname-to-kill-ring))
 
+(keymap-global-set "s-t" '("Toggle hs at point" . hs-toggle-hiding))
 
 ;;; code from original "ee-general.el" module, changed to use new binding functions.
 
 (keymap-global-set "C-<tab>" #'aeh/switch-to-previous-buffer)
-(keymap-global-set "C-M-z" #'zap-up-to-char)
+
 ;; 11/07/2025: adding describe-char mapping using global function.
 (keymap-global-set "C-x c c" #'describe-char)
-(keymap-global-set "M-s R" #'rg)
 
+;; 05/03/2026: THIS will allow me to have point in column 1 and delete leading spaces.
+;; The command works either on a single line or region.
+(keymap-global-set "C-c C-w" #'delete-whitespace-rectangle)
+
+
+;; 06/01/2026: Bind the clipboard commands, try getting native `yank' to work.
+(keymap-global-set "s-w" #'clipboard-kill-ring-save)
+(keymap-global-set "C-x M-w" #'clipboard-kill-ring-save)
+(keymap-global-set "C-x C-y" #'clipboard-yank)
+
+;; 06/01/2026: worked until removing all `elpaca-wait' Now trying to unset evil bindings before evil loads.
+(with-eval-after-load 'evil
+  (keymap-unset evil-motion-state-map "C-y" t)   ; This WORKS! 
+  (keymap-unset evil-insert-state-map "C-y" t)   ; This WORKS! 
+  )
+(keymap-global-set "C-y" #'yank)               ; With the above, I may NOT need this but doesn't hurt.
+
+(keymap-global-set "s-d" #'duplicate-dwim)
 
 ;;; ee-bindings.el ends here
 

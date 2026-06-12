@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8; lexical-binding: t -*-
 ;; File name:     config-corfu.el
 ;; Created:       2026-02-14
-;; Last modified: Sat Feb 14, 2026 13:56:15
+;; Last modified: Wed Jun 03, 2026 10:05:07
 ;; Purpose:       Corfu configuration.
 ;;
 
@@ -45,6 +45,7 @@
 
 ;; A few more useful configurations...
 (use-package emacs
+  :ensure nil
   :custom
   ;; TAB cycle if there are only few candidates
   ;; (completion-cycle-threshold 3)
@@ -67,6 +68,7 @@
 ;; I already set "M-/" to hippie-expand, and "C-M-/" is dabbrev-completion.
 ;; Use Dabbrev with Corfu!
 (use-package dabbrev
+  :ensure nil
   ;; Swap M-/ and C-M-/
   ;; :bind (("M-/" . dabbrev-completion)
   ;;        ("C-M-/" . dabbrev-expand))
