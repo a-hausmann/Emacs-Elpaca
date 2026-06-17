@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8; lexical-binding: t -*-
 ;; File name:     insert-date-time.el
 ;; Created:       2026-01-08
-;; Last modified: Thu Jun 11, 2026 22:20:42
+;; Last modified: Tue Jun 16, 2026 19:19:41
 ;; Purpose:       Package to insert the current date/time in various formats.
 
 ;; Got tons of helpful ideas from this Github: https://github.com/xenodium/time-zones
@@ -104,15 +104,15 @@
 
 ;; Insert paired characters into buffer.
 (defconst insert-paired-char-alist
-  '(("' Single quote" . (39 39))           ; ' '
-    ("\" Double quotes" . (34 34))         ; " "
-    ("` Elisp quote" . (96 39))            ; ` '
-    ("‘ Single apostrophe" . (8216 8217))  ; ‘ ’
-    ("“ Double apostrophes" . (8220 8221)) ; “ ”
-    ("( Parentheses" . (40 41))            ; ( )
-    ("{ Curly brackets" . (123 125))       ; { }
-    ("[ Square brackets" . (91 93))        ; [ ]
-    ("< Angled brackets" . (60 62))        ; < >
+  '(("' Single quote" . (39 39))             ; ' '
+    ("\" Double quotes" . (34 34))           ; " "
+    ("` Elisp quote" . (96 39))              ; ` '
+    ("‘ Smart single quotes" . (8216 8217))  ; ‘ ’
+    ("“ Smart double quotes" . (8220 8221))  ; “ ”
+    ("( Parentheses" . (40 41))              ; ( )
+    ("{ Curly brackets" . (123 125))         ; { }
+    ("[ Square brackets" . (91 93))          ; [ ]
+    ("< Angled brackets" . (60 62))          ; < >
     )
   "Alist of pairs for use with `insert-paired-characters'.")
 
