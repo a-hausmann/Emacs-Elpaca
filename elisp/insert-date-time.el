@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8; lexical-binding: t -*-
 ;; File name:     insert-date-time.el
 ;; Created:       2026-01-08
-;; Last modified: Tue Jun 16, 2026 19:19:41
+;; Last modified: Wed Jun 24, 2026 9:22:40
 ;; Purpose:       Package to insert the current date/time in various formats.
 
 ;; Got tons of helpful ideas from this Github: https://github.com/xenodium/time-zones
@@ -136,6 +136,7 @@
   "Insert `now' as formatted string. Options are shown via a transient menu.
 Because this needs to be used in any buffer, there are several keybindings.
 The main binding is `C-; d' and alternates are `C-c M-i' and `s-c i'."
+  ["Quit" ("Q" "Quit menu" keyboard-quit)]
   ;; The date and date/time to be in columns, left and right respectively
   [["Insert date:" :pad-keys t  ; left side
   ("s" "MM/DD/YYYY"
