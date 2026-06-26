@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-abbrevs.el
 ;; Created:       2023-10-06
-;; Last modified: Tue Nov 25, 2025 16:48:36
+;; Last modified: Sun Jun 14, 2026 10:11:19
 ;; Purpose:       Contains my abbreviations and configuration.
 ;;
 
@@ -33,6 +33,7 @@
     ;; programing
     ("subdir" "subdirectory" )
     ("-*-" "-*- mode:  -*-")
+    ("mshit" "Microsoft")
 
     ;; common words, phrases
     ("BAO" "Broken Arrow")
