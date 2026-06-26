@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-final.el
 ;; Created:       2023-07-30
-;; Last modified: Tue Jun 09, 2026 20:30:14
+;; Last modified: Wed Jun 17, 2026 22:24:29
 ;; Purpose:       Perform things/functions which need to be done last.
 ;;
 
@@ -96,19 +96,51 @@
 ;;     ))
 
 ;; 02/10/2024: Delight the minor modes which show up in Org docs...somehow.
-(eval-after-load 'delight
-  '(progn
-    (delight '((abbrev-mode nil t)
-               (evil-collection-unimpaired-mode nil t)
-               (evil-commentary-mode nil t)
-               (org-indent-mode nil t)
-               (subword-mode nil t)
-               (visual-line-mode nil t)
-               (yas-minor-mode nil t)
-               (yas-global-mode nil t)
-               (outline-minor-mode nil t)
-               (eldoc-mode nil t)
-               ))))
+(defun delight-additional-modes ()
+  "Need to execute `delight' on additional modes even after all the
+`use-package' statements. Need to put this into a function which can
+be evaluated on the `elpaca-after-init-hook'."
+  (interactive)
+  (progn
+    ;; (delight '((abbrev-mode nil t)
+    ;;            (evil-collection-unimpaired-mode nil t)
+    ;;            (evil-commentary-mode nil t)
+    ;;            (org-indent-mode nil t)
+    ;;            (subword-mode nil t)
+    ;;            (visual-line-mode nil t)
+    ;;            (yas-minor-mode nil t)
+    ;;            (yas-global-mode nil t)
+    ;;            (outline-minor-mode nil t)
+    ;;            (eldoc-mode nil t)))
+    (delight 'abbrev-mode nil t)
+    (delight 'evil-collection-unimpaired-mode nil t)
+    (delight 'evil-commentary-mode nil t)
+    ;; 
+    ;; (delight 'org-indent-mode nil t) 
+    (delight 'subword-mode nil t)
+    (delight 'visual-line-mode nil t)
+    (delight 'yas-minor-mode nil t)
+    (delight 'yas-global-mode nil t)
+    (delight 'outline-minor-mode nil t)
+    (delight 'eldoc-mode nil t)
+    ))
+
+(add-hook 'elpaca-after-init-hook 'delight-additional-modes)
+
+
+;; (eval-after-load 'delight
+;;   '(progn
+;;     (delight '((abbrev-mode nil t)
+;;                (evil-collection-unimpaired-mode nil t)
+;;                (evil-commentary-mode nil t)
+;;                (org-indent-mode nil t)
+;;                (subword-mode nil t)
+;;                (visual-line-mode nil t)
+;;                (yas-minor-mode nil t)
+;;                (yas-global-mode nil t)
+;;                (outline-minor-mode nil t)
+;;                (eldoc-mode nil t)
+;;                ))))
 
 
 ;; 04/21/2024: undefine some Evil bindings to replace with Emacs.

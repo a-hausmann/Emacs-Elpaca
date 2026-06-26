@@ -2,7 +2,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-useful.el
 ;; Created:       2023-07-30
-;; Last modified: Thu Jun 18, 2026 23:09:27
+;; Last modified: Thu Jun 25, 2026 20:53:12
 ;; Purpose:       Some useful but minor functions.
 ;;
 

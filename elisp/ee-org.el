@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-org.el
 ;; Created:       2023-10-03
-;; Last modified: Mon Jun 01, 2026 23:24:55
+;; Last modified: Wed Jun 24, 2026 13:29:37
 ;; Purpose:       This is to configure Org mode.
 ;;
 
@@ -13,7 +13,8 @@
     :ensure nil
     :delight
     :bind (:map org-mode-map
-          ("C-c C-x l" . org-toggle-link-display))
+                ("C-c C-x l" . org-toggle-link-display)
+                ("C-c C-x L" . dictionary-lookup-definition))
     :config
     (custom-set-faces
      '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
@@ -86,9 +87,11 @@
 (setq org-src-window-setup 'current-window)                   ; Allows for "C-c '" to narrow to code being edited.
 
 (add-hook 'org-mode-hook
-            #'(lambda ()
-               (visual-line-mode 1)
-               (org-indent-mode 1)))
+          #'(lambda ()
+              (visual-line-mode 1)
+              (org-indent-mode 1)))
+;; 06/14/2026: add new hook to delight org-indent-mode as it doesn't load immediately.
+(add-hook 'org-indent-mode-hook (lambda () (delight 'org-indent-mode)))
 (keymap-set org-mode-map "C-c '" 'org-edit-src-code)
 
 ;; Ref: http://doc.norang.ca/org-mode.html#TasksAndStates

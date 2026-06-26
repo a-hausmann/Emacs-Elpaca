@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-packages.el
 ;; Created:       2023-07-15
-;; Last modified: Tue Jun 09, 2026 22:38:52
+;; Last modified: Wed Jun 24, 2026 16:16:39
 ;; Purpose:       This is the main package loader/configurator for Emacs-Elpaca
 ;;
 
@@ -91,30 +91,45 @@
 ;; (setq-default amx-save-file (no-littering-expand-var-file-name ".amx-items"))
 
 
-;; Configure Avy
+;; Configure Avy; 06/24/2026: changed bindings and added more stuff. Thanks, Karthinks!
+;; Ref: https://karthinks.com/software/avy-can-do-anything/
 (use-package avy
-  :ensure t
-  :commands avy-goto-char-timer
-  :delight
-  :bind
-  ("C-x C-a l" . avy-copy-line)
-  ("C-x C-a r" . avy-copy-region)
-  ("C-x C-a m" . avy-move-line)
-  ("C-x C-a M-r" . avy-move-region)
-  ("C-x C-a w" . avy-goto-word-1)
-  ("C-x C-a ;" . avy-goto-char)
-  ("C-x C-a '" . avy-goto-char-2)
-  ("C-x C-a t" . avy-goto-char-timer)
-  ("C-x C-t" . avy-goto-char-timer)
-  :config
-  (setq avy-timeout-seconds 0.5))
+    :ensure t
+    :commands avy-goto-char-timer
+    :delight
+    :bind
+    ("C-x C-a l" . avy-copy-line)
+    ("C-x C-a r" . avy-copy-region)
+    ("C-x C-a M-l" . avy-move-line)
+    ("C-x C-a M-r" . avy-move-region)
+    ("C-x C-a t" . avy-goto-char-timer)
+    ("C-x C-t" . avy-goto-char-timer)
+    ("M-s j" . avy-goto-char-timer)
+    :config
+      (setf (alist-get ?k avy-dispatch-alist) 'avy-action-kill-stay
+            (alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line
+            (alist-get ?t avy-dispatch-alist) 'avy-action-teleport
+            (alist-get ?t avy-dispatch-alist) 'avy-action-teleport-whole-line)
+    (setq avy-timeout-seconds 0.5))
 
+(defun avy-action-kill-whole-line (pt)
+    (save-excursion
+      (goto-char pt)
+      (kill-whole-line))
+    (select-window
+     (cdr
+      (ring-ref avy-ring 0)))
+    t)
+
+(defun avy-action-teleport-whole-line (pt)
+  (avy-action-kill-whole-line pt)
+  (save-excursion (yank)) t)
 
 ;; Configure Aggressive-indent, works well with Emacs-lisp, not that well with other languages (Python?)
-;; (use-package aggressive-indent
-;;   :ensure t
-;;   :delight
-;;   :hook (emacs-lisp-mode . aggressive-indent-mode))
+(use-package aggressive-indent
+  :ensure t
+  :delight
+  :hook (emacs-lisp-mode . aggressive-indent-mode))
 
 
 ;; allow asynchronous processing wherever possible…pretty nice.
@@ -227,20 +242,22 @@
 (use-package key-chord
     :ensure t
     :demand
-    :init (key-chord-mode 1)
+    ;; :init (key-chord-mode 1)
     :custom
     (customize-set-variable key-chord-two-keys-delay 0.1)
     (customize-set-variable key-chord-one-key-delay 0.1)
     (customize-set-variable key-chord-one-key-min-delay 0.0)
     :config
+    (key-chord-mode 1)
     ;; Define global key chords
     ;; (key-chord-define-global "''" "`'\C-b")
     ;; Define key chords to specific keymaps
     (key-chord-define prog-mode-map ";," 'indent-for-comment)
     (key-chord-define prog-mode-map ";;" 'comment-line)
     (key-chord-define prog-mode-map "JJ" 'reindent-then-newline-and-indent)
-    (key-chord-define emacs-lisp-mode-map "``" "`;\C-b")  ; Emacs Lisp `quote'
+    (key-chord-define lisp-mode-map "``" "`'\C-b")  ; Emacs Lisp `quote'
     )
+
 
 ;; 04/27/2026: Configure `hideshow' mode, native to Emacs.
 ;; This will perform some rudimentary code folding without markers.

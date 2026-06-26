@@ -1,7 +1,7 @@
 ;;; Setups for editing -*- lexical-binding: t -*-
 ;; File name:     ee-editing.el
 ;; Created:       2023-07-30
-;; Last modified: Wed Jun 03, 2026 9:54:23
+;; Last modified: Wed Jun 24, 2026 14:34:37
 ;; Purpose:       Configure packages used in straight editing (not programming languages)
 ;;
 
@@ -231,6 +231,9 @@ This is designed to be used in a prog-mode-hook."
   (setq yas-indent-line 'fixed)
   (yas-global-mode 1))
 
+;; 06/14/2026: still seeing "yas" as minor mode despite the ":delight", so add hook.
+;; STILL DOES NOT WORK!
+(add-hook 'yas-minor-mode-hook (lambda () (delight 'yas-minor-mode)))
 
 ;;; 04/08/2026: Adding Embrace (like surround)
 ;; As I'm moving away from Evil, will lose evil-surround and need replacement
@@ -254,6 +257,26 @@ This is designed to be used in a prog-mode-hook."
 ;;   :bind (("M-$" . jinx-correct)
 ;;          ("C-M-$" . jinx-languages)))
 
+;; 06/24/2026: Re-installed "nuspell" as snap, goint to try to use built-in `flyspell'.
+;; Got this error:
+;; Error enabling Flyspell mode:
+;; (nuspell exited with code 1)
+;; As this STILL doesn't work, removed the snap "nuspell". Installed "hunspell" instead, and this WORKS!
+
+(setq ispell-program-name "hunspell"
+      ispell-dictionary "en_US")
+
+
+(use-package emacs
+    :ensure nil
+    :hook
+    ((org-mode text-mode markdown-mode) . flyspell-mode)
+    (prog-mode . flyspell-prog-mode))
+
+;; 06/24/2026: NOTE: have to install "dictd", "dict" and other Linux packages, and enable the "dictd" server.
+;; Ref: https://www.masteringemacs.org/article/wordsmithing-in-emacs
+(keymap-global-set "C-x D" '("Dictionary lookup" . dictionary-lookup-definition))
+
 
 ;; 05/15/2026: Added this to both work and home config. I LOVE this package. It requires `avy'
 ;; which I already love, and can zap in any direction. Will get rid of my other bindings to the
@@ -264,6 +287,10 @@ This is designed to be used in a prog-mode-hook."
     ("M-z" . zzz-to-char)
     ("C-M-z" . zzz-to-char-up-to-char))
 
+
+;; 06/24/2026: Adding this to config as SOMETIMES I may use it.
+(use-package olivetti
+    :ensure t)
 
 (message "Loaded ee-editing.el")
 
