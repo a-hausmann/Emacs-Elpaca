@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8; lexical-binding: t -*-
 ;; File name:     config-corfu.el
 ;; Created:       2026-02-14
-;; Last modified: Wed Jun 03, 2026 10:05:07
+;; Last modified: Thu Jun 25, 2026 20:34:36
 ;; Purpose:       Corfu configuration.
 ;;
 
@@ -15,40 +15,71 @@
 ;; Ref: https://github.com/minad/corfu?tab=readme-ov-file#configuration
 
 (use-package corfu
-  ;; :ensure (:host github :repo "minad/corfu")
-  :ensure t
-  ;; Optional customizations
-  :custom
-  (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-  ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
-  ;; (corfu-on-exact-match 'insert) ;; Configure handling of exact matches
+    ;; :ensure (:host github :repo "minad/corfu")
+    :ensure t
+    ;; Optional customizations
+    :custom
+    (corfu-cycle t) ;; Enable cycling for `corfu-next/previous'
+    (corfu-preselect 'prompt)
+    ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+    ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+    ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+    ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
+    ;; (corfu-on-exact-match 'insert) ;; Configure handling of exact matches
 
-  ;; Enable Corfu only for certain modes. See also `global-corfu-modes'.
-  ;; :hook ((prog-mode . corfu-mode)
-  ;;        (shell-mode . corfu-mode)
-  ;;        (eshell-mode . corfu-mode))
+    ;; Enable Corfu only for certain modes. See also `global-corfu-modes'.
+    ;; :hook ((prog-mode . corfu-mode)
+    ;;        (shell-mode . corfu-mode)
+    ;;        (eshell-mode . corfu-mode))
 
-  :init
+    ;; Seems to work best without additional bindings. Use standard "C-n" and "C-p"
+    ;; to run through selection list rather than arrows. If NO TEXT CONVERSION is
+    ;; needed (i.e., capitalization, etc.) then selected text just needs SPC or
+    ;; punctuation to insert. Do NOT use TAB or RET. 
+    ;; :bind
 
-  ;; Recommended: Enable Corfu globally.  Recommended since many modes provide
-  ;; Capfs and Dabbrev can be used globally (M-/).  See also the customization
-  ;; variable `global-corfu-modes' to exclude certain modes.
-  (global-corfu-mode)
+    :init
 
-  ;; Enable optional extension modes:
-  ;; (corfu-history-mode)
-  ;; (corfu-popupinfo-mode)
-  )
+    ;; Recommended: Enable Corfu globally.  Recommended since many modes provide
+    ;; Capfs and Dabbrev can be used globally (M-/).  See also the customization
+    ;; variable `global-corfu-modes' to exclude certain modes.
+    (global-corfu-mode)
+    ;; Enable optional extension modes:
+    (corfu-history-mode)
+    (corfu-popupinfo-mode)
+    )
+
+;; Enable auto completion, configure delay, trigger and quitting
+(setq corfu-auto t
+      corfu-auto-prefix 2    ; popup after typing n characters.
+      corfu-auto-delay 0.2
+      corfu-auto-trigger "." ; Custom trigger characters
+      corfu-quit-no-match 'separator)
+;; Enable Corfu in all minibuffers as long as no completion UI is active.
+(setq global-corfu-minibuffer
+      (lambda ()
+        (not (or (bound-and-true-p mct--active)
+                 (bound-and-true-p vertico--input)
+                 (eq (current-local-map) read-passwd-map)))))
+
+;; (defun orderless-fast-dispatch (word index total)
+;;   (and (= index 0) (= total 1) (length< word 4)
+;;        (cons 'orderless-literal-prefix word)))
+;; (orderless-define-completion-style orderless-fast
+;;                                    (orderless-style-dispatchers '(orderless-fast-dispatch))
+;;                                    (orderless-matching-styles '(orderless-literal orderless-regexp)))
+;; (add-hook 'corfu-mode-hook
+;;           (lambda ()
+;;             (setq-local completion-styles '(orderless-fast basic)
+;;                         completion-category-overrides nil
+;;                         completion-category-defaults nil)))
 
 ;; A few more useful configurations...
 (use-package emacs
   :ensure nil
   :custom
   ;; TAB cycle if there are only few candidates
-  ;; (completion-cycle-threshold 3)
+  (completion-cycle-threshold 3)
 
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
@@ -56,7 +87,8 @@
 
   ;; Emacs 30 and newer: Disable Ispell completion function.
   ;; Try `cape-dict' as an alternative.
-  (text-mode-ispell-word-completion nil)
+  ;; 06/25/2026: commented as back on 29.2 for time being.
+  ;; (text-mode-ispell-word-completion nil)
 
   ;; Hide commands in M-x which do not apply to the current mode.  Corfu
   ;; commands are hidden, since they are not used via M-x. This setting is
@@ -80,18 +112,29 @@
   (add-to-list 'dabbrev-ignored-buffer-modes 'tags-table-mode))
 
 
-;; Enable auto completion, configure delay, trigger and quitting
-(setq corfu-auto t
-      corfu-auto-delay 0.2
-      corfu-auto-trigger "." ;; Custom trigger characters
-      corfu-quit-no-match 'separator) ;; or t
-
-;; Enable Corfu in all minibuffers as long as no completion UI is active.
-(setq global-corfu-minibuffer
-      (lambda ()
-        (not (or (bound-and-true-p mct--active)
-                 (bound-and-true-p vertico--input)
-                 (eq (current-local-map) read-passwd-map)))))
+;; 06/25/2026: Looks like I need to install Cape to get actually completion at point popups.
+;; FINALLY, it works like it does at work. I probably installed the Cape package there already.
+;; Add extensions
+(use-package cape
+  ;; Bind prefix keymap providing all Cape commands under a mnemonic key.
+  ;; Press C-c p ? to for help.
+  :bind ("C-c p" . cape-prefix-map) ;; Alternative key: M-<tab>, M-p, M-+
+  ;; Alternatively bind Cape commands individually.
+  ;; :bind (("C-c p d" . cape-dabbrev)
+  ;;        ("C-c p h" . cape-history)
+  ;;        ("C-c p f" . cape-file)
+  ;;        ...)
+  :init
+  ;; Add to the global default value of `completion-at-point-functions' which is
+  ;; used by `completion-at-point'.  The order of the functions matters, the
+  ;; first function returning a result wins.  Note that the list of buffer-local
+  ;; completion functions takes precedence over the global list.
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-elisp-block)
+  ;; (add-hook 'completion-at-point-functions #'cape-history)
+  ;; ...
+)
 
 
 (message "config-corfu completed.")
