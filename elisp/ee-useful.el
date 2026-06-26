@@ -2,7 +2,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-useful.el
 ;; Created:       2023-07-30
-;; Last modified: Tue Jun 02, 2026 16:50:17
+;; Last modified: Thu Jun 18, 2026 23:09:27
 ;; Purpose:       Some useful but minor functions.
 ;;
 
@@ -344,6 +344,25 @@ suffix of <2>, <3>, etc."
           (goto-char p-from)
           (while (search-forward " " p-thru t)
             (replace-match "_" nil nil)))))))
+
+
+(defun trim-multiple-spaces ()
+  "Convert multiple spaces to a single space. Works from point to end if buffer
+or on a region if defined."
+  (interactive)
+  (save-excursion
+    (let ((mod-count 0)
+          (p-from (if (region-active-p)
+                      (region-beginning)
+                      (point)))
+          (p-thru (if (region-active-p)
+                      (region-end)
+                      (point-max))))
+      (goto-char p-from)
+      (while (re-search-forward "\s\\{2,\\}" p-thru t)
+        (setq mod-count (+ 1 mod-count))
+        (replace-match " " nil nil))
+      (message "Trimmed multiple spaces %d times." mod-count))))
 
 
 ;;; Delete quotes DWIM
