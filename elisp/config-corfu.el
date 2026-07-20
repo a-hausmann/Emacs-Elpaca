@@ -1,19 +1,12 @@
 ;; -*- coding: utf-8; lexical-binding: t -*-
 ;; File name:     config-corfu.el
 ;; Created:       2026-02-14
-;; Last modified: Thu Jun 25, 2026 20:34:36
+;; Last modified: Mon Jul 20, 2026 10:24:47
 ;; Purpose:       Corfu configuration.
 ;;
 
-;; I CANNOT GET ELPACA CONFIGURATION TO WORK ON CORFU, SO ABANDONING FOR NOW!!!!!
-
-
-
-
-
-
 ;; Ref: https://github.com/minad/corfu?tab=readme-ov-file#configuration
-
+;; 07/20/2026: Ref: https://protesilaos.com/codelog/2026-07-19-emacs-completion-at-point-functions/
 (use-package corfu
     ;; :ensure (:host github :repo "minad/corfu")
     :ensure t
@@ -47,6 +40,15 @@
     ;; Enable optional extension modes:
     (corfu-history-mode)
     (corfu-popupinfo-mode)
+
+    :config
+    (setq corfu-popupinfo-delay '(1.25 . 0.5))
+    (corfu-popupinfo-mode 1)  ; show documentation after `corfu-popupinfo-delay'
+    (keymap-set corfu-map "<tab>" #'corfu-complete)
+    ;; Sort by input history; no need to modify `corfu-sort-function'
+    (with-eval-after-load 'savehist
+      (corfu-history-mode 1)
+      (add-to-list 'savehist-additional-variables 'corfu-history))
     )
 
 ;; Enable auto completion, configure delay, trigger and quitting
@@ -115,7 +117,9 @@
 ;; 06/25/2026: Looks like I need to install Cape to get actually completion at point popups.
 ;; FINALLY, it works like it does at work. I probably installed the Cape package there already.
 ;; Add extensions
+;; 07/20/2026: Ref: https://protesilaos.com/codelog/2026-07-19-emacs-completion-at-point-functions/
 (use-package cape
+  :after corfu
   ;; Bind prefix keymap providing all Cape commands under a mnemonic key.
   ;; Press C-c p ? to for help.
   :bind ("C-c p" . cape-prefix-map) ;; Alternative key: M-<tab>, M-p, M-+
@@ -134,6 +138,31 @@
   (add-hook 'completion-at-point-functions #'cape-elisp-block)
   ;; (add-hook 'completion-at-point-functions #'cape-history)
   ;; ...
+  :config
+
+  ;; This is for the global value.
+  (setq completion-at-point-functions '(cape-dabbrev cape-file))
+
+  (defun prot/cape-super-set-local (capfs &optional individual-capfs)
+    "Set `completion-at-point-functions' to current value plus CAPFS.
+Treat CAPFS and the default value as a super CAPF.  Then append the
+INDIVIDUAL-CAPFS to the list."
+    (let* ((all-for-super (append completion-at-point-functions capfs))
+           (all-minus-global (delq t all-for-super))
+           (cape-super (apply #'cape-capf-super all-minus-global)))
+      (setq-local completion-at-point-functions (append (list cape-super) individual-capfs (list t)))))
+
+  (defun prot/cape-prog-setup ()
+    "Set up Cape for programming."
+    (prot/cape-super-set-local '(cape-dabbrev) '(cape-file)))
+
+  (add-hook 'prog-mode-hook #'prot/cape-prog-setup)
+
+  (defun prot/cape-text-setup ()
+    "Set up Cape for prose."
+    (prot/cape-super-set-local '(cape-dict cape-dabbrev cape-emoji) '(cape-file)))
+
+  (add-hook 'text-mode-hook #'prot/cape-text-setup)
 )
 
 

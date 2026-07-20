@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-abbrevs.el
 ;; Created:       2023-10-06
-;; Last modified: Thu Jun 25, 2026 20:54:35
+;; Last modified: Thu Jul 16, 2026 11:38:55
 ;; Purpose:       Contains my abbreviations and configuration.
 ;;
 
@@ -40,6 +40,9 @@
     ("BAOK" "Broken Arrow, OK")
     ("aehj" "aehjr1@gmail.com")
     ("FUR" "furosimide")
+    ("SFI" "State Farm")
+    ("FR" "Flood Rescue")
+    ("ACS" "Air Comfort Solutions")
     ))
 
 (set-default 'abbrev-mode t)

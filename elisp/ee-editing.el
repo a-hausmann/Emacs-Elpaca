@@ -1,7 +1,7 @@
 ;;; Setups for editing -*- lexical-binding: t -*-
 ;; File name:     ee-editing.el
 ;; Created:       2023-07-30
-;; Last modified: Wed Jun 24, 2026 14:34:37
+;; Last modified: Sun Jul 19, 2026 20:32:26
 ;; Purpose:       Configure packages used in straight editing (not programming languages)
 ;;
 
@@ -15,7 +15,7 @@
 ;;   (global-treesit-auto-mode))
 
 
-;;; Basic: delete-selection-mode
+;;; Basic: delete-selection-mode; typed text replaces the selection if the selection is active.
 (use-package delsel
   :ensure nil
   :hook (after-init . delete-selection-mode))
@@ -291,6 +291,30 @@ This is designed to be used in a prog-mode-hook."
 ;; 06/24/2026: Adding this to config as SOMETIMES I may use it.
 (use-package olivetti
     :ensure t)
+
+
+;; 07/19/2026: adding Pulsar; highlight current line after certain functions are invoked
+;; and also can "permanently" highlight several non-contiguous lines (useful in screenshots.)
+
+;; Ref: https://protesilaos.com/emacs/pulsar#h:96289426-8480-4ea6-9053-280348adc0ed
+(use-package pulsar
+  :ensure t
+  :bind
+  ( :map global-map
+    ("C-x l" . pulsar-pulse-line) ; overrides `count-lines-page'
+    ("C-x L" . pulsar-highlight-permanently-dwim)) ; or use `pulsar-highlight-temporarily-dwim'
+  :init
+  (pulsar-global-mode 1)
+  :config
+  (setq pulsar-delay 0.055)
+  (setq pulsar-iterations 5)
+  (setq pulsar-face 'pulsar-green)
+  (setq pulsar-region-face 'pulsar-yellow)
+  (setq pulsar-highlight-face 'pulsar-magenta))
+
+(add-hook 'next-error-hook #'pulsar-pulse-line)
+(add-hook 'minibuffer-setup-hook #'pulsar-pulse-line-blue)
+
 
 (message "Loaded ee-editing.el")
 
