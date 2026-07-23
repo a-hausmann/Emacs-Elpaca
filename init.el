@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     init.el
 ;; Created:       2023-07-13
-;; Last modified: Mon May 18, 2026 13:25:35
+;; Last modified: Thu Jul 23, 2026 11:10:20
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;;
 
@@ -48,12 +48,12 @@
 (defvar elpaca-installer-version 0.12)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+(defvar elpaca-sources-directory (expand-file-name "sources/" elpaca-directory))
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
                               :ref nil :depth 1 :inherit ignore
                               :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                              :build (:not elpaca--activate-package)))
-(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+                              :build (:not elpaca-activate)))
+(let* ((repo  (expand-file-name "elpaca/" elpaca-sources-directory))
        (build (expand-file-name "elpaca/" elpaca-builds-directory))
        (order (cdr elpaca-order))
        (default-directory repo))
@@ -80,20 +80,25 @@
   (unless (require 'elpaca-autoloads nil t)
     (require 'elpaca)
     (elpaca-generate-autoloads "elpaca" repo)
-    (load "./elpaca-autoloads")))
+    (let ((load-source-file-function nil)) (load "./elpaca-autoloads"))))
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 ;; *****************************************************************************
 ;; New code ends here
 ;; *****************************************************************************
 
-;; 05/23/2026: On reinstalled POP!_OS and new version of Elpaca, `elpaca-config' seems to be gone.
-;; (require 'elpaca-config)                ; The Elpaca Package Manager
+;; Enable use-package :ensure support for Elpaca.
+(elpaca elpaca-use-package
+  (elpaca-use-package-mode))
+  
+(add-hook 'after-init-hook #'elpaca-process-queues)
+
 (with-eval-after-load 'elpaca
   (add-hook 'elpaca-after-init-hook '+reset-init-values))
 
+(message "Completed Elpaca, continuing with init.el")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq use-package-always-ensure t) ; 05/25/2026: added to try to get rid of errors.
 
 ;; Follow symlinks for version controlled files
 (setq vc-follow-symlinks t)
@@ -103,6 +108,8 @@
 
 ;; 2021-02-21: add setup for showing backtrace on errors.
 (setq debug-on-error t)
+
+(setq load-prefer-newer t)
 
 ;; Ensure all is set to UTF-8
 (set-language-environment 'utf-8)
@@ -117,50 +124,27 @@
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-;; Make `load' prefer the newest version of a file.
-(setq load-prefer-newer t)
+
+;; 06/02/2026: I MAY have completed getting rid of all usage of General! Hurray!!!
+;; (use-package general
+;;   :ensure t
+;;   :demand t
+;;   :config
+;;   (general-override-mode)
+;;   (general-auto-unbind-keys))
+;; (message "Configured General")
+;; 06/01/2026: got rid of all `elpaca-wait' commands but now getting `general-def' errors.
+;; (elpaca-wait)
 
 (if (string-equal system-type "windows-nt")
-    (setq ee-system-type "windows-nt")
-  (setq ee-system-type "linux"))
-
-;; (if (string-equal system-type "windows-nt")
-;;     (add-to-list 'load-path "c:/Users/frst6889/.emacs.d/elisp")
-;;   (add-to-list 'load-path "~/.emacs.d/elisp"))
-
-
-;; general.el provides a more convenient method for binding keys in emacs (for both evil and non-evil users).
-;; Ref: https://github.com/noctuid/general.el#about
-;; Load general before the remaining packages so they can make use of the ~:general~ keyword in their declarations.
-(use-package general
-  :ensure t
-  :demand t
-  :config
-  (general-override-mode)
-  (general-auto-unbind-keys))
-;; Configure Hydra
-(use-package hydra
-  :ensure t
-  :demand)
-;; Allow Elpaca to process queues up to this point
-;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
-
-
-;; Load the General configuration file. This defines the menu structures only.
-;; 04/09/2026: This module creates the SPC/C-; menus, which I don't really use anymore.
-;; There are a couple key definitions, so add them to the "ee-bindings.el" module.
-;; (load "ee-general")
-
-;; Set the size of the frame
-(when window-system
-  (if (string-equal system-type "windows-nt")
-      (progn
-        (add-to-list 'default-frame-alist '(height . 40))
-        (add-to-list 'default-frame-alist '(width . 160)))
+    (progn
+      (add-to-list 'default-frame-alist '(height . 40))
+      (add-to-list 'default-frame-alist '(width . 160)))
     (progn
       (add-to-list 'default-frame-alist '(height . 38))
       (add-to-list 'default-frame-alist '(width . 124))))
-  (blink-cursor-mode 0))
+(message "Set frame height/width for %s" system-type)
+(blink-cursor-mode 0)
 
 
 ;; Set garbage collection hook, Emacs should feel snappier
@@ -179,8 +163,8 @@
   (when (file-exists-p custom-file)
     (load custom-file 'noerror)
     (message "custom-file loaded!")))
-;; (when (file-exists-p custom-file)
-;;   (aeh/load-custom))
+  (when (file-exists-p custom-file)
+    (aeh/load-custom))
 
 ;; (elpaca-process-queues)
 (add-hook 'elpaca-after-init-hook (lambda () (load custom-file 'noerror)))
@@ -195,6 +179,14 @@
 (put 'list-threads 'disabled nil)
 (put 'list-timers 'disabled nil)
 
+
+;; 2026-05-23: some of these files have local variables set, which seem to kill off
+;; execution of the files (the "ask" isn't available). Enable `all' of them before
+;; doing the loads, and then set back to "ask"
+;; Was HOPING this would enable resetting the global "C-y" binding to `yank'
+;; from the evil binding in module "ee-final.el", but that isn't happening.
+;; OTOH, it's not hurting anything that I can see presently.
+(setopt enable-local-variables :all)    ;; Enable here, disable at end.
 
 ;; Load fonts
 (require 'ee-fonts)
@@ -221,8 +213,10 @@
 ;; (load "aeh-myownmodeline")
 (require 'my-modeline)
 
+
+;; TODO: add functionality of remaining hydra into "insert-date-time.el".
 ;; 10/01/2023: Load hydras
-(load "ee-hydra")
+;; (load "ee-hydra")
 
 
 ;; 10/06/2023: Load abbreviations config.
@@ -255,6 +249,29 @@
 
 ;; 03/29/2026? Load new module for NEW key bindings & keymaps.
 (load "ee-bindings")
+
+(setq enable-local-variables t)    ;; Enable here, disable at end.
+
+
+;; 02/01/2026: Completed "insert-date-time.el" with transient.el. Using that instead of Hydra.
+;; TODO: Add to package the remaining functions from "ee-hydras.el"
+;; NOTE: CAN employ `use-package' to load but CANNOT defer as package doesn't have autoloads.
+(use-package insert-date-time
+    :ensure nil)
+
+
+;; Finally, open some files
+(setq aeh-start-files '("~/Documents/AA/zoom-meetings-info.org"
+                        "~/Documents/Health/Weight-tracker.org"
+                        "~/Documents/org/FIFA-World-Cup--2026.org"
+                        ;; "~/Documents/org/Premier-League-tracking.org"
+                        "~/Documents/Health/BP-tracking.md"
+                        "~/Documents/Health/UO-tracking.md"))
+(defun aeh--load-start-files ()
+  (mapcar 'find-file aeh-start-files))
+
+(add-hook 'elpaca-after-init-hook 'aeh--load-start-files)
+
 
 ;; Load final stuff; key bindings and more (if needed)
 (require 'ee-final)
