@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     init.el
 ;; Created:       2023-07-13
-;; Last modified: Thu Jul 23, 2026 11:10:20
+;; Last modified: Thu Jul 23, 2026 12:02:48
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;;
 
@@ -11,8 +11,11 @@
 
 
 ;; Set load path for scripts (more constant config) and elisp (changing config)
-(add-to-list 'load-path "~/.emacs.d/scripts")
-(add-to-list 'load-path "~/.emacs.d/elisp")
+;; 07/23/2026: Use variables and `expand-file-name' to make generic path.
+;; (add-to-list 'load-path "~/.emacs.d/scripts")
+(add-to-list 'load-path (expand-file-name "scripts" user-emacs-directory))
+;; (add-to-list 'load-path "~/.emacs.d/elisp")
+(add-to-list 'load-path (expand-file-name "elisp" user-emacs-directory))
 
 ;; 05/10/2025: Add local Linux directories to the $PATH Emacs sets which doesn't include them.
 (setq my:path-prepends
