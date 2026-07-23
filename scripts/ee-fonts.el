@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-fonts.el
 ;; Created:       2023-07-22
-;; Last modified: Wed Jun 03, 2026 9:48:52
+;; Last modified: Thu Jul 23, 2026 11:30:10
 ;; Purpose:       Configuration of fonts.
 ;;
 
@@ -168,6 +168,14 @@
 (use-package nerd-icons
   :ensure t)
 
+;; 07/22/2026: Look into installing `nerd-icons-corfu',
+;; ref: https://github.com/LuigiPiucco/nerd-icons-corfu/
+
+(use-package nerd-icons-corfu
+    :ensure t
+    :after corfu
+    :config
+    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package nerd-icons-completion
   :ensure t
