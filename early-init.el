@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     early-init.el
 ;; Created:       2023-07-13
-;; Last modified: Thu Jul 23, 2026 11:12:54
+;; Last modified: Thu Jul 23, 2026 12:10:29
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;; References:    https://github.com/progfolio/.emacs.d
 ;;
@@ -72,7 +72,7 @@
 
 (message "Completed loading early-init.el")
 
-(load-file "~/.emacs.d/init.el")
+(load-file (expand-file-name "init.el" user-emacs-directory))
 
 ;; (provide 'early-init)
 ;;; early-init.el ends here
