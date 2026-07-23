@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-packages.el
 ;; Created:       2023-07-15
-;; Last modified: Wed Jun 24, 2026 16:16:39
+;; Last modified: Thu Jul 23, 2026 12:35:06
 ;; Purpose:       This is the main package loader/configurator for Emacs-Elpaca
 ;;
 
@@ -195,10 +195,14 @@
   :delight)
 
 ;; 2020-09-07: adding custom package; 2020-09-08: make non-Windows (not work)
-(cond ((not (string-equal system-type "windows-nt"))
-       (load "aeh-html-stuff")
-       ;; (require 'aeh-html-stuff)
-       (add-hook 'html-mode-hook 'aeh-html-stuff-mode)))
+;; (cond ((not (string-equal system-type "windows-nt"))
+;;        (load "aeh-html-stuff")
+;;        ;; (require 'aeh-html-stuff)
+;;        (add-hook 'html-mode-hook 'aeh-html-stuff-mode)))
+;; 07/23/2026: Do this better! If the file exists, load it plus hook, else don't even try.
+(when (file-readable-p (expand-file-name "elisp/aeh-html-stuff.el" user-emacs-directory))
+  (require 'aeh-html-stuff)
+  (add-hook 'html-mode-hook 'aeh-html-stuff-mode))
 
 
 ;; Configure Minions
