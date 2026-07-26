@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-packages.el
 ;; Created:       2023-07-15
-;; Last modified: Thu Jul 23, 2026 12:35:06
+;; Last modified: Sun Jul 26, 2026 12:28:19
 ;; Purpose:       This is the main package loader/configurator for Emacs-Elpaca
 ;;
 
@@ -233,7 +233,7 @@
           rg-show-columns t)
 
     :bind (("M-s R" . rg)               ; global binding for getting right to rg
-           ("C-c s" . rg-menu)
+           ("M-s M" . rg-menu)
            :map aeh-html-stuff-mode-map
            ("C-c C-c s" . rg-menu)))    ; "C-c s" was already used, so redefine for this map.
 
@@ -307,6 +307,18 @@
     (keymap-set hs-minor-mode-map "C-c C-M-<tab>" 'hs-global-cycle))
 
   (add-hook 'hs-minor-mode-hook 'hs-cycle-key-bindings))
+;; End of hideshow.
+
+
+;; 07/26/2026: The `use-package' is NOT working so try another way. Will add the
+;; local git repo for this package to the load path. This works, but NOTE that
+;; I will ALWAYS have to hard code the path until I can get Elpaca to use Gitlab.
+(let ((my-menus "~/git/my-menus/"))
+  (when (file-readable-p my-menus)
+    (add-to-list 'load-path my-menus)
+    (use-package my-menus
+        ;; :ensure (:host gitlab :repo "a-hausmann/my-menus")
+        :ensure nil)))
 
 
 ;; Configure org mode

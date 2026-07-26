@@ -2,7 +2,7 @@
 
 ;; File name:     ee-bindings.el
 ;; Created:       2026-01-13
-;; Last modified: Tue Jun 09, 2026 20:28:27
+;; Last modified: Sun Jul 26, 2026 9:39:59
 ;; Purpose:       Replacing general.el, all non-use-package bindings to go here
 ;;
 ;; I find that which-key is still displaying incorrect text in some cases, and
@@ -93,7 +93,11 @@
 (with-eval-after-load 'evil
   (keymap-unset evil-motion-state-map "C-y" t)   ; This WORKS! 
   (keymap-unset evil-insert-state-map "C-y" t)   ; This WORKS! 
+  (keymap-unset evil-insert-state-map "C-a" t)   ; This WORKS! 
+  (keymap-unset evil-insert-state-map "C-e" t)   ; This WORKS! 
+  (keymap-unset evil-motion-state-map "C-e" t)   ; This WORKS! 
   )
+
 (keymap-global-set "C-y" #'yank)               ; With the above, I may NOT need this but doesn't hurt.
 
 (keymap-global-set "s-d" #'duplicate-dwim)

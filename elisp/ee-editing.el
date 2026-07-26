@@ -1,7 +1,7 @@
 ;;; Setups for editing -*- lexical-binding: t -*-
 ;; File name:     ee-editing.el
 ;; Created:       2023-07-30
-;; Last modified: Sun Jul 19, 2026 20:32:26
+;; Last modified: Sun Jul 26, 2026 12:31:18
 ;; Purpose:       Configure packages used in straight editing (not programming languages)
 ;;
 

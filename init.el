@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     init.el
 ;; Created:       2023-07-13
-;; Last modified: Thu Jul 23, 2026 12:02:48
+;; Last modified: Fri Jul 24, 2026 16:53:55
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;;
 
@@ -264,12 +264,15 @@
 
 
 ;; Finally, open some files
+;; 2026-07-24: Do something here, so if the file doesn't exist we don't get empty buffers.
 (setq aeh-start-files '("~/Documents/AA/zoom-meetings-info.org"
                         "~/Documents/Health/Weight-tracker.org"
                         "~/Documents/org/FIFA-World-Cup--2026.org"
                         ;; "~/Documents/org/Premier-League-tracking.org"
                         "~/Documents/Health/BP-tracking.md"
                         "~/Documents/Health/UO-tracking.md"))
+
+;; 2026-07-24: Do something here, so if the file doesn't exist we don't get empty buffers.
 (defun aeh--load-start-files ()
   (mapcar 'find-file aeh-start-files))
 
