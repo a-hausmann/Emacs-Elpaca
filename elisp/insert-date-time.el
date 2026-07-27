@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8; lexical-binding: t -*-
 ;; File name:     insert-date-time.el
 ;; Created:       2026-01-08
-;; Last modified: Wed Jun 24, 2026 9:22:40
+;; Last modified: Mon Jul 27, 2026 10:09:04
 ;; Purpose:       Package to insert the current date/time in various formats.
 
 ;; Got tons of helpful ideas from this Github: https://github.com/xenodium/time-zones
@@ -100,6 +100,33 @@
   :tag "Month, Year"
   :type 'string)
  
+(defcustom insert-date-time-time-pm
+  "%I:%M %p"
+  "HH:MI PM"
+  :group 'insert-date-time
+  :tag "HH:MI PM"
+  :type 'string)
+
+(defcustom insert-date-time-time-24
+  "%H:%M"
+  "HH24:MI"
+  :group 'insert-date-time
+  :tag "HH24:MI"
+  :type 'string)
+
+(defcustom insert-date-time-time-seconds-pm
+  "%I:%M:%S %p"
+  "HH:MI:SS PM"
+  :group 'insert-date-time
+  :tag "HH:MI:SS PM"
+  :type 'string)
+
+(defcustom insert-date-time-time-seconds-24
+  "%H:%M:%S"
+  "HH24:MI:SS"
+  :group 'insert-date-time
+  :tag "HH24:MI:SS"
+  :type 'string)
 
 
 ;; Insert paired characters into buffer.
@@ -136,7 +163,7 @@
   "Insert `now' as formatted string. Options are shown via a transient menu.
 Because this needs to be used in any buffer, there are several keybindings.
 The main binding is `C-; d' and alternates are `C-c M-i' and `s-c i'."
-  ["Quit" ("Q" "Quit menu" keyboard-quit)]
+  ["Quit" ("q" "Quit menu" keyboard-quit)]
   ;; The date and date/time to be in columns, left and right respectively
   [["Insert date:" :pad-keys t  ; left side
   ("s" "MM/DD/YYYY"
@@ -163,7 +190,7 @@ The main binding is `C-; d' and alternates are `C-c M-i' and `s-c i'."
   ("M" "Month, Year"
        (lambda () (interactive)
          (insert (format-time-string insert-date-time-month-year))))]
-  ["Insert date & time" :pad-keys t  ; right side
+  ["Insert date & time" :pad-keys t  ; middle
   ("t" "YYYY-MM-DD HH24:MI:SS"
        (lambda () (interactive)
          (insert (format-time-string insert-date-time-iso-time))))
@@ -172,7 +199,20 @@ The main binding is `C-; d' and alternates are `C-c M-i' and `s-c i'."
          (insert (format-time-string insert-date-time-abb-string-time))))
   ("F" "Day Month Date, Year HH24:MI:SS"
        (lambda () (interactive)
-         (insert (format-time-string insert-date-time-string-time))))]]
+         (insert (format-time-string insert-date-time-string-time))))]
+  ["Insert time only" :pad-keys t  ; right side
+  ("T m" "HH:MI PM"
+       (lambda () (interactive)
+         (insert (format-time-string insert-date-time-time-pm))))
+  ("T M" "HH24:MI"
+       (lambda () (interactive)
+         (insert (format-time-string insert-date-time-time-24))))
+  ("T s" "HH:MI:SS PM"
+       (lambda () (interactive)
+         (insert (format-time-string insert-date-time-time-seconds-pm))))
+  ("T S" "HH24:MI:SS"
+       (lambda () (interactive)
+         (insert (format-time-string insert-date-time-time-seconds-24))))]]
   ;; Other things will be in a group at the bottom.
   ;; TODO: add functions from "ee-hydras.el" to the below; may need to go right.
   [["Insert other things" :pad-keys t   ; left side
