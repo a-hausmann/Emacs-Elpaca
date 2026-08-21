@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-packages.el
 ;; Created:       2023-07-15
-;; Last modified: Sun Jul 26, 2026 12:28:19
+;; Last modified: Wed Jul 29, 2026 17:51:51
 ;; Purpose:       This is the main package loader/configurator for Emacs-Elpaca
 ;;
 
@@ -319,6 +319,17 @@
     (use-package my-menus
         ;; :ensure (:host gitlab :repo "a-hausmann/my-menus")
         :ensure nil)))
+
+
+;; 07/29/2026: For some reason I never added dumb-jump to my home config (I have at work).
+;; Ref: https://github.com/jacktasia/dumb-jump  Use recommended `use-package' example.
+(use-package dumb-jump
+    :ensure t
+    :custom
+    (dumb-jump-prefer-searcher 'rg)
+    (xref-show-definitions-function #'consult-xref)
+    :config
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
 
 ;; Configure org mode

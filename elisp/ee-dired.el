@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-dired.el
 ;; Created:       2023-08-12
-;; Last modified: Tue Jun 02, 2026 16:23:18
+;; Last modified: Thu Aug 06, 2026 9:56:50
 ;; Purpose:       Configure dired and associated packages.
 ;;
 
@@ -18,6 +18,9 @@
     (setq my/dired-string "-alG")
     (setq my/dired-string "-alG --group-directories-first"))
 
+;; 08/06/2026: some of the bindings to Evil functions do NOT work, likely because
+;; I'm using `keymap-set' instead of `evil-define-key'. I will experiment with using
+;; that function here. Another option is to set Evil to use Emacs mode in dired buffers.
 (use-package dired
     :ensure nil
     :delight
@@ -30,26 +33,27 @@
     (keymap-set dired-mode-map "(" #'dired-hide-details-mode)
     (keymap-set dired-mode-map ")" #'dired-git-info-mode)
     (keymap-set dired-mode-map "j" #'dired-next-line)
+    (keymap-set dired-mode-map "n" #'dired-next-line)
     (keymap-set dired-mode-map "k" #'dired-previous-line)
-    (keymap-set dired-mode-map "h" #'dired-up-directory)
-    (keymap-set dired-mode-map "H" #'dired-hide-dotfiles-mode)
-    (keymap-set dired-mode-map "l" #'dired-find-alternate-file)
+    (keymap-set dired-mode-map "p" #'dired-previous-line)
+    (keymap-set dired-mode-map "H" #'dired-hide-dotfiles-mode)  ; actual is `dired-do-hard-link'
     (keymap-set dired-mode-map "o" #'dired-find-file-other-window)
     (keymap-set dired-mode-map "s" #'dired-sort-toggle-or-edit)
-    (keymap-set dired-mode-map "v" #'dired-toggle-marks)
     (keymap-set dired-mode-map "m" #'dired-mark)
     (keymap-set dired-mode-map "u" #'dired-unmark)
     (keymap-set dired-mode-map "U" #'dired-unmark-all-marks)
-    (keymap-set dired-mode-map "c" #'dired-create-directory)
     (keymap-set dired-mode-map "q" #'kill-this-buffer)
     (keymap-set dired-mode-map "g" #'revert-buffer)
-    (keymap-set dired-mode-map "W" #'evil-forward-WORD-begin)
-    (keymap-set dired-mode-map "B" #'evil-backward-WORD-begin)
-    (keymap-set dired-mode-map "E" #'evil-forward-WORD-end)
-    (keymap-set dired-mode-map "G" #'dired-git-info-mode)
-    (keymap-set dired-mode-map "n" #'dired-next-line)
-    (keymap-set dired-mode-map "p" #'dired-previous-line)
-    (keymap-set dired-mode-map "P" #'peep-dired)
+    ;; (keymap-set dired-mode-map "W" #'evil-forward-WORD-begin)   ; actual is `browse-url-of-dired-file'
+    (evil-define-key
+        'normal
+        'dired-mode-map (kbd "W") #'evil-forward-WORD-begin) ; THIS WORKS
+    ;; (keymap-set dired-mode-map "B" #'evil-backward-WORD-begin)  ; actual is `dired-do-byte-compile'
+    (evil-define-key
+        'normal
+        'dired-mode-map (kbd "B") #'evil-backward-WORD-begin) ; THIS WORKS
+    (keymap-set dired-mode-map "E" #'evil-forward-WORD-end)     ; THIS WORKS!
+    (keymap-set dired-mode-map "C-c C-p" #'peep-dired)
     (keymap-set dired-mode-map "C-c C-n" #'dired-narrow)
     (keymap-set dired-mode-map "C-c f r" #'dired-narrow-fuzzy)
     (keymap-set dired-mode-map "C-c f r" #'dired-narrow-regexp)
@@ -57,9 +61,11 @@
     (keymap-set dired-mode-map "<backtab>" #'dired-subtree-cycle)
     (keymap-set dired-mode-map "SPC" nil)
     :bind ("C-c d" . dired-jump)
-    :hook ((dired-mode . all-the-icons-dired-mode)
+    ;; :hook ((dired-mode . all-the-icons-dired-mode)
+    :hook ((dired-mode . nerd-icons-dired-mode)
            (dired-mode . hl-line-mode))
     )
+
 ;; Allow Elpaca to process queues up to this point
 ;; (elpaca-wait)  ;; ALWAYS run elpaca-wait AFTER installing a package using a use-package keyword
 

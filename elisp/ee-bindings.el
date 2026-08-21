@@ -2,7 +2,7 @@
 
 ;; File name:     ee-bindings.el
 ;; Created:       2026-01-13
-;; Last modified: Sun Jul 26, 2026 9:39:59
+;; Last modified: Thu Aug 06, 2026 21:28:18
 ;; Purpose:       Replacing general.el, all non-use-package bindings to go here
 ;;
 ;; I find that which-key is still displaying incorrect text in some cases, and
@@ -95,7 +95,16 @@
   (keymap-unset evil-insert-state-map "C-y" t)   ; This WORKS! 
   (keymap-unset evil-insert-state-map "C-a" t)   ; This WORKS! 
   (keymap-unset evil-insert-state-map "C-e" t)   ; This WORKS! 
+  (keymap-unset evil-insert-state-map "C-d" t)   ; This WORKS! 
   (keymap-unset evil-motion-state-map "C-e" t)   ; This WORKS! 
+  (keymap-unset evil-motion-state-map ")" t)     ; This WORKS! 
+  (keymap-unset evil-normal-state-map "M-." t)   ; This WORKS! 
+  (keymap-unset evil-normal-state-map "C-." t)   ; This WORKS! 
+  ;; These next are messing up movement in markdown-mode
+  (keymap-unset evil-normal-state-map "C-p" t)   ; This WORKS! 
+  (keymap-unset evil-normal-state-map "C-n" t)   ; This WORKS! 
+  (keymap-unset evil-insert-state-map "C-p" t)   ; This WORKS! 
+  (keymap-unset evil-insert-state-map "C-n" t)   ; This WORKS! 
   )
 
 (keymap-global-set "C-y" #'yank)               ; With the above, I may NOT need this but doesn't hurt.

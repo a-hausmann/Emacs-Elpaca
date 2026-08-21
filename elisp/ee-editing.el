@@ -1,7 +1,7 @@
 ;;; Setups for editing -*- lexical-binding: t -*-
 ;; File name:     ee-editing.el
 ;; Created:       2023-07-30
-;; Last modified: Sun Jul 26, 2026 12:31:18
+;; Last modified: Tue Jul 28, 2026 15:58:41
 ;; Purpose:       Configure packages used in straight editing (not programming languages)
 ;;
 
@@ -246,29 +246,15 @@ This is designed to be used in a prog-mode-hook."
     :init
     (add-hook 'org-mode-hook 'embrace-org-mode-hook))
 
-
-;; 12/28/2025: Added Linux program "nuspell" (spellchecker) and "jinx", Emacs wrapper for nuspell.
-;; Ref: https://github.com/minad/jinx
-;; Doesn't work, getting compile error on jinx-mod.0 file. Oddly, if I try command twice it works,
-;; but leaves ALL words as misspelled (until I add them to dictionary?) I'm turning this off for now.
-;; (use-package jinx
-;;   :ensure t
-;;   :hook (emacs-startup . global-jinx-mode)
-;;   :bind (("M-$" . jinx-correct)
-;;          ("C-M-$" . jinx-languages)))
-
-;; 06/24/2026: Re-installed "nuspell" as snap, goint to try to use built-in `flyspell'.
-;; Got this error:
-;; Error enabling Flyspell mode:
-;; (nuspell exited with code 1)
-;; As this STILL doesn't work, removed the snap "nuspell". Installed "hunspell" instead, and this WORKS!
-
-(setq ispell-program-name "hunspell"
-      ispell-dictionary "en_US")
-
-
+;; 07/28/2026: have much better handle on spell-checking now. Installed both "aspell" and "hunspell"
+;; in Linux and using native `ispell' and `flyspell' as the UI. 
 (use-package emacs
     :ensure nil
+    :config
+    (setq ispell-program-name "hunspell"
+          ispell-dictionary "en_US"
+          ispell-personal-dictionary
+          (expand-file-name ".ispell-personal-dictionary" user-emacs-directory))
     :hook
     ((org-mode text-mode markdown-mode) . flyspell-mode)
     (prog-mode . flyspell-prog-mode))

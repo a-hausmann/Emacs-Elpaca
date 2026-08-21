@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     early-init.el
 ;; Created:       2023-07-13
-;; Last modified: Thu Jul 23, 2026 12:10:29
+;; Last modified: Sun Aug 09, 2026 22:06:58
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;; References:    https://github.com/progfolio/.emacs.d
 ;;
@@ -39,7 +39,6 @@
    (lambda ()
      (setq file-name-handler-alist default-file-name-handler-alist
            gc-cons-percentage 0.1
-           ;; gc-cons-threshold 100000000
            gc-cons-threshold (+ bkup-gc-cons-threshold 200000)) ; Restore original plus a little bit more
      (message "gc-cons-threshold & file-name-handler-alist restored")
      (when (boundp 'after-focus-change-function)

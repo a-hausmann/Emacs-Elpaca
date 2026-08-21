@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-abbrevs.el
 ;; Created:       2023-10-06
-;; Last modified: Thu Jul 16, 2026 11:38:55
+;; Last modified: Tue Aug 04, 2026 15:28:31
 ;; Purpose:       Contains my abbreviations and configuration.
 ;;
 
@@ -43,6 +43,8 @@
     ("SFI" "State Farm")
     ("FR" "Flood Rescue")
     ("ACS" "Air Comfort Solutions")
+    ("PC" "PuroClean")
+    ("BC" "Brewer Carpet One")
     ))
 
 (set-default 'abbrev-mode t)
