@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     init.el
 ;; Created:       2023-07-13
-;; Last modified: Fri Jul 24, 2026 16:53:55
+;; Last modified: Fri Aug 21, 2026 15:56:27
 ;; Purpose:       For repository "Emacs-Elpaca".
 ;;
 
@@ -16,6 +16,8 @@
 (add-to-list 'load-path (expand-file-name "scripts" user-emacs-directory))
 ;; (add-to-list 'load-path "~/.emacs.d/elisp")
 (add-to-list 'load-path (expand-file-name "elisp" user-emacs-directory))
+;; 08/21/2026: going to add a "local" directory for those things I want to git clone.
+(add-to-list 'load-path (expand-file-name "local" user-emacs-directory))
 
 ;; 05/10/2025: Add local Linux directories to the $PATH Emacs sets which doesn't include them.
 (setq my:path-prepends
@@ -166,8 +168,8 @@
   (when (file-exists-p custom-file)
     (load custom-file 'noerror)
     (message "custom-file loaded!")))
-  (when (file-exists-p custom-file)
-    (aeh/load-custom))
+(when (file-exists-p custom-file)
+  (aeh/load-custom))
 
 ;; (elpaca-process-queues)
 (add-hook 'elpaca-after-init-hook (lambda () (load custom-file 'noerror)))
@@ -267,14 +269,22 @@
 ;; 2026-07-24: Do something here, so if the file doesn't exist we don't get empty buffers.
 (setq aeh-start-files '("~/Documents/AA/zoom-meetings-info.org"
                         "~/Documents/Health/Weight-tracker.org"
-                        "~/Documents/org/FIFA-World-Cup--2026.org"
-                        ;; "~/Documents/org/Premier-League-tracking.org"
+                        ;; "~/Documents/org/FIFA-World-Cup--2026.org"
+                        "~/Documents/org/Premier-League-tracking.org"
                         "~/Documents/Health/BP-tracking.md"
                         "~/Documents/Health/UO-tracking.md"))
 
 ;; 2026-07-24: Do something here, so if the file doesn't exist we don't get empty buffers.
+(defun aeh--load-file-if-exists (file)
+  "Ensure files exists before `find-file' so no empty buffers."
+  (if (file-exists-p file)
+      (find-file file)))
+
+
 (defun aeh--load-start-files ()
-  (mapcar 'find-file aeh-start-files))
+  ;; (mapcar 'find-file aeh-start-files))
+  (mapcar 'aeh--load-file-if-exists aeh-start-files))
+
 
 (add-hook 'elpaca-after-init-hook 'aeh--load-start-files)
 
