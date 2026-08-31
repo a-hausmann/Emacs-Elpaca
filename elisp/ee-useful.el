@@ -2,7 +2,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-useful.el
 ;; Created:       2023-07-30
-;; Last modified: Thu Jun 25, 2026 20:53:12
+;; Last modified: Mon Aug 31, 2026 14:04:08
 ;; Purpose:       Some useful but minor functions.
 ;;
 
@@ -197,8 +197,6 @@ buffers/windows."
   (switch-to-buffer (generate-new-buffer "*Untitled*"))
   (text-mode))
 (keymap-global-set "C-c n" '("Create *Untitled*" . aeh/new-untitled-buffer))
-(keymap-set aeh-html-stuff-mode-map "C-c M-n" '("Create *Untitled*" . aeh/new-untitled-buffer))
-(keymap-set aeh-html-stuff-mode-map "C-c C-x n" '("Create *Untitled*" . aeh/new-untitled-buffer))
 
 
 ;; Create `*Scratch: <mode>*' buffer
