@@ -1,7 +1,7 @@
 ;;; Setups for editing -*- lexical-binding: t -*-
 ;; File name:     ee-editing.el
 ;; Created:       2023-07-30
-;; Last modified: Tue Jul 28, 2026 15:58:41
+;; Last modified: Mon Sep 21, 2026 16:21:03
 ;; Purpose:       Configure packages used in straight editing (not programming languages)
 ;;
 
@@ -167,13 +167,13 @@ This is designed to be used in a prog-mode-hook."
 
 
 ;;; Configure rainbow-mode, useful for showing color of codes.
-;; (use-package rainbow-mode
-;;   :defer
-;;   :ensure nil
-;;   :delight
-;;   :hook 
-;;   (prog-mode . rainbow-mode)
-;;   (org-mode . rainbow-mode))
+(use-package rainbow-mode
+  :ensure t
+  :delight
+  :hook 
+  (prog-mode . rainbow-mode)
+  (qml-mode . rainbow-mode)
+  (org-mode . rainbow-mode))
 
 
 ;;; 02/10/2024: Adding keycast-mode
@@ -300,6 +300,22 @@ This is designed to be used in a prog-mode-hook."
 
 (add-hook 'next-error-hook #'pulsar-pulse-line)
 (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line-blue)
+
+
+;; 08/26/2026: ref: https://www.singletonlife.com/posts/emacs_as_an_ide/
+;; The below code will pre-configure tree-sitter language-grammar source
+;; paths. May need to run: `M-x treesit-install-language-grammar'
+;; (use-package treesit
+;;     :ensure nil ;; builtin package
+;;     :config
+;;     (setq treesit-language-source-alist
+;;           '((python . ("https://github.com/tree-sitter/tree-sitter-python")))))
+
+;; Set up `flycheck' syntax checker:
+;; On the fly syntax and linting check for all text mode. Faster than flymake + Better functionality
+;; (use-package flycheck
+;;   :ensure t
+;;   :hook (prog-mode . flycheck-mode))
 
 
 (message "Loaded ee-editing.el")

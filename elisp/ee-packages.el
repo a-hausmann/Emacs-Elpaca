@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-packages.el
 ;; Created:       2023-07-15
-;; Last modified: Wed Jul 29, 2026 17:51:51
+;; Last modified: Mon Sep 21, 2026 16:47:59
 ;; Purpose:       This is the main package loader/configurator for Emacs-Elpaca
 ;;
 
@@ -188,21 +188,33 @@
   ([remap describe-key] . helpful-key))
 
 
-;; Configure HTMLize
+;; Configure HTMLize; NOTE: I had been just deferring, but now load after "th-helper"
 (use-package htmlize
-  :defer 2
-  :commands aeh-html-stuff-mode
+  :after th-helper
+  ;; :defer 2
+  ;; :commands aeh-html-stuff-mode
+  :commands th-helper-mode
   :delight)
 
-;; 2020-09-07: adding custom package; 2020-09-08: make non-Windows (not work)
-;; (cond ((not (string-equal system-type "windows-nt"))
-;;        (load "aeh-html-stuff")
-;;        ;; (require 'aeh-html-stuff)
-;;        (add-hook 'html-mode-hook 'aeh-html-stuff-mode)))
 ;; 07/23/2026: Do this better! If the file exists, load it plus hook, else don't even try.
-(when (file-readable-p (expand-file-name "elisp/aeh-html-stuff.el" user-emacs-directory))
-  (require 'aeh-html-stuff)
-  (add-hook 'html-mode-hook 'aeh-html-stuff-mode))
+;; (when (file-readable-p (expand-file-name "elisp/aeh-html-stuff.el" user-emacs-directory))
+;;   (require 'aeh-html-stuff)
+;;   (add-hook 'html-mode-hook 'aeh-html-stuff-mode))
+
+
+;; 08/31/2026: FUDGE!!! The "elpaca" form will absolutely FIND my package, and BUILD it,
+;; however the form will not actually LOAD it at runtime, so any hooks will get an error.
+;; Cannot change to the "use-package" macro to load as then there is an Elpaca error. I 
+;; even added a symlink in the "local" directory as I cloned to "local/th-helper" directory,
+;; but no joy. So am back to checking the "local" directory for the symlink and require it.
+;; (elpaca (th-helper
+;;     :ensure t
+;;     :host gitlab
+;;     :repo "a-hausmann/th-helper"
+;;     :branch "main"))
+(when (file-readable-p (expand-file-name "local/th-helper.el" user-emacs-directory))
+  (require 'th-helper)
+  (add-hook 'html-mode-hook 'th-helper-mode))
 
 
 ;; Configure Minions
@@ -234,7 +246,7 @@
 
     :bind (("M-s R" . rg)               ; global binding for getting right to rg
            ("M-s M" . rg-menu)
-           :map aeh-html-stuff-mode-map
+           :map th-helper-mode-map
            ("C-c C-c s" . rg-menu)))    ; "C-c s" was already used, so redefine for this map.
 
 
@@ -332,11 +344,29 @@
     (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
 
+;; 09/21/2026: Adding QML support
+;; Ref: https://github.com/coldnew/qml-mode#qml-modeel
+(defun my-qml-defaults ()
+  "Set buffer local defaults for QML files."
+  (setq-local js-indent-level 2))
+
+(use-package qml-mode
+    :ensure t
+    :delight)
+
+(autoload 'qml-mode "qml-mode" "Editing Qt Declarative." t)
+(add-to-list 'auto-mode-alist '("\\.qml$" . qml-mode))
+(add-hook 'qml-mode-hook #'my-qml-defaults)
+
 ;; Configure org mode
 (load "ee-org.el")
 
 
 ;; Load my "useful" functions.
 (load "ee-useful")
+
+;; testing new function.
+(load "message-ts")
+
 
 ;; End ee-packages.el

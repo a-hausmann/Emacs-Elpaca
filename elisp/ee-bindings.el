@@ -2,7 +2,7 @@
 
 ;; File name:     ee-bindings.el
 ;; Created:       2026-01-13
-;; Last modified: Thu Aug 06, 2026 21:28:18
+;; Last modified: Sun Sep 27, 2026 20:14:11
 ;; Purpose:       Replacing general.el, all non-use-package bindings to go here
 ;;
 ;; I find that which-key is still displaying incorrect text in some cases, and
@@ -29,7 +29,7 @@
 
 ;;; Code for keymaps and bindings.
 
-;;;; keymaps for `C-c z' prefix
+;;;; keymaps for `s-z' prefix
 
 (defvar-keymap my-s-z-s-prefix-map
   :doc "Prefix map for `s-z' s"
@@ -40,7 +40,7 @@
 (defvar-keymap my-s-z-prefix-map
   :doc "Prefix map for `s-z'"
   "n" '("New buffer". aeh/new-untitled-buffer)
-  "p" '("Politics" . aeh-set-politics-directory)
+  "p" '("Politics" . thh-set-politics-directory)
   "s" `("Shells" . ,my-s-z-s-prefix-map)
   "t" '("Resize text" . text-scale-adjust)
   )
@@ -50,11 +50,11 @@
 
 ;;;; keymaps for `C-;' prefix
 
-(defvar-keymap my-c-sc-prefix-map
-  :doc "Prefix map for `C-;'"
-  "d" '("Insert Date" . insert-date-time))
+;; (defvar-keymap my-c-sc-prefix-map
+;;   :doc "Prefix map for `C-;'"
+;;   "d" '("Insert Date" . insert-date-time))
 
-(keymap-global-set "C-;" `("Menu" . ,my-c-sc-prefix-map))
+;; (keymap-global-set "C-;" `("Menu" . ,my-c-sc-prefix-map))
 
 
 ;;; Alternate bindings for `insert-date-time'
@@ -63,6 +63,15 @@
 (keymap-global-set "s-c i" 'insert-date-time)
 (keymap-global-set "s-i" 'insert-date-time)
 
+
+;;; Markdown-Mode binding(s)
+;; CANNOT do this/these additional binding(s) without using a hook; until Emacs
+;; actually loads markdown-mode, the markdown-mode-map variable DOES NOT exist.
+(defun add-markdown-bindings ()
+  "Add `missing' markdown-mode bindings; executed via a hook."
+  (interactive)
+  (keymap-set markdown-mode-map "M-p" #'markdown-up-list))
+(add-hook 'markdown-mode-hook #'add-markdown-bindings)
 
 
 ;;; Stuff I haven't yet created a prefix keymap.
@@ -110,6 +119,10 @@
 (keymap-global-set "C-y" #'yank)               ; With the above, I may NOT need this but doesn't hurt.
 
 (keymap-global-set "s-d" #'duplicate-dwim)
+
+;; Version Control. `vc-pull' has no binding??? We can fix that.
+(keymap-global-set "C-x v p" #'vc-pull)
+
 
 ;;; ee-bindings.el ends here
 
