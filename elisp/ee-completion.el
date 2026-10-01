@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;; File name:     ee-completion.el
 ;; Created:       2023-07-22
-;; Last modified: Sun Apr 12, 2026 17:59:06
+;; Last modified: Thu Oct 01, 2026 11:05:07
 ;; Purpose:       Configure all completing-read framework.
 ;;                As of initial writing, this is: Consult, Vertigo, 
 ;;                Orderless, Marginalia, and Embark. Also use
@@ -36,8 +36,8 @@
          ("C-x b" . consult-buffer)                ; orig. switch-to-buffer
          ("C-x 4 b" . consult-buffer-other-window) ; orig. switch-to-buffer-other-window
          ("C-x 5 b" . consult-buffer-other-frame)  ; orig. switch-to-buffer-other-frame
-         ("C-M-'" . consult-register-store)        ; dwim register: store, append, prepend, delete (prefix arg)
-         ("M-'" . consult-register-load)           ; dwim register: insert, jump, or restore (window config)
+         ("C-M-'" . consult-register-load)         ; dwim register: insert, jump, or restore (window config)
+         ("M-'" . consult-register-store)          ; dwim register: store, append, prepend, delete (prefix arg)
          ("M-s g" . consult-register)              ; preview & narrow register list.
          ("M-y" . consult-yank-pop)                ; orig. yank-pop
          ("C-x c F" . consult-focus-lines)         ; focus (narrow) text
